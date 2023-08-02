@@ -5,7 +5,7 @@
   "main": "server.js",
   "scripts": {
     "test": "jest",
-    "seed": "psql < seed.sql"
+    "seed": "psql < ./seed.sql"
   },
   "repository": {
     "type": "git",
