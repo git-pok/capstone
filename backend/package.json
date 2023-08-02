@@ -1,0 +1,19 @@
+{
+  "name": "capstone",
+  "version": "1.0.0",
+  "description": "recipe app",
+  "main": "server.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/git-pok/capstone.git"
+  },
+  "author": "Vincent Impreveduto AKA Fvin",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/git-pok/capstone/issues"
+  },
+  "homepage": "https://github.com/git-pok/capstone#readme"
+}
