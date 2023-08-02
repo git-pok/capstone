@@ -4,7 +4,8 @@
   "description": "recipe app",
   "main": "server.js",
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "seed": "psql < seed.sql"
   },
   "repository": {
     "type": "git",
