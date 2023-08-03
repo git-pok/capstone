@@ -3,6 +3,7 @@ const ExpressError = require("../models/error.js");
 const router = new express.Router();
 const User = require("../models/user.js");
 const { validateSchema, hashPassword } = require("../helpers/user.js");
+const { isLoggedIn } = require("../middleware/auth.js");
 /**
  * "/register"
  * route type: POST
@@ -46,7 +47,7 @@ router.post("/login", async (req, res, next) => {
  * Authorization: logged in
  * Returns user.
  */
-router.get("/:username", async (req, res, next) => {
+router.get("/:username", isLoggedIn, async (req, res, next) => {
     try {
         const { username } = req.params;
         const user = await User.getUser(username);
