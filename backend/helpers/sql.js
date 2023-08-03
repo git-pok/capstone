@@ -13,7 +13,7 @@ function genInsertSql (table, data, sqlExp, returning = false) {
             parametizers.push(`$${idx + 1}`);
         })
         let sql = `${sqlQryEx.join(" ")} (${columns.join(", ")}) VALUES (${parametizers.join(", ")})`;
-        sql = !returning ? `${sql},` : `${sql} RETURNING ${returning.join(", ")}`;
+        sql = !returning ? `${sql}` : `${sql} RETURNING ${returning.join(", ")}`;
         return {
             sql,
             values

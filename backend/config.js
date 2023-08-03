@@ -1,6 +1,6 @@
 const { Client } = require("pg");
 
-let workFactor = process.env.NODE_ENV === "test" ? 1 : 12;
+let BCRYPT_WORK_FACTOR = process.env.NODE_ENV === "test" ? 1 : 12;
 
 let DB_URI;
 
@@ -13,4 +13,4 @@ let db = new Client ({
 
 db.connect();
 
-module.exports = { db, workFactor };
+module.exports = { db, BCRYPT_WORK_FACTOR };

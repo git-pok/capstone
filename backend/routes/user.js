@@ -2,17 +2,19 @@ const express = require("express");
 const ExpressError = require("../models/error.js");
 const router = new express.Router();
 const User = require("../models/user.js");
+const { validateSchema, hashPassword } = require("../helpers/user.js");
 /**
  * "/register"
- * Register route.
- * User registers
+ * Authorization: none
+ * Returns object of submitted data,
+ * and token
  */
-router.post("/register", (req, res, next) => {
+router.post("/register", async (req, res, next) => {
     try {
         const data = req.body;
-        const isValid = User.register(data);
+        const registeredUser = await User.register(data);
         return res.status(201).json({
-            user: data
+            user: registeredUser
         });
     } catch (err) {
         return next(err);

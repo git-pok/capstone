@@ -29,9 +29,9 @@ app.use((req, res, next) => {
 /**
  * Error Handler
  */
-app.use((error, req, res, next) => {
-    const statusCode = error.status || 400;
-    const msg = error.msg || error;
+app.use((err, req, res, next) => {
+    const statusCode = err.status || 400;
+    const msg = err.msg || err;
     return res.status(statusCode).json({
         error: {
             statusCode,
