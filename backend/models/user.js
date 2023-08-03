@@ -52,6 +52,8 @@ class User {
             const jsonErrors = isValid.errors.map(error => error.message);
             throw new ExpressError(400, jsonErrors);
         }
+        const { is_admin } = data;
+        if (is_admin !== undefined) throw new ExpressError(400, "Cannot use is_admin property!");
         const { password, username } = data;
         const hashedPw = await hashPassword(password);
         data["password"] = hashedPw;
@@ -169,6 +171,19 @@ class User {
         );
         const userUpdateRows = user.rows[0];
         return userUpdateRows;
+    }
+
+    /**
+     * deleteUser
+     * Deletes a user.
+     * Returns deleted message.
+     * deleteUser(username) => { message: deleted username! }
+     */
+    static async deleteUser(username) {
+        const dbUser = await db.query(`SELECT * FROM users WHERE username = $1`, [username]);
+        const dbUserRowsLength = dbUser.rows.length;
+        if (dbUserRowsLength === 0) throw new ExpressError(400, "User not found!");
+        await db.query(`DELETE FROM users WHERE username = $1`, [username]);
     }
 }
 

@@ -65,7 +65,7 @@ router.get("/:username", isLoggedIn, async (req, res, next) => {
  * Authorization: logged in
  * Returns updated user data.
  */
-router.patch("/:username", async (req, res, next) => {
+router.patch("/:username", isLoggedIn, async (req, res, next) => {
     try {
         const { username } = req.params;
         const data = req.body;
@@ -73,6 +73,24 @@ router.patch("/:username", async (req, res, next) => {
         return res.status(200).json({
             user
         });
+    } catch (err) {
+        return next(err);
+    }
+});
+
+/**
+ * "/username"
+ * route type: DELETE
+ * Authorization: logged in
+ * Returns deleted message.
+ */
+router.delete("/:username", isLoggedIn, async (req, res, next) => {
+    try {
+        const { username } = req.params;
+        const user = await User.deleteUser(username);
+        return res.status(200).json([{
+            message: `Deleted ${username}!`
+        }]);
     } catch (err) {
         return next(err);
     }
