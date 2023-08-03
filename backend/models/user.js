@@ -108,6 +108,25 @@ class User {
         };
     }
 
+    /**
+     * getUser
+     * Retrieves a user.
+     * Returns user with data.
+     * getUser(id) =>
+     * user: {
+		username: "fin2",
+        first_name: "fin",
+        ...
+	* }
+     */
+    static async getUser(username) {
+        const dbUser = await db.query(`SELECT * FROM users WHERE username = $1`, [username]);
+        const dbUserRows = JSON.parse(JSON.stringify(dbUser.rows[0]));
+        const dbUserRowsLength = dbUser.rows.length;
+        if (dbUserRowsLength === 0) throw new ExpressError(400, "User not found!");
+        delete dbUserRows["password"];
+        return dbUserRows;
+    }
 
     /**
      * editUser
@@ -124,7 +143,7 @@ class User {
         ...
 	* }
      */
-    static async editUser(data, id) {
+    static async editUser(data, username) {
         const isValid = validateSchema(data, userEditSchema);
         if (isValid.errors.length !== 0) {
             const jsonErrors = isValid.errors.map(error => error.message);
@@ -134,7 +153,7 @@ class User {
         if (is_admin !== undefined) throw new ExpressError(400, "Cannot edit is_admin!");
         const { password } = data;
         if (password !== undefined) data["password"] = await hashPassword(password);
-        const dbUser = await db.query(`SELECT * FROM users WHERE id = $1`, [id]);
+        const dbUser = await db.query(`SELECT * FROM users WHERE username = $1`, [username]);
         const dbUserRows = dbUser.rows[0];
         const dbUserRowsLength = dbUser.rows.length;
         if (dbUserRowsLength === 0) throw new ExpressError(400, "User not found!");
@@ -143,10 +162,10 @@ class User {
         const parametizedId = `$${valuesLength}`;
         const user = await db.query(`
             UPDATE users SET ${sql}
-            WHERE id = ${parametizedId} RETURNING
+            WHERE username = ${parametizedId} RETURNING
             id, username, first_name, last_name,
             email, phone, header_img, profile_img`,
-            [...values, id]
+            [...values, username]
         );
         const userUpdateRows = user.rows[0];
         return userUpdateRows;

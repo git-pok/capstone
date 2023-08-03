@@ -39,15 +39,34 @@ router.post("/login", async (req, res, next) => {
 });
 
 /**
- * "/login"
- * Authorization: none
- * Returns token.
+ * "/:username"
+ * route type: GET
+ * Authorization: logged in
+ * Returns user.
  */
-router.patch("/:id", async (req, res, next) => {
+router.get("/:username", async (req, res, next) => {
     try {
-        const { id } = req.params;
+        const { username } = req.params;
+        const user = await User.getUser(username);
+        return res.status(200).json({
+            user
+        });
+    } catch (err) {
+        return next(err);
+    }
+});
+
+/**
+ * "/username"
+ * route type: PATCH
+ * Authorization: logged in
+ * Returns updated user data.
+ */
+router.patch("/:username", async (req, res, next) => {
+    try {
+        const { username } = req.params;
         const data = req.body;
-        const user = await User.editUser(data, id);
+        const user = await User.editUser(data, username);
         return res.status(200).json({
             user
         });
