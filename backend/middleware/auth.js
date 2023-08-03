@@ -4,7 +4,7 @@ const ExpressError = require("../models/error.js");
 const {
     validateSchema, hashPassword, generateToken,
     decodeToken, verifyPassword
-} = require("../helpers/user.js");
+} = require("../helpers/users.js");
 
 /**
  * authenticateToken
