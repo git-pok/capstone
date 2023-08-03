@@ -4,7 +4,7 @@ const { genInsertSql, genUpdateSql } = require("../helpers/sql.js");
 const {
         validateSchema, hashPassword, generateToken,
         decodeToken, verifyPassword
-    } = require("../helpers/user.js");
+    } = require("../helpers/users.js");
 const SECRET_KEY = require("../keys.js");
 // const jsonschema = require("jsonschema");
 const userSchema = require("../schemas/userRegister.json");

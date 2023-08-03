@@ -1,8 +1,8 @@
 const express = require("express");
 const ExpressError = require("../models/error.js");
 const router = new express.Router();
-const User = require("../models/user.js");
-const { validateSchema, hashPassword } = require("../helpers/user.js");
+const User = require("../models/users.js");
+const { validateSchema, hashPassword } = require("../helpers/users.js");
 const { isLoggedIn } = require("../middleware/auth.js");
 /**
  * "/register"
