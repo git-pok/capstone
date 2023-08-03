@@ -5,6 +5,7 @@ const User = require("../models/user.js");
 const { validateSchema, hashPassword } = require("../helpers/user.js");
 /**
  * "/register"
+ * route type: POST
  * Authorization: none
  * Returns object of submitted data,
  * and token
@@ -23,6 +24,7 @@ router.post("/register", async (req, res, next) => {
 
 /**
  * "/login"
+ * route type: POST
  * Authorization: none
  * Returns token.
  */
