@@ -3,11 +3,12 @@ const { db } = require("../config.js");
 const { genInsertSql } = require("../helpers/sql.js");
 const {
         validateSchema, hashPassword, generateToken,
-        decodeToken
+        decodeToken, verifyPassword
     } = require("../helpers/user.js");
 const SECRET_KEY = require("../keys.js");
 // const jsonschema = require("jsonschema");
 const userSchema = require("../schemas/userRegister.json");
+const loginSchema = require("../schemas/userLogin.json");
 const ExpressError = require("./error.js");
 
 
@@ -32,15 +33,16 @@ class User {
         password: "password"
 	* }
      * register(data) =>
-     * "user": {
-		"username": "fin",
-		"first_name": "Vin",
-		"last_name": "I",
-		"email": "bank@g.com",
-		"phone": "813 507 4490",
-		"header_img": "testHeaderImage",
-		"profile_img": "testProfileImage",
-		"_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImZpbiIsImlkIjoxNCwiaWF0IjoxNjkxMDc5MTI0fQ.Fp6tQFI7dMz7hy_Xiwa3RzQKc73SvTxuZhKCLTOTAJI"
+     * user: {
+        id: 1,
+		username: "fin",
+		first_name: "Vin",
+		last_name: "I",
+		email: "bank@g.com",
+		phone: "813 507 4490",
+		header_img: "testHeaderImage",
+		profile_img: "testProfileImage",
+		token: "eyJhbGciOiJIUzI1N"
 	* }
      */
     static async register(data) {
@@ -63,8 +65,46 @@ class User {
         const { id } = resultsRow;
         delete resultsRow["password"];
         const token = generateToken({username, id}, SECRET_KEY);
-        resultsRow["_token"] = token;
+        resultsRow["token"] = token;
         return resultsRow;
+    }
+
+    /**
+     * login
+     * Returns a token.
+     * const data = {
+		username: "fin",
+        password: "password"
+	* }
+     * login(data) =>
+     * "user": {
+        id: 1
+		username: "fin",
+		token: "eyJhbGciOiJIUzI1N"
+	* }
+     */
+    static async login(data) {
+        const isValid = validateSchema(data, loginSchema);
+        if (isValid.errors.length !== 0) {
+            const jsonErrors = isValid.errors.map(error => error.message);
+            throw new ExpressError(400, jsonErrors);
+        }
+        const { password, username } = data;
+        const user = await db.query(`SELECT * FROM users WHERE username = $1`, [username]);
+        const userRows = user.rows[0];
+        const userRowsLength = user.rows.length;
+        if (userRowsLength === 0) throw new ExpressError(400, "User doesn't exist!");
+        const dbPw = userRows.password;
+        const pwVerify = await verifyPassword(password, dbPw);
+        if (!pwVerify) throw new ExpressError(400, "Invalid password!"); 
+        const userId = userRows.id;
+        const userUsername = userRows.username;
+        const token = generateToken({userUsername, userId}, SECRET_KEY);
+        return {
+            id: userId,
+            username: userUsername,
+            token
+        };
     }
 }
 

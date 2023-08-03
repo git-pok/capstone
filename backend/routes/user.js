@@ -21,5 +21,22 @@ router.post("/register", async (req, res, next) => {
     }
 });
 
+/**
+ * "/login"
+ * Authorization: none
+ * Returns token.
+ */
+router.post("/login", async (req, res, next) => {
+    try {
+        const data = req.body;
+        const user = await User.login(data);
+        return res.status(200).json({
+            user
+        });
+    } catch (err) {
+        return next(err);
+    }
+});
+
 
 module.exports = router;

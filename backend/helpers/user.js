@@ -22,6 +22,15 @@ async function hashPassword (password) {
     }
 }
 
+async function verifyPassword (formPw, dbPw) {
+    try {
+        const pwVerify = await bcrypt.compare(formPw, dbPw);
+        return pwVerify;
+    } catch (err) {
+        throw new ExpressError(400, err);
+    }
+}
+
 function generateToken (payload, SECRET_KEY) {
     try {
         const token = jwt.sign(payload, SECRET_KEY);
@@ -41,5 +50,6 @@ function decodeToken (token, SECRET_KEY) {
 }
 
 module.exports = {
-    validateSchema, hashPassword, generateToken, decodeToken
+    validateSchema, hashPassword, generateToken,
+    decodeToken, verifyPassword
 };
