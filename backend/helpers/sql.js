@@ -19,8 +19,29 @@ function genInsertSql (table, data, sqlExp, returning = false) {
             values
         };
     } catch (err) {
-        throw new ExpressError(400, "Bad request!");
+        throw new ExpressError(400, `${err}`);
     }
 }
 
-module.exports = { genInsertSql };
+
+function genUpdateSql (data) {
+    try {
+        const dataArray = Object.entries(data);
+        const parametizedEdits = [];
+        const values = [];
+        dataArray.forEach((data, idx) => {
+            const setUpdateValues = `${data[0]} = $${idx + 1}`;
+            parametizedEdits.push(setUpdateValues);
+            values.push(data[1]);
+        })
+        let sql = `${parametizedEdits.join(", ")}`;
+        return {
+            sql,
+            values
+        };
+    } catch (err) {
+        throw new ExpressError(400, `${err}`);
+    }
+}
+
+module.exports = { genInsertSql, genUpdateSql };

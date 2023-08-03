@@ -1,6 +1,6 @@
 // const bcrypt = require("bcrypt");
 const { db } = require("../config.js");
-const { genInsertSql } = require("../helpers/sql.js");
+const { genInsertSql, genUpdateSql } = require("../helpers/sql.js");
 const {
         validateSchema, hashPassword, generateToken,
         decodeToken, verifyPassword
@@ -9,6 +9,7 @@ const SECRET_KEY = require("../keys.js");
 // const jsonschema = require("jsonschema");
 const userSchema = require("../schemas/userRegister.json");
 const loginSchema = require("../schemas/userLogin.json");
+const userEditSchema = require("../schemas/userEdit.json");
 const ExpressError = require("./error.js");
 
 
@@ -77,7 +78,7 @@ class User {
         password: "password"
 	* }
      * login(data) =>
-     * "user": {
+     * user: {
         id: 1
 		username: "fin",
 		token: "eyJhbGciOiJIUzI1N"
@@ -105,6 +106,50 @@ class User {
             username: userUsername,
             token
         };
+    }
+
+
+    /**
+     * editUser
+     * Edits a user.
+     * Returns user with updated data.
+     * const data = {
+		username: "fin2",
+        password: "password"
+	* }
+     * editUser(data) =>
+     * user: {
+		username: "fin2",
+        first_name: "fin",
+        ...
+	* }
+     */
+    static async editUser(data, id) {
+        const isValid = validateSchema(data, userEditSchema);
+        if (isValid.errors.length !== 0) {
+            const jsonErrors = isValid.errors.map(error => error.message);
+            throw new ExpressError(400, jsonErrors);
+        }
+        const { is_admin } = data;
+        if (is_admin !== undefined) throw new ExpressError(400, "Cannot edit is_admin!");
+        const { password } = data;
+        if (password !== undefined) data["password"] = await hashPassword(password);
+        const dbUser = await db.query(`SELECT * FROM users WHERE id = $1`, [id]);
+        const dbUserRows = dbUser.rows[0];
+        const dbUserRowsLength = dbUser.rows.length;
+        if (dbUserRowsLength === 0) throw new ExpressError(400, "User not found!");
+        const { sql, values } = genUpdateSql(data);
+        const valuesLength = values.length + 1;
+        const parametizedId = `$${valuesLength}`;
+        const user = await db.query(`
+            UPDATE users SET ${sql}
+            WHERE id = ${parametizedId} RETURNING
+            id, username, first_name, last_name,
+            email, phone, header_img, profile_img`,
+            [...values, id]
+        );
+        const userUpdateRows = user.rows[0];
+        return userUpdateRows;
     }
 }
 

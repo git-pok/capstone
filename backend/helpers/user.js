@@ -9,7 +9,7 @@ function validateSchema (data, schema) {
         const result = jsonschema.validate(data, schema);
         return result;
     } catch (err) {
-        throw new ExpressError(400, "Bad request!");
+        throw new ExpressError(400, `${err}`);
     }
 }
 
@@ -18,7 +18,7 @@ async function hashPassword (password) {
         const hashedPW = await bcrypt.hash(password, BCRYPT_WORK_FACTOR);
         return hashedPW;
     } catch (err) {
-        throw new ExpressError(400, err);
+        throw new ExpressError(400, `${err}`);
     }
 }
 
@@ -27,7 +27,7 @@ async function verifyPassword (formPw, dbPw) {
         const pwVerify = await bcrypt.compare(formPw, dbPw);
         return pwVerify;
     } catch (err) {
-        throw new ExpressError(400, err);
+        throw new ExpressError(400, `${err}`);
     }
 }
 
@@ -36,7 +36,7 @@ function generateToken (payload, SECRET_KEY) {
         const token = jwt.sign(payload, SECRET_KEY);
         return token;
     } catch (err) {
-        throw new ExpressError(400, err);
+        throw new ExpressError(400, `${err}`);
     }
 }
 
@@ -45,7 +45,7 @@ function decodeToken (token, SECRET_KEY) {
         const payload = jwt.verify(token, SECRET_KEY);
         return payload;
     } catch (err) {
-        throw new ExpressError(400, err);
+        throw new ExpressError(400, `${err}`);
     }
 }
 
