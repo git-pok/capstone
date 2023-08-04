@@ -123,9 +123,9 @@ class User {
      */
     static async getUser(username) {
         const dbUser = await db.query(`SELECT * FROM users WHERE username = $1`, [username]);
-        const dbUserRows = JSON.parse(JSON.stringify(dbUser.rows[0]));
         const dbUserRowsLength = dbUser.rows.length;
         if (dbUserRowsLength === 0) throw new ExpressError(400, "User not found!");
+        const dbUserRows = JSON.parse(JSON.stringify(dbUser.rows[0]));
         delete dbUserRows["password"];
         return dbUserRows;
     }
