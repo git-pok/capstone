@@ -140,15 +140,17 @@ class Recipe {
         // );
         const whereSqlObj = filterSql(qryParams);
         const orderByObj = orderBySql(qryParams);
-        const orderBySqlQry = orderByObj.columns;
-        const orderQry = orderByObj.order;
+        const orderColumn = orderByObj.columns.join(" ");
+        const order = orderByObj.order.join(" ");
         const whereSqlQry = [whereSqlObj.whereSql.join(" ")];
         const pgValuesQry = whereSqlObj.values;
         // console.log("whereSqlQry", whereSqlQry);
-        // console.log("orderBySqlQry", orderBySqlQry);
-        // console.log("orderQry", orderQry);
+        // console.log("orderColumn", orderColumn);
+        // console.log("order", order);
+        console.log(`${selectSql.join(" ")} ${whereSqlQry[0]} ORDER BY ${orderColumn} ${order}`, pgValuesQry);
+        // console.log(orderByObj);
         const recipesReq = await db.query(
-            `${selectSql.join(" ")} ${whereSqlQry[0]} ${orderQry[0]}`,
+            `${selectSql.join(" ")} ${whereSqlQry[0]} ORDER BY ${orderColumn} ${order}`,
             pgValuesQry
         );
         // console.log(selectSql.join(" "));
