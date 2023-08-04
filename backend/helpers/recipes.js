@@ -86,7 +86,107 @@ function isFilter (qry) {
     }
 }
 
+/**
+ * filterSql
+ * Creates WHERE sql and parametized values.
+ * Arguments: qry object
+ * Returns object with sql and value properites.
+ * filterSql({ name: "good" }) => {
+    sql: ["WHERE name ILIKIE $1"],
+    values: ["good"]
+ * }
+ */
+function filterSql (qry) {
+    try {
+        const tableAbrv = {
+            author: "a.",
+            name: "r.",
+            main_category: "r.",
+            sub_category: "r.",
+            rating: "r."
+        };
+        const sqlObj = {
+            whereSql: [],
+            values: []
+        };
+        let parametizer = 1;
+        const qryArray = Object.entries(qry);
+        qryArray.forEach((prop, idx) => {
+            const keyNormlzd = prop[0].toLowerCase().trim();
+            if (keyNormlzd !== "orderby") {
+                const valNormlzd = prop[1].toLowerCase().trim();
+                const tableCode = tableAbrv[prop[0]];
+                let sql = `${tableCode}${keyNormlzd} ILIKE $${parametizer}`;
+                const value = keyNormlzd !== "rating" ? `%${valNormlzd}%` : +valNormlzd;
+                if (!sqlObj.whereSql.length) sql = `WHERE ${sql}`;
+                else sql = `AND ${sql}`;
+                sqlObj.whereSql.push(sql);
+                sqlObj.values.push(value);
+                parametizer++;
+            }
+        });
+        return sqlObj;
+    } catch (err) {
+        throw new ExpressError(400, `${err}`);
+    }
+}
+
+/**
+ * orderBySql
+ * Creates ORDER BY sql.
+ * Arguments: qry object
+ * Returns object with order by values.
+ * orderBySql({ name: "good" }) => {
+    sql: ["WHERE name ILIKIE $1"],
+    values: ["good"]
+ * }
+ */
+    function orderBySql (qry) {
+        try {
+            const tableAbrv = {
+                author: "a.",
+                name: "r.",
+                main_category: "r.",
+                sub_category: "r.",
+                rating: "r."
+            };
+            const sqlObj = {
+                columns: [],
+                order: []
+            };
+            const qryArray = Object.entries(qry);
+            qryArray.forEach(prop => {
+                const keyNormlzd = prop[0].toLowerCase().trim();
+                const valNormlzd = prop[1].toLowerCase().trim();
+                // console.log(prop);
+                const tableCode = tableAbrv[prop[1]];
+                if (keyNormlzd === "orderby") {
+                    if (valNormlzd === "name" || valNormlzd === "author") {
+                        const values = [];
+                        values.push(tableCode, valNormlzd);
+                        const joinedValues = values.join("");
+                        // console.log("joinedValues", joinedValues);
+                        sqlObj.columns.push(joinedValues);
+                        sqlObj.order.push("ASC");
+                    }
+                    else if (valNormlzd === "rating") {
+                        const values = [];
+                        values.push(tableCode, valNormlzd);
+                        const joinedValues = values.join("");
+                        sqlObj.columns.push(joinedValues);
+                        sqlObj.order.push("DESC, r.name");
+                    }
+                }
+            });
+            // console.log(sqlObj);
+            return sqlObj;
+        } catch (err) {
+            throw new ExpressError(400, `${err}`);
+        }
+    }
+
 module.exports = {
     deleteObjProps, allRecipesJoin,
-    genWhereSql, isFilter
+    genWhereSql, isFilter, filterSql,
+    orderBySql
 };
