@@ -1,6 +1,7 @@
 // const bcrypt = require("bcrypt");
 const { db } = require("../config.js");
 const { genInsertSql, genUpdateSql } = require("../helpers/sql.js");
+const { allRecipesJoin, genWhereSql } = require("../helpers/recipes.js");
 const {
         deleteObjProps
     } = require("../helpers/recipes.js");
@@ -22,6 +23,7 @@ class Recipe {
     /**
      * getRecipe
      * Retrieves a recipe.
+     * Arguments: recipe id
      * getRecipe(id) =>
      * recipe: {
 		name: "Sausage ...",
@@ -58,6 +60,7 @@ class Recipe {
     /**
      * getRecipes
      * Retrieves all recipes.
+     * Arguments: none
      * getRecipes() =>
      * recipes: {
 		name: "Sausage ...",
@@ -71,19 +74,68 @@ class Recipe {
 	* }
      */
     static async getRecipes() {
-        // const dbRecipe = await db.query(`SELECT * FROM recipes WHERE id = $1`, [id]);
-        // const dbRecipeRows = JSON.parse(JSON.stringify(dbRecipe.rows));
-        // const dbRecipeRowsLength = dbRecipe.rows.length;
-        // if (dbRecipeRowsLength === 0) throw new ExpressError(400, "Recipe not found!");
-        // const dbRecipeRowsObj = JSON.parse(JSON.stringify(dbRecipeRows[0]));
-        const recipesReq = await db.query(`
-            SELECT name, full_name AS author, url, image, description,
-            serves, steps, prep_time, cook_time FROM recipes r
-            JOIN authors a ON r.author_id = a.id
-            ORDER BY name ASC`
+        const selectSql = allRecipesJoin();
+        const recipesReq = await db.query(
+            `${selectSql} ORDER BY name ASC`
         );
         const recipeRows = recipesReq.rows;
         return recipeRows;
+    }
+
+    /**
+     * recipesFilter
+     * Filters recipes by name, author, or rating.
+     * Arguments: query paramns object
+     * recipesFilter(author) =>
+     * recipes: {
+		name: "Sausage ...",
+        author: "Vin...",
+        ...
+	* },
+    * {
+		name: "Sausage ...",
+        author: "Vin...",
+        ...
+	* }
+     */
+    static async recipesFilter(qryParams) {
+        const qryEntries = Object.entries(qryParams);
+        const selectSql = allRecipesJoin();
+        const whereSql = [];
+        const pgValues = [];
+        const orderBySql = ["ORDER BY"];
+        let parametizer = 1;
+
+        qryEntries.forEach(qryData => {
+            const whereSqlLength = whereSql.length;
+            const qryKeyNrmlzd = qryData[0].toLowerCase().trim();
+            const qryValNrmlzd = qryData[1].toLowerCase().trim();
+            let sql;
+            if (qryKeyNrmlzd === "author") sql = genWhereSql(whereSqlLength, parametizer, "a.full_name ILIKE");
+            else if (qryKeyNrmlzd === "name") sql = genWhereSql(whereSqlLength, parametizer, "r.name ILIKE");    
+            else if (qryKeyNrmlzd === "rating") sql = genWhereSql(whereSqlLength, parametizer, "rt.rating =");
+            whereSql.push(sql);
+            parametizer++;
+            if (qryKeyNrmlzd === "rating") pgValues.push(+qryValNrmlzd)  
+            else if (qryKeyNrmlzd !== "orderby") pgValues.push(`%${qryValNrmlzd}%`);
+            
+            if (qryKeyNrmlzd === "orderby") {
+                if (qryValNrmlzd === "name") orderBySql.push(`r.${qryValNrmlzd} ASC`);
+                else if (qryValNrmlzd === "author") orderBySql.push(`${qryValNrmlzd} ASC`);
+                else if (qryValNrmlzd === "rating") orderBySql.push(`rt.${qryValNrmlzd} DESC, r.name`);
+                else null;
+            }
+        });
+
+        const whereQry = whereSql.length === 0 ? [] : [...whereSql];
+        const orderBySqlQry = orderBySql.length === 1 ? [] : [...orderBySql];
+        const pgValuesQry = pgValues.length ? [...pgValues] : [];
+        console.log(`${selectSql.join(" ")} ${whereQry.join(" ")} ${orderBySqlQry.join(" ")}`, pgValuesQry)
+        const recipesReq = await db.query(
+            `${selectSql.join(" ")} ${whereQry.join(" ")} ${orderBySqlQry.join(" ")}`,
+            pgValuesQry
+        );
+        return recipesReq.rows;
     }
     /**
      * register
