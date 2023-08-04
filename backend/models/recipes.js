@@ -54,6 +54,37 @@ class Recipe {
         newObj.sub_category = sub_cat_name
         return newObj;
     }
+
+    /**
+     * getRecipes
+     * Retrieves all recipes.
+     * getRecipes() =>
+     * recipes: {
+		name: "Sausage ...",
+        author: "Vin...",
+        ...
+	* },
+    * {
+		name: "Sausage ...",
+        author: "Vin...",
+        ...
+	* }
+     */
+    static async getRecipes() {
+        // const dbRecipe = await db.query(`SELECT * FROM recipes WHERE id = $1`, [id]);
+        // const dbRecipeRows = JSON.parse(JSON.stringify(dbRecipe.rows));
+        // const dbRecipeRowsLength = dbRecipe.rows.length;
+        // if (dbRecipeRowsLength === 0) throw new ExpressError(400, "Recipe not found!");
+        // const dbRecipeRowsObj = JSON.parse(JSON.stringify(dbRecipeRows[0]));
+        const recipesReq = await db.query(`
+            SELECT name, full_name AS author, url, image, description,
+            serves, steps, prep_time, cook_time FROM recipes r
+            JOIN authors a ON r.author_id = a.id
+            ORDER BY name ASC`
+        );
+        const recipeRows = recipesReq.rows;
+        return recipeRows;
+    }
     /**
      * register
      * Registers a user.

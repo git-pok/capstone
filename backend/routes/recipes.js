@@ -23,6 +23,23 @@ router.get("/:id", isLoggedIn, async (req, res, next) => {
 });
 
 /**
+ * "/:id"
+ * route type: GET
+ * Authorization: logged in
+ * Returns recipe.
+ */
+router.get("/", isLoggedIn, async (req, res, next) => {
+    try {
+        const recipes = await Recipe.getRecipes();
+        return res.status(200).json(
+            recipes
+        );
+    } catch (err) {
+        return next(err);
+    }
+});
+
+/**
  * "/register"
  * route type: POST
  * Authorization: none
