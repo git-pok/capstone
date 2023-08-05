@@ -2,7 +2,10 @@ const ExpressError = require("../models/error.js");
 // const jsonschema = require("jsonschema");
 // const jwt = require("jsonwebtoken");
 // const bcrypt = require("bcrypt");
-const { tableAbrv, sqlOperator, filterKeys } = require("../config.js");
+const {
+        columnNameCvrs, tableAbrv, sqlOperator,
+        orderByChron, filterKeys, orderByKeys
+    } = require("../config.js");
 /**
  * deleteObjProps
  * Deletes properties form an object.
@@ -33,10 +36,11 @@ function deleteObjProps (propsArr, obj) {
  */
 function deletePropsNotInSet (propsSet, obj) {
     try {
-        for (let prop in obj) {
-            if (!propsSet.has(prop)) delete obj[prop];
+        const newObj = JSON.parse(JSON.stringify(obj))
+        for (let prop in newObj) {
+            if (!propsSet.has(prop)) delete newObj[prop];
         }
-        return obj;
+        return newObj;
     } catch (err) {
         throw new ExpressError(400, `${err}`);
     }
@@ -74,16 +78,16 @@ function selectJoinSql (selectSqlArr, table, joinArr = []) {
  * Returns sql.
  * genWhereSql(1, 1, "r.name ILIKE") => ["AND r.name ILIKE $1"];
  */
-function genWhereSql (whereArrLen, parametizer, sqlExpr) {
-    try {
-        const sql = whereArrLen < 1 ?
-            `WHERE ${sqlExpr} $${parametizer}`
-            : `AND ${sqlExpr} $${parametizer}`;
-        return sql;
-    } catch (err) {
-        throw new ExpressError(400, `${err}`);
-    }
-}
+// function genWhereSql (whereArrLen, parametizer, sqlExpr) {
+//     try {
+//         const sql = whereArrLen < 1 ?
+//             `WHERE ${sqlExpr} $${parametizer}`
+//             : `AND ${sqlExpr} $${parametizer}`;
+//         return sql;
+//     } catch (err) {
+//         throw new ExpressError(400, `${err}`);
+//     }
+// }
 
 /**
  * isFilter
@@ -108,16 +112,16 @@ function isFilter (qry) {
 }
 
 /**
- * filterSql
+ * QryObjToGenWhereSql
  * Creates WHERE sql and parametized values.
  * Arguments: qry object
- * Returns object with sql and value properites.
+ * Returns object of where sql.
  * filterSql({ name: "good" }) => {
-    sql: ["WHERE name ILIKIE $1"],
-    values: ["good"]
+    whereSql: ["WHERE name ILIKIE $1"],
+    values: ["%good%"]
  * }
  */
-function filterSql (qry) {
+function QryObjToGenWhereSql (qry) {
     try {
         const sqlObj = {
             whereSql: [],
@@ -127,19 +131,18 @@ function filterSql (qry) {
         const filtersParsed = deletePropsNotInSet(filterKeys, qry);
         const qryArray = Object.entries(filtersParsed);
         qryArray.forEach((prop, idx) => {
-            const keyNormlzd = prop[0].toLowerCase().trim() === "author" ? "full_name" : prop[0].toLowerCase().trim();
-            if (keyNormlzd !== "orderby") {
-                const valNormlzd = prop[1].toLowerCase().trim();
-                const tableCode = tableAbrv[prop[0]];
-                const queryOperator = sqlOperator[keyNormlzd];
-                let sql = `${tableCode}${keyNormlzd} ${queryOperator} $${parametizer}`;
-                const value = keyNormlzd !== "rating" ? `%${valNormlzd}%` : +valNormlzd;
-                if (!sqlObj.whereSql.length) sql = `WHERE ${sql}`;
-                else sql = `AND ${sql}`;
-                sqlObj.whereSql.push(sql);
-                sqlObj.values.push(value);
-                parametizer++;
-            }
+            const keyNormlzd = columnNameCvrs[prop[0].toLowerCase().trim()];
+            const valNormlzd = prop[1].toLowerCase().trim();
+            const tableCode = tableAbrv[prop[0]];
+            const queryOperator = sqlOperator[keyNormlzd];
+            const column = [tableCode, keyNormlzd];
+            const columnJoin = column.join("");
+            const sql = [columnJoin, queryOperator, `$${parametizer}`];
+            const value = keyNormlzd !== "rating" ? `%${valNormlzd}%` : +valNormlzd;
+            if (!sqlObj.whereSql.length) sqlObj.whereSql.push("WHERE", ...sql);
+            else sqlObj.whereSql.push("AND", ...sql);
+            sqlObj.values.push(value);
+            parametizer++;  
         });
         return sqlObj;
     } catch (err) {
@@ -148,44 +151,44 @@ function filterSql (qry) {
 }
 
 /**
- * orderBySql
+ * qryObjToOrderBySql
  * Creates ORDER BY sql.
  * Arguments: qry object
- * Returns object with order by values.
- * orderBySql({ name: "good" }) => {
-    sql: ["WHERE name ILIKIE $1"],
-    values: ["good"]
- * }
+ * Returns string with order by statement.
+ * qryObjToOrderBySql({ orderBy: "name", chronOrder: "DESC" }) => "r.name DESC"
  */
-    function orderBySql (qry) {
+    function qryObjToOrderBySql (qry) {
         try {
             const sqlObj = {
                 columns: [],
-                order: []
+                order: [],
+                order2: [],
+                chronOrder: []
             };
+            const orderByVals = [];
             const qryArray = Object.entries(qry);
             qryArray.forEach(prop => {
                 const keyNormlzd = prop[0].toLowerCase().trim();
                 const valNormlzd = prop[1].toLowerCase().trim();
-                const tableCode = tableAbrv[prop[1]];
-                if (keyNormlzd === "orderby") {
-                    if (valNormlzd === "name" || valNormlzd === "author") {
-                        const values = [];
-                        values.push(tableCode, valNormlzd);
-                        const joinedValues = values.join("");
-                        sqlObj.columns.push(joinedValues);
-                        sqlObj.order.push("ASC");
-                    }
-                    else if (valNormlzd === "rating") {
-                        const values = [];
-                        values.push(tableCode, valNormlzd);
-                        const joinedValues = values.join("");
-                        sqlObj.columns.push(joinedValues);
-                        sqlObj.order.push("DESC, r.name");
-                    }
+                if (orderByKeys.has(keyNormlzd)) {
+                    const isChron = valNormlzd === "asc" || valNormlzd === "desc";
+                    const tableCode = tableAbrv[valNormlzd];
+                    if (!isChron && !sqlObj.order.length) sqlObj.order.push(tableCode, valNormlzd);
+                    else if (!isChron && sqlObj.order.length) sqlObj.order2.push(tableCode, valNormlzd);
+                    else if (isChron) sqlObj.chronOrder.push(orderByChron[valNormlzd]);
                 }
             });
-            return sqlObj;
+            const finalOrder = [];
+            if (!sqlObj.order2.length) finalOrder.push(sqlObj.order.join(""));
+            // EDGE CASE PREVNT: if someone types orderBy2 without orderBy
+            else if (!sqlObj.order.length && sqlObj.order2.length) finalOrder.push(sqlObj.order2.join(""));
+            else {
+                const order = sqlObj.order.join("");
+                finalOrder.push(`${order},`, sqlObj.order2.join(""));
+            };
+            if (sqlObj.chronOrder.length) finalOrder.push(sqlObj.chronOrder.join(""));
+            // console.log("ORDER BY FUNCTION finalOrder", finalOrder);
+            return finalOrder.join(" ");
         } catch (err) {
             throw new ExpressError(400, `${err}`);
         }
@@ -193,6 +196,6 @@ function filterSql (qry) {
 
 module.exports = {
     deleteObjProps, deletePropsNotInSet,
-    selectJoinSql, genWhereSql, isFilter,
-    filterSql, orderBySql
+    selectJoinSql, QryObjToGenWhereSql, isFilter,
+    qryObjToOrderBySql
 };

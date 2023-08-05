@@ -2,13 +2,10 @@
 const { db, allRecipesSelect } = require("../config.js");
 const { genInsertSql, genUpdateSql } = require("../helpers/sql.js");
 const {
-    deletePropsNotInSet, selectJoinSql,
-    genWhereSql, filterSql,
-    orderBySql
+    deleteObjProps, deletePropsNotInSet,
+    selectJoinSql, QryObjToGenWhereSql,
+    qryObjToOrderBySql
 } = require("../helpers/recipes.js");
-const {
-        deleteObjProps
-    } = require("../helpers/recipes.js");
 // const SECRET_KEY = require("../keys.js");
 // const jsonschema = require("jsonschema");
 const userSchema = require("../schemas/userRegister.json");
@@ -111,14 +108,13 @@ class Recipe {
         const finalSql = [];
         const joinData = [["authors a", "r.author_id = a.id"], ["ratings rt", "r.id = rt.recipe_id"]];
         const selectSql = selectJoinSql(allRecipesSelect, "recipes r", joinData);
-        const whereSqlObj = filterSql(qryParams);
-        const orderByObj = orderBySql(qryParams);
+        const whereSqlObj = QryObjToGenWhereSql(qryParams);
+        const orderByStr = qryObjToOrderBySql(qryParams);
         const whereSqlQry = whereSqlObj.whereSql.join(" ");
-        const orderBy = orderByObj.columns.length ? "ORDER BY" : "";
-        const orderColumn = orderByObj.columns.length ? orderByObj.columns.join(" ") : "";
-        const order = orderByObj.order.length ? orderByObj.order.join(" ") : "";
+        // console.log("orderByStr", orderByStr);
+        const orderBy = orderByStr ? "ORDER BY" : "";
         const pgValuesQry = whereSqlObj.values;
-        finalSql.push(selectSql, whereSqlQry, orderBy, orderColumn, order);
+        finalSql.push(selectSql, whereSqlQry, orderBy, orderByStr);
         const finalSqlQry = finalSql.join(" ");
         // console.log("FINAL SQL", finalSqlQry);
         const recipesReq = await db.query(
