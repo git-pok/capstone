@@ -1,8 +1,18 @@
 // const bcrypt = require("bcrypt");
-const { db, allRecipesSelect } = require("../config.js");
-const { genInsertSql, genUpdateSql } = require("../helpers/sql.js");
 const {
-    deleteObjProps, deletePropsNotInSet,
+        db, allRecipesSelect, selectLikRecUsrId,
+        selectDisRecUsrId,
+        recipeJoinData, likRecipeJoinData,
+        disRecipeJoinData
+    } = require("../config.js");
+const {
+        genInsertSql, genUpdateSql,
+        genWhereSql, genSqlStrFromExp
+    } = require("../helpers/sql.js");
+
+const {
+    deleteObjProps, definePropsInObj,
+    deletePropsNotInSet,
     selectJoinSql, QryObjToGenWhereSql,
     qryObjToOrderBySql
 } = require("../helpers/recipes.js");
@@ -38,24 +48,29 @@ class Recipe {
         const dbRecipeRowsLength = dbRecipe.rows.length;
         if (dbRecipeRowsLength === 0) throw new ExpressError(400, "Recipe not found!");
         const dbRecipeRowsObj = JSON.parse(JSON.stringify(dbRecipeRows[0]));
-        const joinData = await db.query(`
-            SELECT full_name, level, main_cat_name,
-            sub_cat_name FROM recipes r
-            JOIN authors a ON r.author_id = a.id
-            JOIN difficulty d ON r.difficulty_id = d.id
-            JOIN main_category m ON r.main_category_id = m.id
-            JOIN sub_category s ON r.sub_category_id = s.id
-            WHERE r.id = $1`, [dbRecipeRowsObj.id]
+        const whereObj = { id: dbRecipeRowsObj.id };
+        const selectSql = selectJoinSql(allRecipesSelect, "recipes r", recipeJoinData);
+        const likSelectSql = selectJoinSql(selectLikRecUsrId, "recipes r", likRecipeJoinData);
+        const disSelectSql = selectJoinSql(selectDisRecUsrId, "recipes r", disRecipeJoinData);
+        const sqlWhereObj = genWhereSql(whereObj);
+        const selectQry = genSqlStrFromExp(selectSql, sqlWhereObj);
+        const likQry = genSqlStrFromExp(likSelectSql, sqlWhereObj);
+        const disQry = genSqlStrFromExp(disSelectSql, sqlWhereObj);
+        const pgValues = sqlWhereObj.values;
+        const selectRecipesReq = await db.query(
+            `${selectQry}`, pgValues
         );
-        const recipeJoinRows = joinData.rows;
-        const { full_name, level, main_cat_name, sub_cat_name } = recipeJoinRows[0];
-        const propsToDelete = ["author_id", "difficulty_id", "main_category_id", "sub_category_id"];
-        const newObj = deleteObjProps(propsToDelete, dbRecipeRowsObj);
-        newObj.author = full_name
-        newObj.difficulty = level
-        newObj.main_category = main_cat_name
-        newObj.sub_category = sub_cat_name
-        return newObj;
+        const likRecipesReq = await db.query(
+            `${likQry}`, pgValues
+        );
+        const disRecipesReq = await db.query(
+            `${disQry}`, pgValues
+        );
+        const likUsrIds = likRecipesReq.rows.map(obj => obj.liked_user_id);
+        const disUsrIds = disRecipesReq.rows.map(obj => obj.disliked_user_id);
+        const propsAndVals = [["liked_user_ids", [...likUsrIds]], ["disliked_user_ids", [...disUsrIds]]];
+        const recipeObject = definePropsInObj(propsAndVals, selectRecipesReq.rows[0]);
+        return recipeObject;
     }
 
     /**
@@ -75,17 +90,13 @@ class Recipe {
 	* }
      */
     static async getRecipes() {
-        const joinData = [["authors a", "r.author_id = a.id"], ["ratings rt", "r.id = rt.recipe_id"]];
-        const selectSql = selectJoinSql(allRecipesSelect, "recipes r", joinData);
-        console.log("SELECT SQL", selectSql);
+        const selectSql = selectJoinSql(allRecipesSelect, "recipes r", recipeJoinData);
+        // console.log("SELECT SQL", selectSql);
         const recipesReq = await db.query(
             `${selectSql} ORDER BY name ASC`
         );
-        console.log("recipeRows", recipesReq);
         const recipeRows = recipesReq.rows;
-        // console.log("recipeRows", recipesReq);
         return recipeRows;
-        // return [];
     }
 
     /**
@@ -106,12 +117,10 @@ class Recipe {
      */
     static async recipesFilter(qryParams) {
         const finalSql = [];
-        const joinData = [["authors a", "r.author_id = a.id"], ["ratings rt", "r.id = rt.recipe_id"]];
-        const selectSql = selectJoinSql(allRecipesSelect, "recipes r", joinData);
+        const selectSql = selectJoinSql(allRecipesSelect, "recipes r", recipeJoinData);
         const whereSqlObj = QryObjToGenWhereSql(qryParams);
         const orderByStr = qryObjToOrderBySql(qryParams);
         const whereSqlQry = whereSqlObj.whereSql.join(" ");
-        // console.log("orderByStr", orderByStr);
         const orderBy = orderByStr ? "ORDER BY" : "";
         const pgValuesQry = whereSqlObj.values;
         finalSql.push(selectSql, whereSqlQry, orderBy, orderByStr);
