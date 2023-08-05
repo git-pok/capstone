@@ -2,8 +2,7 @@ const ExpressError = require("../models/error.js");
 // const jsonschema = require("jsonschema");
 // const jwt = require("jsonwebtoken");
 // const bcrypt = require("bcrypt");
-// const { BCRYPT_WORK_FACTOR } = require("../config.js");
-
+const { tableAbrv, sqlOperator } = require("../config.js");
 /**
  * deleteObjProps
  * Deletes properties form an object.
@@ -98,13 +97,6 @@ function isFilter (qry) {
  */
 function filterSql (qry) {
     try {
-        const tableAbrv = {
-            author: "a.",
-            name: "r.",
-            main_category: "r.",
-            sub_category: "r.",
-            rating: "r."
-        };
         const sqlObj = {
             whereSql: [],
             values: []
@@ -112,11 +104,12 @@ function filterSql (qry) {
         let parametizer = 1;
         const qryArray = Object.entries(qry);
         qryArray.forEach((prop, idx) => {
-            const keyNormlzd = prop[0].toLowerCase().trim();
+            const keyNormlzd = prop[0].toLowerCase().trim() === "author" ? "full_name" : prop[0].toLowerCase().trim();
             if (keyNormlzd !== "orderby") {
                 const valNormlzd = prop[1].toLowerCase().trim();
                 const tableCode = tableAbrv[prop[0]];
-                let sql = `${tableCode}${keyNormlzd} ILIKE $${parametizer}`;
+                const queryOperator = sqlOperator[keyNormlzd];
+                let sql = `${tableCode}${keyNormlzd} ${queryOperator} $${parametizer}`;
                 const value = keyNormlzd !== "rating" ? `%${valNormlzd}%` : +valNormlzd;
                 if (!sqlObj.whereSql.length) sql = `WHERE ${sql}`;
                 else sql = `AND ${sql}`;
@@ -143,13 +136,6 @@ function filterSql (qry) {
  */
     function orderBySql (qry) {
         try {
-            const tableAbrv = {
-                author: "a.",
-                name: "r.",
-                main_category: "r.",
-                sub_category: "r.",
-                rating: "r."
-            };
             const sqlObj = {
                 columns: [],
                 order: []
@@ -158,14 +144,12 @@ function filterSql (qry) {
             qryArray.forEach(prop => {
                 const keyNormlzd = prop[0].toLowerCase().trim();
                 const valNormlzd = prop[1].toLowerCase().trim();
-                // console.log(prop);
                 const tableCode = tableAbrv[prop[1]];
                 if (keyNormlzd === "orderby") {
                     if (valNormlzd === "name" || valNormlzd === "author") {
                         const values = [];
                         values.push(tableCode, valNormlzd);
                         const joinedValues = values.join("");
-                        // console.log("joinedValues", joinedValues);
                         sqlObj.columns.push(joinedValues);
                         sqlObj.order.push("ASC");
                     }
@@ -178,7 +162,6 @@ function filterSql (qry) {
                     }
                 }
             });
-            // console.log(sqlObj);
             return sqlObj;
         } catch (err) {
             throw new ExpressError(400, `${err}`);

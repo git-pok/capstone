@@ -102,63 +102,20 @@ class Recipe {
 	* }
      */
     static async recipesFilter(qryParams) {
-        // const qryEntries = Object.entries(qryParams);
-        const selectSql = allRecipesJoin();
-        // const whereSql = [];
-        // const pgValues = [];
-        // const orderBySql = ["ORDER BY"];
-        // let parametizer = 1;
-
-        // qryEntries.forEach(qryData => {
-        //     const whereSqlLength = whereSql.length;
-        //     const qryKeyNrmlzd = qryData[0].toLowerCase().trim();
-        //     const qryValNrmlzd = qryData[1].toLowerCase().trim();
-        //     let sql;
-        //     if (qryKeyNrmlzd === "author") sql = genWhereSql(whereSqlLength, parametizer, "a.full_name ILIKE");
-        //     else if (qryKeyNrmlzd === "name") sql = genWhereSql(whereSqlLength, parametizer, "r.name ILIKE");    
-        //     else if (qryKeyNrmlzd === "rating") sql = genWhereSql(whereSqlLength, parametizer, "rt.rating =");
-        //     whereSql.push(sql);
-        //     parametizer++;
-        //     if (qryKeyNrmlzd === "rating") pgValues.push(+qryValNrmlzd)  
-        //     else if (qryKeyNrmlzd !== "orderby") pgValues.push(`%${qryValNrmlzd}%`);
-            
-        //     if (qryKeyNrmlzd === "orderby") {
-        //         if (qryValNrmlzd === "name") orderBySql.push(`r.${qryValNrmlzd} ASC`);
-        //         else if (qryValNrmlzd === "author") orderBySql.push(`${qryValNrmlzd} ASC`);
-        //         else if (qryValNrmlzd === "rating") orderBySql.push(`rt.${qryValNrmlzd} DESC, r.name`);
-        //         else null;
-        //     }
-        // });
-
-        // const whereQry = whereSql.length === 0 ? [] : [...whereSql];
-        // const orderBySqlQry = orderBySql.length === 1 ? [] : [...orderBySql];
-        // const pgValuesQry = pgValues.length ? [...pgValues] : [];
-        // console.log(`${selectSql.join(" ")} ${whereQry.join(" ")} ${orderBySqlQry.join(" ")}`, pgValuesQry)
-        // const recipesReq = await db.query(
-        //     `${selectSql.join(" ")} ${whereQry.join(" ")} ${orderBySqlQry.join(" ")}`,
-        //     pgValuesQry
-        // );
+        const selectSql = allRecipesJoin().join(" ");
         const whereSqlObj = filterSql(qryParams);
         const orderByObj = orderBySql(qryParams);
-        const orderColumn = orderByObj.columns.join(" ");
-        const order = orderByObj.order.join(" ");
-        const whereSqlQry = [whereSqlObj.whereSql.join(" ")];
+        const orderColumn = orderByObj.columns.length ? orderByObj.columns.join(" ") : "";
+        const order = orderByObj.order.length ? orderByObj.order.join(" ") : "";
+        const whereSqlQry = whereSqlObj.whereSql.join(" ");
         const pgValuesQry = whereSqlObj.values;
-        // console.log("whereSqlQry", whereSqlQry);
-        // console.log("orderColumn", orderColumn);
-        // console.log("order", order);
-        console.log(`${selectSql.join(" ")} ${whereSqlQry[0]} ORDER BY ${orderColumn} ${order}`, pgValuesQry);
-        // console.log(orderByObj);
+        const orderBy = orderByObj.columns.length ? "ORDER BY" : "";
+        console.log(`${selectSql} ${whereSqlQry} ${orderBy} ${orderColumn} ${order},`, pgValuesQry);
         const recipesReq = await db.query(
-            `${selectSql.join(" ")} ${whereSqlQry[0]} ORDER BY ${orderColumn} ${order}`,
+            `${selectSql} ${whereSqlQry} ${orderBy} ${orderColumn} ${order}`,
             pgValuesQry
         );
-        // console.log(selectSql.join(" "));
-        // console.log(whereSqlObj);
-        // console.log(orderByObj);
-        // console.log(orderByColumns);
-        return recipesReq;
-        // return recipesReq.rows;
+        return recipesReq.rows;
     }
     /**
      * register

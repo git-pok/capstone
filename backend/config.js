@@ -13,4 +13,23 @@ let db = new Client ({
 
 db.connect();
 
-module.exports = { db, BCRYPT_WORK_FACTOR };
+const tableAbrv = {
+    author: "a.",
+    full_name: "a.",
+    name: "r.",
+    main_category: "r.",
+    sub_category: "r.",
+    rating: "rt."
+};
+
+const sqlOperator = {
+    full_name: "ILIKE",
+    name: "ILIKE",
+    main_category: "ILIKE",
+    sub_category: "ILIKE",
+    rating: "="
+};
+
+module.exports = {
+    db, BCRYPT_WORK_FACTOR, tableAbrv, sqlOperator
+};
