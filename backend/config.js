@@ -91,8 +91,8 @@ const recipeQryFilterKeys = new Set();
         recipeQryFilterKeys.add("name").add("author").add("rating")
         .add("orderBy").add("orderBy2");
 
-const filterKeys = new Set();
-        filterKeys.add("name").add("author").add("rating");
+const recipeFilterKeys = new Set();
+        recipeFilterKeys.add("name").add("author").add("rating");
 
 const orderByKeys = new Set();
         orderByKeys.add("orderby").add("orderby2").add("chronorder");
@@ -110,7 +110,7 @@ module.exports = {
     allRecipesSelect, selectLikRecUsrId,
     selectDisRecUsrId,
     orderByChron, recipeQryFilterKeys,
-    filterKeys, orderByKeys,
+    recipeFilterKeys, orderByKeys,
     selectRecipesColumns, isNumbers,
     recipeJoinData, likRecipeJoinData,
     disRecipeJoinData
