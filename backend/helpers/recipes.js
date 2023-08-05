@@ -2,7 +2,7 @@ const ExpressError = require("../models/error.js");
 // const jsonschema = require("jsonschema");
 // const jwt = require("jsonwebtoken");
 // const bcrypt = require("bcrypt");
-const { tableAbrv, sqlOperator } = require("../config.js");
+const { tableAbrv, sqlOperator, filterKeys } = require("../config.js");
 /**
  * deleteObjProps
  * Deletes properties form an object.
@@ -23,22 +23,45 @@ function deleteObjProps (propsArr, obj) {
 }
 
 /**
- * allRecipesJoin
- * Creates pg query for all recipes.
- * Arguments: empty sql array
- * Returns sql array.
- * allRecipesJoin() => ["SELECT r.id, r.name..."];
+ * deletePropsNotInSet
+ * Deletes properties form an object.
+ * Arguments: props set and object
+ * Returns new object.
+ * const setProps = { "two" };
+ * const obj = { one: 1, two: 2 }
+ * deleteObjProps(["one"], obj) => { two: 2 };
  */
-function allRecipesJoin (selectSql = []) {
+function deletePropsNotInSet (propsSet, obj) {
     try {
-        selectSql.push(`
-            SELECT r.id, r.name, a.full_name AS author, rt.rating,
-            rt.vote_count, r.url, r.image, r.description,
-            r.serves, r.steps, r.prep_time, r.cook_time FROM recipes r
-            JOIN authors a ON r.author_id = a.id
-            JOIN ratings rt ON r.id = rt.recipe_id
-        `);
-        return selectSql;
+        for (let prop in obj) {
+            if (!propsSet.has(prop)) delete obj[prop];
+        }
+        return obj;
+    } catch (err) {
+        throw new ExpressError(400, `${err}`);
+    }
+}
+
+/**
+ * selectJoinSql
+ * Creates pg query for recipes.
+ * Arguments: columns array, join tables and on columns, table
+ * Returns string.
+ * allRecipesJoin(["name,", "author"], [["authors", "n.id = r.id"]], "recipes") => 
+ * "SELECT name, author FROM recipes JOIN authors ON n.id = r.id";
+ */
+function selectJoinSql (selectSqlArr, table, joinArr = []) {
+    try {
+        const finalSql = ["SELECT"];
+        const joinedSqlArr = selectSqlArr.join(" ");
+        finalSql.push(joinedSqlArr, "FROM", table);
+        if (!joinArr.length) return finalSql.join(" ");
+        joinArr.forEach(val => {
+            const joinVal = val[0];
+            const onVal = val[1];
+            finalSql.push("JOIN", joinVal, "ON", onVal);
+        });
+        return finalSql.join(" ");
     } catch (err) {
         throw new ExpressError(400, `${err}`);
     }
@@ -56,7 +79,6 @@ function genWhereSql (whereArrLen, parametizer, sqlExpr) {
         const sql = whereArrLen < 1 ?
             `WHERE ${sqlExpr} $${parametizer}`
             : `AND ${sqlExpr} $${parametizer}`;
-        // parametizer++;
         return sql;
     } catch (err) {
         throw new ExpressError(400, `${err}`);
@@ -102,7 +124,8 @@ function filterSql (qry) {
             values: []
         };
         let parametizer = 1;
-        const qryArray = Object.entries(qry);
+        const filtersParsed = deletePropsNotInSet(filterKeys, qry);
+        const qryArray = Object.entries(filtersParsed);
         qryArray.forEach((prop, idx) => {
             const keyNormlzd = prop[0].toLowerCase().trim() === "author" ? "full_name" : prop[0].toLowerCase().trim();
             if (keyNormlzd !== "orderby") {
@@ -169,7 +192,7 @@ function filterSql (qry) {
     }
 
 module.exports = {
-    deleteObjProps, allRecipesJoin,
-    genWhereSql, isFilter, filterSql,
-    orderBySql
+    deleteObjProps, deletePropsNotInSet,
+    selectJoinSql, genWhereSql, isFilter,
+    filterSql, orderBySql
 };

@@ -1,9 +1,10 @@
 // const bcrypt = require("bcrypt");
-const { db } = require("../config.js");
+const { db, allRecipesSelect } = require("../config.js");
 const { genInsertSql, genUpdateSql } = require("../helpers/sql.js");
 const {
-    allRecipesJoin, genWhereSql,
-    filterSql, orderBySql
+    deletePropsNotInSet, selectJoinSql,
+    genWhereSql, filterSql,
+    orderBySql
 } = require("../helpers/recipes.js");
 const {
         deleteObjProps
@@ -77,12 +78,17 @@ class Recipe {
 	* }
      */
     static async getRecipes() {
-        const selectSql = allRecipesJoin();
+        const joinData = [["authors a", "r.author_id = a.id"], ["ratings rt", "r.id = rt.recipe_id"]];
+        const selectSql = selectJoinSql(allRecipesSelect, "recipes r", joinData);
+        console.log("SELECT SQL", selectSql);
         const recipesReq = await db.query(
             `${selectSql} ORDER BY name ASC`
         );
+        console.log("recipeRows", recipesReq);
         const recipeRows = recipesReq.rows;
+        // console.log("recipeRows", recipesReq);
         return recipeRows;
+        // return [];
     }
 
     /**
@@ -102,18 +108,21 @@ class Recipe {
 	* }
      */
     static async recipesFilter(qryParams) {
-        const selectSql = allRecipesJoin().join(" ");
+        const finalSql = [];
+        const joinData = [["authors a", "r.author_id = a.id"], ["ratings rt", "r.id = rt.recipe_id"]];
+        const selectSql = selectJoinSql(allRecipesSelect, "recipes r", joinData);
         const whereSqlObj = filterSql(qryParams);
         const orderByObj = orderBySql(qryParams);
+        const whereSqlQry = whereSqlObj.whereSql.join(" ");
+        const orderBy = orderByObj.columns.length ? "ORDER BY" : "";
         const orderColumn = orderByObj.columns.length ? orderByObj.columns.join(" ") : "";
         const order = orderByObj.order.length ? orderByObj.order.join(" ") : "";
-        const whereSqlQry = whereSqlObj.whereSql.join(" ");
         const pgValuesQry = whereSqlObj.values;
-        const orderBy = orderByObj.columns.length ? "ORDER BY" : "";
-        console.log(`${selectSql} ${whereSqlQry} ${orderBy} ${orderColumn} ${order},`, pgValuesQry);
+        finalSql.push(selectSql, whereSqlQry, orderBy, orderColumn, order);
+        const finalSqlQry = finalSql.join(" ");
+        // console.log("FINAL SQL", finalSqlQry);
         const recipesReq = await db.query(
-            `${selectSql} ${whereSqlQry} ${orderBy} ${orderColumn} ${order}`,
-            pgValuesQry
+            `${finalSqlQry}`, pgValuesQry
         );
         return recipesReq.rows;
     }

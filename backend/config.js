@@ -30,6 +30,16 @@ const sqlOperator = {
     rating: "="
 };
 
+const allRecipesSelect = [
+    "r.id,", "r.name,", "a.full_name AS author,", "rt.rating,",
+    "rt.vote_count,", "r.url,", "r.image,", "r.description,",
+    "r.serves,", "r.steps,", "r.prep_time,", "r.cook_time"
+];
+
+const filterKeys = new Set();
+        filterKeys.add("name").add("author").add("rating");
+
 module.exports = {
-    db, BCRYPT_WORK_FACTOR, tableAbrv, sqlOperator
+    db, BCRYPT_WORK_FACTOR, tableAbrv, sqlOperator,
+    allRecipesSelect, filterKeys
 };
