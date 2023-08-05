@@ -1,32 +1,10 @@
 const ExpressError = require("../models/error.js");
 const {
     columnNameCvrs, tableAbrv, sqlOperator,
+    sqlCommandsObj, sqlCommandsModifsObj,
     orderByChron, recipeFilterKeys, orderByKeys,
     selectRecipesColumns, isNumbers
 } = require("../config.js");
-
-function genInsertSql (table, data, sqlExp, returning = false) {
-    try {
-        const dataArray = Object.entries(data);
-        const sqlQryEx = [sqlExp, table];
-        const columns = [];
-        const values = [];
-        const parametizers = [];
-        dataArray.forEach((data, idx) => {
-            columns.push(data[0]);
-            values.push(data[1]);
-            parametizers.push(`$${idx + 1}`);
-        })
-        let sql = `${sqlQryEx.join(" ")} (${columns.join(", ")}) VALUES (${parametizers.join(", ")})`;
-        sql = !returning ? `${sql}` : `${sql} RETURNING ${returning.join(", ")}`;
-        return {
-            sql,
-            values
-        };
-    } catch (err) {
-        throw new ExpressError(400, `${err}`);
-    }
-}
 
 
 function genUpdateSql (data) {
@@ -213,8 +191,59 @@ function qryObjToOrderBySql (qry) {
     }
 }
 
+function genSql (qryType, table, data, returning = false) {
+    try {
+        const isSelect = qryType === "select";
+        const isUpdate = qryType === "update";
+        const isReturn = returning !== false;
+        console.log("IS SELECT", isSelect);
+        console.log("data", data);
+        console.log("isReturn", isReturn);
+        // sqlCommandsObj, sqlCommandsModifsObj,
+        const dataArray = !isSelect ? Object.entries(data) : [...data];
+        const sqlCommand = [sqlCommandsObj[qryType]];
+        const sqlCommandModifs = [sqlCommandsModifsObj[qryType]];
+        const columns = [];
+        const values = [];
+        const sqlArr = [];
+        const parametizers = [];
+        const returnCommand = returning !== false ? ["RETURNING"] : [""];
+        dataArray.forEach((data, idx) => {
+            if (!isSelect && !isUpdate) {
+                columns.push(data[0]);
+                values.push(data[1]);
+                parametizers.push(`$${idx + 1}`);
+            } else if (isUpdate) {
+                const updateSql = [data[0], `$${idx + 1}`].join(" ");
+                console.log("COLUMNS PUSH updateSql", updateSql);
+                columns.push(updateSql);
+                values.push(data[1]);
+            } else {
+                columns.push(data);
+            }
+        })
+        if (!isSelect && !isUpdate) {
+            const returnStr = isReturn ? `RETURNING ${returning.join(", ")}` : [""];
+            sqlArr.push(sqlCommand.join(" "), table, "(", columns.join(", "), ")", sqlCommandModifs.join(" "), "(", parametizers.join(", "), ")", returnStr);
+        } else if (qryType === "select") {
+            sqlArr.push(sqlCommand.join(" "), columns.join(", "), sqlCommandModifs.join(" "), table);
+        } else if (isUpdate) {
+            const returnStr = isReturn ? `RETURNING ${returning.join(", ")}` : [""];
+            sqlArr.push(sqlCommand.join(" "), table, sqlCommandModifs.join(" "), columns.join(", "), returnStr);
+        }
+        let sql = sqlArr.join(" ");
+        return {
+            sql,
+            values
+        };
+    } catch (err) {
+        throw new ExpressError(400, `${err}`);
+    }
+}
+
 module.exports = {
-    genInsertSql, genUpdateSql, genWhereSql,
+    genUpdateSql, genWhereSql,
     genSqlStrFromExp, selectJoinSql,
-    QryObjToGenWhereSql, qryObjToOrderBySql
+    QryObjToGenWhereSql, qryObjToOrderBySql,
+    genSql
 };

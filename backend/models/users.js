@@ -1,6 +1,9 @@
 // const bcrypt = require("bcrypt");
 const { db } = require("../config.js");
-const { genInsertSql, genUpdateSql } = require("../helpers/sql.js");
+const {
+        genUpdateSql,
+        genSql
+    } = require("../helpers/sql.js");
 const {
         validateSchema, hashPassword, generateToken,
         decodeToken, verifyPassword
@@ -47,6 +50,10 @@ class User {
 	* }
      */
     static async register(data) {
+        // const newSql = genSql ("insert", "users", data);
+        // const data2 = {"name =": "lti", "id =": 12};
+        // const newSql = genSql ("update", "users", data2);
+        // console.log("NEW SQL USERS", newSql);
         const isValid = validateSchema(data, userSchema);
         if (isValid.errors.length !== 0) {
             const jsonErrors = isValid.errors.map(error => error.message);
@@ -59,7 +66,8 @@ class User {
         data["password"] = hashedPw;
         const returnValues = Array.from(Object.keys(data));
         const sqlReturn = ["id", ...returnValues];
-        const { sql, values } = genInsertSql("users", data, "INSERT INTO", sqlReturn);
+        const { sql, values } = genSql ("insert", "users", data, sqlReturn);
+        console.log("NEW SQL USERS", sql, [...values]);
         const duplicate = await db.query(`SELECT * FROM users WHERE username = $1`, [username]);
         const dupRowsLength = duplicate.rows.length;
         if (dupRowsLength !== 0) throw new ExpressError(400, "Username exists already!"); 

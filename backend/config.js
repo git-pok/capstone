@@ -50,6 +50,18 @@ const sqlOperator = {
     rating: "=",
     id: "="
 };
+
+const sqlCommandsObj = {
+    select: "SELECT",
+    insert: "INSERT INTO",
+    update: "UPDATE"
+};
+
+const sqlCommandsModifsObj = {
+    select: "FROM",
+    insert: "VALUES",
+    update: "SET"
+};
 // No comma on last value, it will cause a query error.
 const allRecipesSelect = [
     "r.id,", "r.name,", "a.full_name AS author,", "rt.rating,",
@@ -106,7 +118,8 @@ const isNumbers = new Set();
 
 module.exports = {
     db, BCRYPT_WORK_FACTOR, columnNameCvrs,
-    tableAbrv, sqlOperator,
+    tableAbrv, sqlOperator, sqlCommandsObj,
+    sqlCommandsModifsObj,
     allRecipesSelect, selectLikRecUsrId,
     selectDisRecUsrId,
     orderByChron, recipeQryFilterKeys,
