@@ -252,8 +252,8 @@ function genWhereSqlArr (columnValObj, parametizer, strict = false, returning = 
 }
 
 module.exports = {
-    genUpdateSql, genWhereSql,
-    genSqlStrFromExp, selectJoinSql,
-    QryObjToGenWhereSql, qryObjToOrderBySql,
+    genUpdateSql, genSqlStrFromExp,
+    selectJoinSql, QryObjToGenWhereSql,
+    qryObjToOrderBySql,
     genSql, genWhereSqlArr
 };
