@@ -15,6 +15,7 @@ db.connect();
 
 const columnNameCvrs = {
     author: "full_name",
+    username: "username",
     name: "name",
     main_category: "main_category",
     sub_category: "sub_category",
@@ -48,7 +49,25 @@ const sqlOperator = {
     main_category: "ILIKE",
     sub_category: "ILIKE",
     rating: "=",
-    id: "="
+    id: "=",
+    username: "="
+};
+
+const sqlOperatorStrict = {
+    full_name: "=",
+    first_name: "=",
+    last_name: "=",
+    email: "=",
+	phone: "=",
+	header_img: "=",
+	profile_img: "=",
+	password: "=",
+    name: "=",
+    main_category: "=",
+    sub_category: "=",
+    rating: "=",
+    id: "=",
+    username: "="
 };
 
 const sqlCommandsObj = {
@@ -116,15 +135,20 @@ const isNumbers = new Set();
         isNumbers.add("recipe_id").add("user_id").add("rating")
         .add("id").add("vote_count");
 
+const userSqlReturnNoAbrv = [
+    "id", "username", "first_name", "last_name",
+    "email", "phone", "header_img", "profile_img"
+];
+
 module.exports = {
     db, BCRYPT_WORK_FACTOR, columnNameCvrs,
-    tableAbrv, sqlOperator, sqlCommandsObj,
-    sqlCommandsModifsObj,
+    tableAbrv, sqlOperator, sqlOperatorStrict,
+    sqlCommandsObj, sqlCommandsModifsObj,
     allRecipesSelect, selectLikRecUsrId,
     selectDisRecUsrId,
     orderByChron, recipeQryFilterKeys,
     recipeFilterKeys, orderByKeys,
     selectRecipesColumns, isNumbers,
     recipeJoinData, likRecipeJoinData,
-    disRecipeJoinData
+    disRecipeJoinData, userSqlReturnNoAbrv
 };

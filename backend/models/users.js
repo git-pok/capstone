@@ -1,8 +1,9 @@
 // const bcrypt = require("bcrypt");
-const { db } = require("../config.js");
+const { db, userSqlReturnNoAbrv } = require("../config.js");
 const {
         genUpdateSql,
-        genSql
+        genSql, genWhereSql,
+        genWhereSqlArr
     } = require("../helpers/sql.js");
 const {
         validateSchema, hashPassword, generateToken,
@@ -50,10 +51,6 @@ class User {
 	* }
      */
     static async register(data) {
-        // const newSql = genSql ("insert", "users", data);
-        // const data2 = {"name =": "lti", "id =": 12};
-        // const newSql = genSql ("update", "users", data2);
-        // console.log("NEW SQL USERS", newSql);
         const isValid = validateSchema(data, userSchema);
         if (isValid.errors.length !== 0) {
             const jsonErrors = isValid.errors.map(error => error.message);
@@ -66,8 +63,7 @@ class User {
         data["password"] = hashedPw;
         const returnValues = Array.from(Object.keys(data));
         const sqlReturn = ["id", ...returnValues];
-        const { sql, values } = genSql ("insert", "users", data, sqlReturn);
-        console.log("NEW SQL USERS", sql, [...values]);
+        const { sql, values } = genSql ("insert", "users", data, false, sqlReturn);
         const duplicate = await db.query(`SELECT * FROM users WHERE username = $1`, [username]);
         const dupRowsLength = duplicate.rows.length;
         if (dupRowsLength !== 0) throw new ExpressError(400, "Username exists already!"); 
@@ -167,15 +163,16 @@ class User {
         const dbUserRows = dbUser.rows[0];
         const dbUserRowsLength = dbUser.rows.length;
         if (dbUserRowsLength === 0) throw new ExpressError(400, "User not found!");
-        const { sql, values } = genUpdateSql(data);
-        const valuesLength = values.length + 1;
-        const parametizedId = `$${valuesLength}`;
-        const user = await db.query(`
-            UPDATE users SET ${sql}
-            WHERE username = ${parametizedId} RETURNING
-            id, username, first_name, last_name,
-            email, phone, header_img, profile_img`,
-            [...values, username]
+        const sqlReturn = userSqlReturnNoAbrv;
+        const { sql, values } = genSql ("update", "users", data, true);
+        const prmTzr = values.length + 1;
+        const whereSqlObj = genWhereSqlArr({ username }, prmTzr, true, sqlReturn);
+        const whereSqlCmds = whereSqlObj.whereSql.join(" ");
+        const whereSqlVals = whereSqlObj.values;
+        // console.log("FINAL SQL", `${sql} ${whereSqlCmds}`, [...values, ...whereSqlVals]);
+        const user = await db.query(
+            `${sql} ${whereSqlCmds}`,
+            [...values, ...whereSqlVals]
         );
         const userUpdateRows = user.rows[0];
         return userUpdateRows;
