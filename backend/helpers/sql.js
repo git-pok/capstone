@@ -29,47 +29,6 @@ function genUpdateSql (data) {
 }
 
 /**
- * genWhereSql
- * Creates WHERE sql and parametized values.
- * Arguments: qry object
- * Returns object of where sql.
- * filterSql({ name: "good" }) => {
-    whereSql: ["WHERE name ILIKIE $1"],
-    values: ["%good%"]
- * }
- */
-function genWhereSql (columnValObj) {
-    try {
-        const sqlObj = {
-            whereSql: [],
-            values: []
-        };
-        let parametizer = 1;
-
-        // const filtersParsed = deletePropsNotInSet(selectRecipesColumns, columnValObj);
-        const qryArray = Object.entries(columnValObj);
-        qryArray.forEach((prop, idx) => {
-            const isValNumber = Number.isInteger(prop[1]);
-            const keyNormlzd = columnNameCvrs[prop[0].toLowerCase().trim()];
-            const valNormlzd = !isValNumber ? prop[1].toLowerCase().trim() : prop[1];
-            const tableCode = tableAbrv[prop[0]];
-            const queryOperator = sqlOperator[keyNormlzd];
-            const column = [tableCode, keyNormlzd];
-            const columnJoin = column.join("");
-            const sql = [columnJoin, queryOperator, `$${parametizer}`];
-            const value = !isNumbers.has(keyNormlzd) ? `%${valNormlzd}%` : +valNormlzd;
-            if (!sqlObj.whereSql.length) sqlObj.whereSql.push("WHERE", ...sql);
-            else sqlObj.whereSql.push("AND", ...sql);
-            sqlObj.values.push(value);
-            parametizer++;  
-        });
-        return sqlObj;
-    } catch (err) {
-        throw new ExpressError(400, `${err}`);
-    }
-}
-
-/**
  * genSqlStrFromExp
  * Generates sql string from expressions.
  * Arguments: select sql, where sql object, arr
@@ -243,7 +202,7 @@ function genSql (qryType, table, data, strict = false, returning = []) {
 
 
 /**
- * genWhereSql
+ * genWhereSqlArr
  * Creates WHERE sql and parametized values.
  * Arguments: qry object
  * Returns object of where sql.
@@ -252,7 +211,7 @@ function genSql (qryType, table, data, strict = false, returning = []) {
     values: ["%good%"]
  * }
  */
-function genWhereSqlArr (columnValObj, parametizer, strict = false, returning = false) {
+function genWhereSqlArr (columnValObj, parametizer, strict = false, returning = false, abrv = false) {
     try {
         const sqlObj = {
             whereSql: [],
@@ -269,7 +228,9 @@ function genWhereSqlArr (columnValObj, parametizer, strict = false, returning = 
             const keyNormlzd = columnNameCvrs[prop[0].toLowerCase().trim()];
             const valNormlzd = !isValNumber ? prop[1].toLowerCase().trim() : prop[1];
             const queryOperator = isStrict ? sqlOperatorStrict[keyNormlzd] : sqlOperator[keyNormlzd];
-            const column = [keyNormlzd];
+            const tableCode = tableAbrv[prop[0]];
+            const column = !abrv ? [keyNormlzd] : [tableCode, keyNormlzd];
+            console.log("%$%$%$%$%$% TABLE CODE column", column);
             const columnJoin = column.join("");
             const sql = [columnJoin, queryOperator, `$${parametizer}`];
             const cmndValue = isStrict ? `${valNormlzd}` : `%${valNormlzd}%`;

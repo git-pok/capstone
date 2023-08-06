@@ -6,8 +6,7 @@ const {
         disRecipeJoinData
     } = require("../config.js");
 const {
-        genInsertSql, genUpdateSql,
-        genWhereSql, genSqlStrFromExp,
+        genWhereSqlArr, genSqlStrFromExp,
         selectJoinSql, QryObjToGenWhereSql,
         qryObjToOrderBySql
     } = require("../helpers/sql.js");
@@ -52,11 +51,12 @@ class Recipe {
         const selectSql = selectJoinSql(allRecipesSelect, "recipes r", recipeJoinData);
         const likSelectSql = selectJoinSql(selectLikRecUsrId, "recipes r", likRecipeJoinData);
         const disSelectSql = selectJoinSql(selectDisRecUsrId, "recipes r", disRecipeJoinData);
-        const sqlWhereObj = genWhereSql(whereObj);
+        const sqlWhereObj = genWhereSqlArr (whereObj, 1, true, false, true);
         const selectQry = genSqlStrFromExp(selectSql, sqlWhereObj);
         const likQry = genSqlStrFromExp(likSelectSql, sqlWhereObj);
         const disQry = genSqlStrFromExp(disSelectSql, sqlWhereObj);
         const pgValues = sqlWhereObj.values;
+        // console.log("%$%$%$%$%$selectQry", selectQry, pgValues);
         const selectRecipesReq = await db.query(
             `${selectQry}`, pgValues
         );
