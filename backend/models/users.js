@@ -1,8 +1,7 @@
 // const bcrypt = require("bcrypt");
 const { db, userSqlReturnNoAbrv } = require("../config.js");
 const {
-        genUpdateSql,
-        genSql, genWhereSql,
+        genSql,
         genWhereSqlArr
     } = require("../helpers/sql.js");
 const {
