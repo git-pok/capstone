@@ -13,6 +13,7 @@ let db = new Client ({
 
 db.connect();
 
+
 const columnNameCvrs = {
     author: "full_name",
     username: "username",
@@ -30,10 +31,15 @@ const columnNameCvrs = {
     lik_user_id: "user_id"
 };
 
+/**
+ * tableAbrv
+ * Table abreviations for columns and tables.
+ */
 const tableAbrv = {
     author: "a.",
     full_name: "a.",
     name: "r.",
+    username: "u.",
     main_category: "m.",
     sub_category: "s.",
     rating: "rt.",
@@ -43,6 +49,10 @@ const tableAbrv = {
     liked_recipes: "lik."
 };
 
+/**
+ * sqlOperator
+ * Sql operators for where query table columns
+ */
 const sqlOperator = {
     full_name: "ILIKE",
     name: "ILIKE",
@@ -53,6 +63,10 @@ const sqlOperator = {
     username: "="
 };
 
+/**
+ * sqlOperatorStrict
+ * Strict sql operators for where query table columns
+ */
 const sqlOperatorStrict = {
     full_name: "=",
     first_name: "=",
@@ -70,23 +84,36 @@ const sqlOperatorStrict = {
     username: "="
 };
 
+/**
+ * sqlCommandsObj
+ * Sql commands for queries.
+ */
 const sqlCommandsObj = {
     select: "SELECT",
     insert: "INSERT INTO",
     update: "UPDATE"
 };
 
+/**
+ * sqlCommandsModifsObj
+ * Sql modifyer commands for queries.
+ */
 const sqlCommandsModifsObj = {
     select: "FROM",
     insert: "VALUES",
     update: "SET"
 };
+
+/**
+ * recipesRelDataSelectColumns
+ * Select column names to query all relational data for recipes table.
+ */
 // No comma on last value, it will cause a query error.
-const allRecipesSelect = [
-    "r.id,", "r.name,", "a.full_name AS author,", "rt.rating,",
-    "rt.vote_count,", "r.url,", "r.image,", "r.description,",
-    "r.serves,", "d.level,", "m.main_cat_name,", "s.sub_cat_name,",
-    "r.steps,", "r.prep_time,", "r.cook_time"
+const recipesRelDataSelectColumns = [
+    "r.id", "r.name", "a.full_name AS author", "rt.rating",
+    "rt.vote_count", "r.url", "r.image", "r.description",
+    "r.serves", "d.level", "m.main_cat_name", "s.sub_cat_name",
+    "r.steps", "r.prep_time", "r.cook_time"
 ];
 // No comma on last value, it will cause a query error.
 const selectLikRecUsrId = [
@@ -102,7 +129,7 @@ const orderByChron = {
     desc: "DESC"
 };
 
-const recipeJoinData = [
+const recipeRelJoinData = [
     ["authors a", "r.author_id = a.id"],
     ["ratings rt", "r.id = rt.recipe_id"],
     ["difficulty d", "r.difficulty_id = d.id"],
@@ -128,9 +155,6 @@ const recipeFilterKeys = new Set();
 const orderByKeys = new Set();
         orderByKeys.add("orderby").add("orderby2").add("chronorder");
 
-const selectRecipesColumns = new Set();
-        selectRecipesColumns.add("name").add("author").add("rating").add("id");
-
 const isNumbers = new Set();
         isNumbers.add("recipe_id").add("user_id").add("rating")
         .add("id").add("vote_count");
@@ -144,11 +168,11 @@ module.exports = {
     db, BCRYPT_WORK_FACTOR, columnNameCvrs,
     tableAbrv, sqlOperator, sqlOperatorStrict,
     sqlCommandsObj, sqlCommandsModifsObj,
-    allRecipesSelect, selectLikRecUsrId,
+    recipesRelDataSelectColumns, selectLikRecUsrId,
     selectDisRecUsrId,
     orderByChron, recipeQryFilterKeys,
     recipeFilterKeys, orderByKeys,
-    selectRecipesColumns, isNumbers,
-    recipeJoinData, likRecipeJoinData,
+    isNumbers,
+    recipeRelJoinData, likRecipeJoinData,
     disRecipeJoinData, userSqlReturnNoAbrv
 };

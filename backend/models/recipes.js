@@ -1,14 +1,14 @@
 // const bcrypt = require("bcrypt");
 const {
-        db, allRecipesSelect, selectLikRecUsrId,
-        selectDisRecUsrId,
-        recipeJoinData, likRecipeJoinData,
-        disRecipeJoinData
+        db, recipesRelDataSelectColumns,
+        selectLikRecUsrId, selectDisRecUsrId,
+        recipeRelJoinData, likRecipeJoinData,
+        disRecipeJoinData, recipeFilterKeys
     } = require("../config.js");
 const {
         genWhereSqlArr, genSqlStrFromExp,
-        selectJoinSql, QryObjToGenWhereSql,
-        qryObjToOrderBySql
+        selectJoinSql,
+        qryObjToOrderBySql, genSql
     } = require("../helpers/sql.js");
 
 const {
@@ -48,7 +48,7 @@ class Recipe {
         if (dbRecipeRowsLength === 0) throw new ExpressError(400, "Recipe not found!");
         const dbRecipeRowsObj = JSON.parse(JSON.stringify(dbRecipeRows[0]));
         const whereObj = { id: dbRecipeRowsObj.id };
-        const selectSql = selectJoinSql(allRecipesSelect, "recipes r", recipeJoinData);
+        const selectSql = selectJoinSql(recipesRelDataSelectColumns, "recipes r", recipeRelJoinData);
         const likSelectSql = selectJoinSql(selectLikRecUsrId, "recipes r", likRecipeJoinData);
         const disSelectSql = selectJoinSql(selectDisRecUsrId, "recipes r", disRecipeJoinData);
         const sqlWhereObj = genWhereSqlArr (whereObj, 1, true, false, true);
@@ -90,8 +90,7 @@ class Recipe {
 	* }
      */
     static async getRecipes() {
-        const selectSql = selectJoinSql(allRecipesSelect, "recipes r", recipeJoinData);
-        // console.log("SELECT SQL", selectSql);
+        const selectSql = selectJoinSql(recipesRelDataSelectColumns, "recipes r", recipeRelJoinData);
         const recipesReq = await db.query(
             `${selectSql} ORDER BY name ASC`
         );
@@ -117,15 +116,17 @@ class Recipe {
      */
     static async recipesFilter(qryParams) {
         const finalSql = [];
-        const selectSql = selectJoinSql(allRecipesSelect, "recipes r", recipeJoinData);
-        const whereSqlObj = QryObjToGenWhereSql(qryParams);
+        let prmTzr = 1;
+        const filtersParsed = deletePropsNotInSet(recipeFilterKeys, qryParams);
+        const whereSqlObj = genWhereSqlArr(filtersParsed, prmTzr, false, false, true);
+        const selectSql = selectJoinSql(recipesRelDataSelectColumns, "recipes r", recipeRelJoinData);
+        const selectWhereQry = genSqlStrFromExp(selectSql, whereSqlObj);
         const orderByStr = qryObjToOrderBySql(qryParams);
-        const whereSqlQry = whereSqlObj.whereSql.join(" ");
-        const orderBy = orderByStr ? "ORDER BY" : "";
+        const orderBy = orderByStr ? orderByStr : "";
         const pgValuesQry = whereSqlObj.values;
-        finalSql.push(selectSql, whereSqlQry, orderBy, orderByStr);
+        finalSql.push(selectWhereQry, orderBy);
         const finalSqlQry = finalSql.join(" ");
-        // console.log("FINAL SQL", finalSqlQry);
+        // console.log("FINAL SQL", finalSqlQry, pgValuesQry);
         const recipesReq = await db.query(
             `${finalSqlQry}`, pgValuesQry
         );
