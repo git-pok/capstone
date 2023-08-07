@@ -3,7 +3,7 @@ const ExpressError = require("../models/error.js");
 // const jwt = require("jsonwebtoken");
 // const bcrypt = require("bcrypt");
 const {
-        columnNameCvrs, tableAbrv, sqlOperator,
+        columnNameCvrs, sqlOperator,
         orderByChron, recipeQryFilterKeys,
         recipeFilterKeys, orderByKeys
     } = require("../config.js");

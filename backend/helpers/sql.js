@@ -1,10 +1,11 @@
 const ExpressError = require("../models/error.js");
 const {
-    columnNameCvrs, tableAbrv, sqlOperator,
+    columnNameCvrs, recipesColumnAbrv, sqlOperator,
     sqlOperatorStrict, sqlCommandsObj,
     sqlCommandsModifsObj, orderByChron,
     recipeFilterKeys, orderByKeys,
-    isNumbers
+    isNumbers, tablesJoinAbrv, tablesJoinOnAbrv,
+    recipesOnData
 } = require("../config.js");
 
 const {
@@ -43,16 +44,26 @@ function genSqlStrFromExp (selectSql, whereObj, finalSqlArr = []) {
  * selectJoinSql(["r.name,", "a.full_name"], "recipes r", [["authors", "r.author_id = a.id "]]) => 
  * "SELECT r.name, a.full_name FROM recipes r JOIN authors a ON r.author_id = a.id";
  */
-function selectJoinSql (selectSqlArr, table, joinArr = []) {
+function selectJoinSql (selectSqlArr, table, mainTableAbrv, joinArr) {
     try {
         const finalSql = ["SELECT"];
         const joinedSqlArr = selectSqlArr.join(", ");
         finalSql.push(joinedSqlArr, "FROM", table);
-        if (!joinArr.length) return finalSql.join(" ");
         joinArr.forEach(val => {
-            const joinVal = val[0];
-            const onVal = val[1];
-            finalSql.push("JOIN", joinVal, "ON", onVal);
+            const join = tablesJoinAbrv[val[0]];
+            const joinOn1SqlArr = [];
+            const joinOn2SqlArr = [];
+            const joinOnTable1Abrv = mainTableAbrv;
+            const joinOn1 = val[1];
+            joinOn1SqlArr.push(joinOnTable1Abrv, joinOn1);
+            const joinOnTable2Abrv = tablesJoinOnAbrv[val[0]];
+            const joinOn2 = val[2];
+            joinOn2SqlArr.push(joinOnTable2Abrv, joinOn2);
+            const joinOn1Sql = joinOn1SqlArr.join("");
+            const joinOn2Sql = joinOn2SqlArr.join("");
+            finalSql.push(
+                "JOIN", join, "ON", joinOn1Sql, "=", joinOn2Sql
+            );
         });
         return finalSql.join(" ");
     } catch (err) {
@@ -69,6 +80,7 @@ function selectJoinSql (selectSqlArr, table, joinArr = []) {
  */
 function qryObjToOrderBySql (qry) {
     try {
+        const orderByCmnd =  [];
         const sqlObj = {
             columns: [],
             order: [],
@@ -79,15 +91,21 @@ function qryObjToOrderBySql (qry) {
         qryArray.forEach(prop => {
             const keyNormlzd = prop[0].toLowerCase().trim();
             const valNormlzd = prop[1].toLowerCase().trim();
+            const orderByExists = keyNormlzd === "orderby";
+            const orderBy2Exists = keyNormlzd === "orderby2";
+            if (!orderByCmnd.length && orderByExists) orderByCmnd.push("ORDER BY");
+            else if (!orderByCmnd.length && orderBy2Exists) orderByCmnd.push("ORDER BY");
+
             if (orderByKeys.has(keyNormlzd)) {
                 const isChron = valNormlzd === "asc" || valNormlzd === "desc";
-                const tableCode = tableAbrv[valNormlzd];
+                const tableCode = recipesColumnAbrv[valNormlzd];
                 if (!isChron && !sqlObj.order.length) sqlObj.order.push(tableCode, valNormlzd);
                 else if (!isChron && sqlObj.order.length) sqlObj.order2.push(tableCode, valNormlzd);
                 else if (isChron) sqlObj.chronOrder.push(orderByChron[valNormlzd]);
             }
         });
-        const finalOrder = ["ORDER BY"];
+        const orderBySql = orderByCmnd.length ? orderByCmnd.join("") : "";
+        const finalOrder =  [orderBySql];
         if (!sqlObj.order2.length) finalOrder.push(sqlObj.order.join(""));
         // EDGE CASE PREVNT: if someone types orderBy2 without orderBy
         else if (!sqlObj.order.length && sqlObj.order2.length) finalOrder.push(sqlObj.order2.join(""));
@@ -96,6 +114,7 @@ function qryObjToOrderBySql (qry) {
             finalOrder.push(`${order},`, sqlObj.order2.join(""));
         };
         if (sqlObj.chronOrder.length) finalOrder.push(sqlObj.chronOrder.join(""));
+        console.log("$#$#$#$#$#$", finalOrder);
         return finalOrder.join(" ");
     } catch (err) {
         throw new ExpressError(400, `${err}`);
@@ -203,7 +222,7 @@ function genWhereSqlArr (columnValObj, parametizer, strict = false, returning = 
             const keyNormlzd = columnNameCvrs[prop[0].toLowerCase().trim()];
             const valNormlzd = !isValNumber ? prop[1].toLowerCase().trim() : prop[1];
             const queryOperator = isStrict ? sqlOperatorStrict[keyNormlzd] : sqlOperator[keyNormlzd];
-            const tableCode = tableAbrv[prop[0]];
+            const tableCode = recipesColumnAbrv[prop[0]];
             const column = !abrv ? [keyNormlzd] : [tableCode, keyNormlzd];
             const columnJoin = column.join("");
             const sql = [columnJoin, queryOperator, `$${parametizer}`];
