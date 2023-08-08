@@ -166,7 +166,7 @@ class User {
         const { sql, values } = genSql ("update", "users", data, true);
         const prmTzr = values.length + 1;
         const whereSqlObj = genWhereSqlArr({ username }, prmTzr, true, sqlReturn);
-        const whereSqlCmds = whereSqlObj.whereSql.join(" ");
+        const whereSqlCmds = whereSqlObj.whereSql;
         const whereSqlVals = whereSqlObj.values;
         // console.log("FINAL SQL", `${sql} ${whereSqlCmds}`, [...values, ...whereSqlVals]);
         const user = await db.query(

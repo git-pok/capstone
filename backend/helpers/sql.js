@@ -25,7 +25,10 @@ function arrayConcat (arr) {
     try {
         return arr.join(" ");
     } catch (err) {
-        throw new ExpressError(400, `${err}`);
+        const errMsg = err.msg ? err.msg : "Error!";
+        const statusCode = err.status ? err.status : 400;
+        throw new ExpressError(statusCode, errMsg);
+        // throw new ExpressError(400, `${err}`);
     }
 }
 
@@ -40,6 +43,7 @@ function arrayConcat (arr) {
  */
 function genJoinSql (tableAbrev, joinArr, joinType = "JOIN") {
     try {
+        if (!Array.isArray(joinArr)) throw new ExpressError(400, "joinArr must be an array!");
         const finalSql = [];
         joinArr.forEach(val => {
             const join = tablesJoinAbrv[val[0]];
@@ -60,7 +64,10 @@ function genJoinSql (tableAbrev, joinArr, joinType = "JOIN") {
         // console.log("GEN JOIN SQL FUNC", finalSql);
         return finalSql.join(" ");
     } catch (err) {
-        throw new ExpressError(400, `${err}`);
+        const errMsg = err.msg ? err.msg : "Error!";
+        const statusCode = err.status ? err.status : 400;
+        throw new ExpressError(statusCode, errMsg);
+        // throw new ExpressError(400, `${err}`);
     }
 }
 
@@ -111,9 +118,13 @@ function qryObjToOrderBySql (qry) {
             finalOrder.push(`${order},`, sqlObj.order2.join(""));
         };
         if (sqlObj.chronOrder.length) finalOrder.push(sqlObj.chronOrder.join(""));
-        return finalOrder.join(" ");
+        const finalQry = finalOrder.join(" ");
+        return finalQry === " " ? "" : finalQry;
     } catch (err) {
-        throw new ExpressError(400, `${err}`);
+        const errMsg = err.msg ? err.msg : "Error!";
+        const statusCode = err.status ? err.status : 400;
+        throw new ExpressError(statusCode, errMsg);
+        // throw new ExpressError(400, `${err}`);
     }
 }
 
@@ -122,10 +133,15 @@ function qryObjToOrderBySql (qry) {
  * Creates select, insert, or update sql query.
  * Arguments: qryType, tableName, data, strict, returning
  * Returns object with sql and values props.
- * const data = { first_name: "fvin", last_name: "I" };
+ * select data argument: array of column names.
+ * insert data argument: object with column name keys
+        and their values as values.
+ * update data argument: object with column name keys
+        and their values as values.
+ * const data = [ "first_name", "last_name" ];
  * const returning = [ first_name, last_name ];
  * genSql("select", "recipes", data, false, returning) =>
- * { sql:"SELECT first_name, last_name FROM recipes", values: [] }
+ * { sql: "SELECT first_name, last_name FROM recipes", values: [] }
  * const data2 = { first_name: "fvin2", last_name: "I2" };
  * const returning2 = [ first_name, last_name ];
  * genSql("update", "users", data2, true, returning2) =>
@@ -136,6 +152,10 @@ function qryObjToOrderBySql (qry) {
  */
 function genSql (qryType, table, data, strict = false, returning = []) {
     try {
+        const prmttdQryTypes = new Set();
+        prmttdQryTypes.add("select").add("insert").add("update");
+        qryType = qryType.toLowerCase().trim();
+        if (!prmttdQryTypes.has(qryType)) throw new ExpressError(400, "qryType not allowed!");
         const isSelect = qryType === "select";
         const isUpdate = qryType === "update";
         const returnLen = returning.length;
@@ -174,13 +194,18 @@ function genSql (qryType, table, data, strict = false, returning = []) {
         // console.log("RETUNR STMNT", returnStmnt);
         // console.log("sqlArr", sqlArr);
         let sql = sqlArr.join(" ");
-        // console.log("FINAL SQL OBJ", { sql, values });
+        if (!isSelect && !isUpdate) {
+            sql = sql.replaceAll("( ", "(").replaceAll(" )", ")");
+        }
         return {
             sql,
             values
         };
     } catch (err) {
-        throw new ExpressError(400, `${err}`);
+        const errMsg = err.msg ? err.msg : "Error!";
+        const statusCode = err.status ? err.status : 400;
+        throw new ExpressError(statusCode, errMsg);
+        // throw new ExpressError(400, `${err}`);
     }
 }
 
@@ -235,10 +260,13 @@ function genWhereSqlArr (columnValObj, parametizer, strict = false, returning = 
         });
         const returnStmnt = isReturn ? returning.join(", ") : "";
         const returnStr = isReturn ? sqlObj.whereSql.push(`RETURNING ${returnStmnt}`) : null;
-        // console.log("SQL OBJECT", sqlObj);
+        sqlObj.whereSql = sqlObj.whereSql.join(" ");
         return sqlObj;
     } catch (err) {
-        throw new ExpressError(400, `${err}`);
+        const errMsg = err.msg ? err.msg : "Error!";
+        const statusCode = err.status ? err.status : 400;
+        throw new ExpressError(statusCode, errMsg);
+        // throw new ExpressError(400, `${err}`);
     }
 }
 
