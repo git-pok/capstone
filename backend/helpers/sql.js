@@ -91,13 +91,15 @@ function qryObjToOrderBySql (qry) {
             else if (!orderByCmnd.length && orderBy2Exists) orderByCmnd.push("ORDER BY");
 
             if (orderByKeys.has(keyNormlzd)) {
+                const orderByLen = sqlObj.order.length;
+                const orderBy2Len = sqlObj.order2.length;
                 const isChron = valNormlzd === "asc" || valNormlzd === "desc";
                 const tableCode = clmnNameToTblAbrev[valNormlzd];
                 if (!isChron && !sqlObj.order.length) sqlObj.order.push(tableCode, valNormlzd);
                 else if (!isChron && sqlObj.order.length) sqlObj.order2.push(tableCode, valNormlzd);
+                else if (isChron && !orderByLen && !orderBy2Len) sqlObj.chronOrder.push("");
                 else if (isChron) sqlObj.chronOrder.push(orderByChron[valNormlzd]);
             }
-            // console.log("ORDER BY CHRON", sqlObj.chronOrder);
         });
         const orderBySql = orderByCmnd.length ? orderByCmnd.join("") : "";
         const finalOrder =  [orderBySql];
