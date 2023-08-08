@@ -123,7 +123,7 @@ function qryObjToOrderBySql (qry) {
         const orderBySql = orderByCmnd.length ? orderByCmnd.join("") : "";
         const finalOrder =  [orderBySql];
         if (!sqlObj.order2.length) finalOrder.push(sqlObj.order.join(""));
-        // EDGE CASE PREVNT: if someone types orderBy2 without orderBy
+        // EDGE CASE PREVNT: if orderBy2 is queried without orderBy
         else if (!sqlObj.order.length && sqlObj.order2.length) finalOrder.push(sqlObj.order2.join(""));
         else {
             const order = sqlObj.order.join("");
