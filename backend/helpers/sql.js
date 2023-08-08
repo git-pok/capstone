@@ -37,23 +37,38 @@ function genSqlStrFromExp (selectSql, whereObj, finalSqlArr = []) {
 }
 
 /**
- * selectJoinSql
- * Creates select query for recipes.
- * Arguments: select sql array, table, and join and on values
+ * genStrFromArr
+ * Generates string from arr.
+ * Arguments: arr
  * Returns string.
- * selectJoinSql(["r.name,", "a.full_name"], "recipes r", [["authors", "r.author_id = a.id "]]) => 
- * "SELECT r.name, a.full_name FROM recipes r JOIN authors a ON r.author_id = a.id";
+ * genStrFromArr (["SELECT", "name", "from", "recipes"]) =>
+ * "SELECT name FROM recipes";
  */
-function selectJoinSql (selectSqlArr, table, mainTableAbrv, joinArr) {
+function genStrFromArr (arr) {
     try {
-        const finalSql = ["SELECT"];
-        const joinedSqlArr = selectSqlArr.join(", ");
-        finalSql.push(joinedSqlArr, "FROM", table);
+        return arr.join(" ");
+    } catch (err) {
+        throw new ExpressError(400, `${err}`);
+    }
+}
+
+/**
+ * genJoinSql
+ * Creates join query.
+ * Arguments: table abreviation, join array, and join type
+ * Returns string.
+ * const joinArr = ["authors", "author_id", id];
+ * genJoinSql("r", joinArr, "JOIN") => 
+ * "JOIN authors a ON r.author_id = a.id";
+ */
+function genJoinSql (tableAbrev, joinArr, joinType = "JOIN") {
+    try {
+        const finalSql = [];
         joinArr.forEach(val => {
             const join = tablesJoinAbrv[val[0]];
             const joinOn1SqlArr = [];
             const joinOn2SqlArr = [];
-            const joinOnTable1Abrv = mainTableAbrv;
+            const joinOnTable1Abrv = tableAbrev;
             const joinOn1 = val[1];
             joinOn1SqlArr.push(joinOnTable1Abrv, joinOn1);
             const joinOnTable2Abrv = tablesJoinOnAbrv[val[0]];
@@ -62,9 +77,10 @@ function selectJoinSql (selectSqlArr, table, mainTableAbrv, joinArr) {
             const joinOn1Sql = joinOn1SqlArr.join("");
             const joinOn2Sql = joinOn2SqlArr.join("");
             finalSql.push(
-                "JOIN", join, "ON", joinOn1Sql, "=", joinOn2Sql
+                joinType, join, "ON", joinOn1Sql, "=", joinOn2Sql
             );
         });
+        // console.log("GEN JOIN SQL FUNC", finalSql);
         return finalSql.join(" ");
     } catch (err) {
         throw new ExpressError(400, `${err}`);
@@ -114,7 +130,7 @@ function qryObjToOrderBySql (qry) {
             finalOrder.push(`${order},`, sqlObj.order2.join(""));
         };
         if (sqlObj.chronOrder.length) finalOrder.push(sqlObj.chronOrder.join(""));
-        console.log("$#$#$#$#$#$", finalOrder);
+        // console.log("$#$#$#$#$#$ FINAL ORDER", finalOrder);
         return finalOrder.join(" ");
     } catch (err) {
         throw new ExpressError(400, `${err}`);
@@ -175,10 +191,10 @@ function genSql (qryType, table, data, strict = false, returning = []) {
         }
         const returnStmnt = returnLen ? returning.join(", ") : "";
         const returnStr = returnLen ? sqlArr.push(`RETURNING ${returnStmnt}`) : null;
-        console.log("RETUNR STMNT", returnStmnt);
-        console.log("sqlArr", sqlArr);
+        // console.log("RETUNR STMNT", returnStmnt);
+        // console.log("sqlArr", sqlArr);
         let sql = sqlArr.join(" ");
-        console.log("FINAL SQL OBJ", { sql, values });
+        // console.log("FINAL SQL OBJ", { sql, values });
         return {
             sql,
             values
@@ -243,7 +259,8 @@ function genWhereSqlArr (columnValObj, parametizer, strict = false, returning = 
 
 module.exports = {
     genSqlStrFromExp,
-    selectJoinSql,
+    genStrFromArr,
+    genJoinSql,
     qryObjToOrderBySql,
     genSql, genWhereSqlArr
 };

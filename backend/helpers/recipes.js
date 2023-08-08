@@ -47,6 +47,23 @@ function definePropsInObj (propsArr, obj) {
 }
 
 /**
+ * deleteNullInArr
+ * Deletes null values.
+ * Arguments: array
+ * Returns new array.
+ * const arr = [1, null, 2];
+ * deleteNullInArr(arr) => [ 1, 2 ];
+ */
+function deleteNullInArr (arr) {
+    try {
+        const filteredArr = arr.filter(val => val !== null);
+        return filteredArr;
+    } catch (err) {
+        throw new ExpressError(400, `${err}`);
+    }
+}
+
+/**
  * deletePropsNotInSet
  * Deletes properties form an object if in set.
  * Arguments: props set and object
@@ -66,25 +83,6 @@ function deletePropsNotInSet (propsSet, obj) {
         throw new ExpressError(400, `${err}`);
     }
 }
-
-
-/**
- * genWhereSql
- * Creates WHERE or AND statement based off of array length.
- * Arguments: Array length, pg value sanitize level, sql expression
- * Returns sql.
- * genWhereSql(1, 1, "r.name ILIKE") => ["AND r.name ILIKE $1"];
- */
-// function genWhereSql (whereArrLen, parametizer, sqlExpr) {
-//     try {
-//         const sql = whereArrLen < 1 ?
-//             `WHERE ${sqlExpr} $${parametizer}`
-//             : `AND ${sqlExpr} $${parametizer}`;
-//         return sql;
-//     } catch (err) {
-//         throw new ExpressError(400, `${err}`);
-//     }
-// }
 
 /**
  * isFilter
@@ -109,6 +107,6 @@ function isFilter (qry, filters = recipeQryFilterKeys) {
 
 module.exports = {
     deleteObjProps, definePropsInObj,
-    deletePropsNotInSet,
+    deletePropsNotInSet, deleteNullInArr,
     isFilter
 };
