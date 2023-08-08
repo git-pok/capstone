@@ -1,6 +1,6 @@
 const ExpressError = require("../models/error.js");
 const {
-    columnNameCvrs, recipesColumnAbrv, sqlOperator,
+    sqlOperator, clmnNameToTblAbrev,
     sqlOperatorStrict, sqlCommandsObj,
     sqlCommandsModifsObj, orderByChron,
     recipeFilterKeys, orderByKeys,
@@ -13,38 +13,15 @@ const {
     deletePropsNotInSet
 } = require("../helpers/recipes.js");
 
-
 /**
- * genSqlStrFromExp
- * Works in conjunction with sql functions in this file.
- * Generates sql string from select and where expressions.
- * Arguments: select sql, where sql object, final sql arr
- * Returns string.
- * whereObj: created from genWhereSqlArr()
- * const whereObj = { whereSql: ["WHERE", "name=", "$1"] };
- * genSqlStrFromExp ("SELECT name FROM users", whereObj) =>
- * "SELECT name FROM users WHERE name=$1";
- */
-function genSqlStrFromExp (selectSql, whereObj, finalSqlArr = []) {
-    try {
-        const whereSqlQry = whereObj.whereSql.join(" ");
-        finalSqlArr.push(selectSql, whereSqlQry);
-        const finalSqlQry = finalSqlArr.join(" ");
-        return finalSqlQry;
-    } catch (err) {
-        throw new ExpressError(400, `${err}`);
-    }
-}
-
-/**
- * genStrFromArr
+ * arrayConcat
  * Generates string from arr.
  * Arguments: arr
  * Returns string.
- * genStrFromArr (["SELECT", "name", "from", "recipes"]) =>
+ * arrayConcat (["SELECT", "name", "from", "recipes"]) =>
  * "SELECT name FROM recipes";
  */
-function genStrFromArr (arr) {
+function arrayConcat (arr) {
     try {
         return arr.join(" ");
     } catch (err) {
@@ -96,6 +73,7 @@ function genJoinSql (tableAbrev, joinArr, joinType = "JOIN") {
  */
 function qryObjToOrderBySql (qry) {
     try {
+        const qryCpy = JSON.parse(JSON.stringify(qry));
         const orderByCmnd =  [];
         const sqlObj = {
             columns: [],
@@ -103,10 +81,10 @@ function qryObjToOrderBySql (qry) {
             order2: [],
             chronOrder: []
         };
-        const qryArray = Object.entries(qry);
+        const qryArray = Object.entries(qryCpy);
         qryArray.forEach(prop => {
             const keyNormlzd = prop[0].toLowerCase().trim();
-            const valNormlzd = prop[1].toLowerCase().trim();
+            const valNormlzd = keyNormlzd !== "chronorder" ? prop[1] : prop[1].toLowerCase().trim();
             const orderByExists = keyNormlzd === "orderby";
             const orderBy2Exists = keyNormlzd === "orderby2";
             if (!orderByCmnd.length && orderByExists) orderByCmnd.push("ORDER BY");
@@ -114,11 +92,12 @@ function qryObjToOrderBySql (qry) {
 
             if (orderByKeys.has(keyNormlzd)) {
                 const isChron = valNormlzd === "asc" || valNormlzd === "desc";
-                const tableCode = recipesColumnAbrv[valNormlzd];
+                const tableCode = clmnNameToTblAbrev[valNormlzd];
                 if (!isChron && !sqlObj.order.length) sqlObj.order.push(tableCode, valNormlzd);
                 else if (!isChron && sqlObj.order.length) sqlObj.order2.push(tableCode, valNormlzd);
                 else if (isChron) sqlObj.chronOrder.push(orderByChron[valNormlzd]);
             }
+            // console.log("ORDER BY CHRON", sqlObj.chronOrder);
         });
         const orderBySql = orderByCmnd.length ? orderByCmnd.join("") : "";
         const finalOrder =  [orderBySql];
@@ -130,7 +109,6 @@ function qryObjToOrderBySql (qry) {
             finalOrder.push(`${order},`, sqlObj.order2.join(""));
         };
         if (sqlObj.chronOrder.length) finalOrder.push(sqlObj.chronOrder.join(""));
-        // console.log("$#$#$#$#$#$ FINAL ORDER", finalOrder);
         return finalOrder.join(" ");
     } catch (err) {
         throw new ExpressError(400, `${err}`);
@@ -229,16 +207,20 @@ function genWhereSqlArr (columnValObj, parametizer, strict = false, returning = 
             whereSql: [],
             values: []
         };
+        // console.log("GEN WHERE columnValObj", columnValObj);
         const isStrict = strict !== false;
         const isReturn = returning !== false;
         const returnCommand = returning !== false ? ["RETURNING"] : [""];
         const qryArray = Object.entries(columnValObj);
         qryArray.forEach((prop, idx) => {
             const isValNumber = Number.isInteger(prop[1]);
-            const keyNormlzd = columnNameCvrs[prop[0].toLowerCase().trim()];
+            const keyNormlzd = prop[0];
             const valNormlzd = !isValNumber ? prop[1].toLowerCase().trim() : prop[1];
+            // console.log("keyNormlzd", keyNormlzd);
+            // console.log("PROP 0", prop[0]);
             const queryOperator = isStrict ? sqlOperatorStrict[keyNormlzd] : sqlOperator[keyNormlzd];
-            const tableCode = recipesColumnAbrv[prop[0]];
+            const tableCode = clmnNameToTblAbrev[prop[0]];
+            // console.log("tableCode", tableCode);
             const column = !abrv ? [keyNormlzd] : [tableCode, keyNormlzd];
             const columnJoin = column.join("");
             const sql = [columnJoin, queryOperator, `$${parametizer}`];
@@ -251,6 +233,7 @@ function genWhereSqlArr (columnValObj, parametizer, strict = false, returning = 
         });
         const returnStmnt = isReturn ? returning.join(", ") : "";
         const returnStr = isReturn ? sqlObj.whereSql.push(`RETURNING ${returnStmnt}`) : null;
+        // console.log("SQL OBJECT", sqlObj);
         return sqlObj;
     } catch (err) {
         throw new ExpressError(400, `${err}`);
@@ -258,8 +241,7 @@ function genWhereSqlArr (columnValObj, parametizer, strict = false, returning = 
 }
 
 module.exports = {
-    genSqlStrFromExp,
-    genStrFromArr,
+    arrayConcat,
     genJoinSql,
     qryObjToOrderBySql,
     genSql, genWhereSqlArr

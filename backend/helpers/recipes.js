@@ -3,8 +3,9 @@ const ExpressError = require("../models/error.js");
 // const jwt = require("jsonwebtoken");
 // const bcrypt = require("bcrypt");
 const {
-        columnNameCvrs, sqlOperator,
-        orderByChron, recipeQryFilterKeys,
+        sqlOperator, recipesFltrKeyToClmnName,
+        orderByChron,
+        recipeQryFilterKeys,
         recipeFilterKeys, orderByKeys
     } = require("../config.js");
 /**
@@ -104,9 +105,32 @@ function isFilter (qry, filters = recipeQryFilterKeys) {
     }
 }
 
+/**
+ * recipesFiltersToSqlClmns
+ * Converts recipes filter key name to column name.
+ * Arguments: qry object and key filters for sql column names
+ * Returns object.
+ * recipesFiltersToSqlClmns({ name: "chicken", author: "good" }) =>
+ * { name: "chicken", full_name: "good" };
+ */
+function recipesFiltersToSqlClmns (qry, keyFilters = recipesFltrKeyToClmnName) {
+    try {
+        const newObj = {};
+        const qryCpy = JSON.parse(JSON.stringify(qry));
+        for (let prop in qryCpy) {
+            const keyNrmlzd = prop.toLowerCase().trim();
+            const cnvrtdKey = keyFilters[keyNrmlzd];
+            newObj[cnvrtdKey] = qryCpy[prop];
+        }
+        return newObj;
+    } catch (err) {
+        throw new ExpressError(400, `${err}`);
+    }
+}
+
 
 module.exports = {
     deleteObjProps, definePropsInObj,
     deletePropsNotInSet, deleteNullInArr,
-    isFilter
+    isFilter, recipesFiltersToSqlClmns
 };

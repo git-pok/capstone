@@ -6,8 +6,8 @@ const {
         recipesOnData
     } = require("../config.js");
 const {
-        genWhereSqlArr, genSqlStrFromExp,
-        genStrFromArr,
+        genWhereSqlArr,
+        arrayConcat,
         genJoinSql,
         qryObjToOrderBySql, genSql
     } = require("../helpers/sql.js");
@@ -15,7 +15,8 @@ const {
 const {
     deleteObjProps, definePropsInObj,
     deleteNullInArr,
-    deletePropsNotInSet
+    deletePropsNotInSet,
+    recipesFiltersToSqlClmns
 } = require("../helpers/recipes.js");
 // const SECRET_KEY = require("../keys.js");
 // const jsonschema = require("jsonschema");
@@ -59,16 +60,16 @@ class Recipe {
         const joinLikSqlStr = genJoinSql("r.", likRecipeJoinData, "FULL JOIN");
         const joinDisSqlStr = genJoinSql("r.", disRecipeJoinData, "FULL JOIN");
         // Creates one string from array of sql strings
-        const selectJoinSqlStr = genStrFromArr([selectSqlArr.sql, joinSqlStr]);
-        const selectLikJoinSqlStr = genStrFromArr([selectLikSqlArr.sql, joinLikSqlStr]);
-        const selectDisJoinSqlStr = genStrFromArr([selectDisSqlArr.sql, joinDisSqlStr]);
+        const selectJoinSqlStr = arrayConcat([selectSqlArr.sql, joinSqlStr]);
+        const selectLikJoinSqlStr = arrayConcat([selectLikSqlArr.sql, joinLikSqlStr]);
+        const selectDisJoinSqlStr = arrayConcat([selectDisSqlArr.sql, joinDisSqlStr]);
         // Creates object with where sql and values properties.
         const sqlWhereObj = genWhereSqlArr (whereObj, 1, true, false, true);
         // Creates query from select query string
         // and where query object.
-        const selectQry = genSqlStrFromExp(selectJoinSqlStr, sqlWhereObj);
-        const likQry = genSqlStrFromExp(selectLikJoinSqlStr, sqlWhereObj);
-        const disQry = genSqlStrFromExp(selectDisJoinSqlStr, sqlWhereObj);
+        const selectQry = arrayConcat([selectJoinSqlStr, ...sqlWhereObj.whereSql]);
+        const likQry = arrayConcat([selectLikJoinSqlStr, ...sqlWhereObj.whereSql]);
+        const disQry = arrayConcat([selectDisJoinSqlStr, ...sqlWhereObj.whereSql]);
         // Creates pg values.
         const pgValues = sqlWhereObj.values;
         // Makes request for recipe with query string.
@@ -118,7 +119,7 @@ class Recipe {
     static async getRecipes() {
         const selectSqlArr = genSql ("select", "recipes r", recipesRelDataSelectColumns);
         const joinSqlStr = genJoinSql("r.", recipesOnData, "JOIN");
-        const selectJoinSqlStr = genStrFromArr([selectSqlArr.sql, joinSqlStr]);
+        const selectJoinSqlStr = arrayConcat([selectSqlArr.sql, joinSqlStr]);
         const recipesReq = await db.query(
             `${selectJoinSqlStr} ORDER BY name ASC`
         );
@@ -144,19 +145,29 @@ class Recipe {
      */
     static async recipesFilter(qryParams) {
         const finalSql = [];
+        // Create parametizer for qry values.
         let prmTzr = 1;
+        // Parse out qry object keys that aren't permitted filters.
         const filtersParsed = deletePropsNotInSet(recipeFilterKeys, qryParams);
-        const whereSqlObj = genWhereSqlArr(filtersParsed, prmTzr, false, false, true);
+        // Convert qry object keys to sql table column names.
+        const filtersConverted = recipesFiltersToSqlClmns(filtersParsed);
+        // Create where sql object.
+        const whereSqlObj = genWhereSqlArr(filtersConverted, prmTzr, false, false, true);
+        // Create sql select qry.
         const selectSqlArr = genSql ("select", "recipes r", recipesRelDataSelectColumns);
+        // Create sql join query.
         const joinSqlStr = genJoinSql("r.", recipesOnData, "JOIN");
-        const selectJoinSqlStr = genStrFromArr([selectSqlArr.sql, joinSqlStr]);
-        const selectWhereQry = genSqlStrFromExp(selectJoinSqlStr, whereSqlObj);
+        // Concat select and join queries.
+        const selectJoinSqlStr = arrayConcat([selectSqlArr.sql, joinSqlStr]);
+        // Concat the select/join query and where query.
+        const selectWhereQry = arrayConcat([selectJoinSqlStr, ...whereSqlObj.whereSql]);
+        // Create order by query with qry onject.
         const orderByStr = qryObjToOrderBySql(qryParams);
         const orderBy = orderByStr ? orderByStr : "";
         const pgValuesQry = whereSqlObj.values;
         finalSql.push(selectWhereQry, orderBy);
         const finalSqlQry = finalSql.join(" ");
-        // console.log("FINAL STRING $#$#$#$#$#$#", finalSqlQry);
+        console.log("FINAL STRING $#$#$#$#$#$#", finalSqlQry);
         const recipesReq = await db.query(
             `${finalSqlQry}`, pgValuesQry
         );

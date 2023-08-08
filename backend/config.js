@@ -13,40 +13,45 @@ let db = new Client ({
 
 db.connect();
 
-
-const columnNameCvrs = {
+const recipesFltrKeyToClmnName = {
     author: "full_name",
-    username: "username",
     name: "name",
-    main_category: "main_category",
-    sub_category: "sub_category",
+    maincategory: "main_cat_name",
+    subcategory: "sub_cat_name",
     rating: "rating",
     id: "id",
-    difficulty: "difficulty",
-    disliked_recipes: "disliked_recipes",
-    liked_recipes: "liked_recipes",
-    dis_recipe_id: "recipe_id",
-    dis_user_id: "user_id",
-    lik_recipe_id: "recipe_id",
-    lik_user_id: "user_id"
+    difficulty: "level"
 };
+
+/**
+ * recipesFltrValToQryCode
+ * Table abreviations for columns.
+ */
+// const recipesFltrValToQryCode = {
+//     author: "a.",
+//     full_name: "a.",
+//     name: "r.",
+//     maincategory: "m.",
+//     subcategory: "s.",
+//     rating: "rt.",
+//     id: "r.",
+//     difficulty: "d."
+// };
 
 /**
  * recipesColumnAbrv
  * Table abreviations for columns.
  */
-const recipesColumnAbrv = {
+const clmnNameToTblAbrev = {
     author: "a.",
     full_name: "a.",
     name: "r.",
-    username: "u.",
-    main_category: "m.",
-    sub_category: "s.",
+    username: "usr.",
+    main_cat_name: "m.",
+    sub_cat_name: "s.",
     rating: "rt.",
     id: "r.",
-    difficulty: "d.",
-    disliked_recipes: "dis.",
-    liked_recipes: "lik."
+    level: "d."
 };
 
 /**
@@ -120,8 +125,8 @@ const tablesJoinOnAbrv = {
 const sqlOperator = {
     full_name: "ILIKE",
     name: "ILIKE",
-    main_category: "ILIKE",
-    sub_category: "ILIKE",
+    main_cat_name: "ILIKE",
+    sub_cat_name: "ILIKE",
     rating: "=",
     id: "=",
     username: "="
@@ -142,8 +147,8 @@ const sqlOperatorStrict = {
 	profile_img: "=",
 	password: "=",
     name: "=",
-    main_category: "=",
-    sub_category: "=",
+    main_cat_name: "=",
+    sub_cat_name: "=",
     rating: "=",
     id: "=",
     username: "="
@@ -221,10 +226,11 @@ const disRecipeJoinData = [
 
 const recipeQryFilterKeys = new Set();
         recipeQryFilterKeys.add("name").add("author").add("rating")
-        .add("orderBy").add("orderBy2");
+        .add("orderBy").add("orderBy2").add("mainCategory").add("subCategory");
 
 const recipeFilterKeys = new Set();
-        recipeFilterKeys.add("name").add("author").add("rating");
+        recipeFilterKeys.add("name").add("author").add("rating")
+        .add("mainCategory").add("subCategory");
 
 const orderByKeys = new Set();
         orderByKeys.add("orderby").add("orderby2").add("chronorder");
@@ -239,8 +245,9 @@ const userSqlReturnNoAbrv = [
 ];
 
 module.exports = {
-    db, BCRYPT_WORK_FACTOR, columnNameCvrs,
-    recipesColumnAbrv, sqlOperator, sqlOperatorStrict,
+    db, BCRYPT_WORK_FACTOR,
+    recipesFltrKeyToClmnName,
+    clmnNameToTblAbrev, sqlOperator, sqlOperatorStrict,
     sqlCommandsObj, sqlCommandsModifsObj,
     recipesRelDataSelectColumns, selectLikRecUsrId,
     selectDisRecUsrId,
