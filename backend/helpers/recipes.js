@@ -3,10 +3,8 @@ const ExpressError = require("../models/error.js");
 // const jwt = require("jsonwebtoken");
 // const bcrypt = require("bcrypt");
 const {
-        sqlOperator, recipesFltrKeyToClmnName,
-        orderByChron,
-        recipeQryFilterKeys,
-        recipeFilterKeys, orderByKeys
+        recipesFltrKeyToClmnName,
+        recipeQryFilterKeys
     } = require("../config.js");
 /**
  * deleteObjProps

@@ -3,8 +3,8 @@ const {
     sqlOperator, clmnNameToTblAbrev,
     sqlOperatorStrict, sqlCommandsObj,
     sqlCommandsModifsObj, orderByChron,
-    recipeFilterKeys, orderByKeys,
-    isNumbers, tablesJoinAbrv, tablesJoinOnAbrv,
+    orderByKeys,
+    isNumbers, tablesJoinAbrv, joinTableNameAbrv,
     recipesOnData
 } = require("../config.js");
 
@@ -48,7 +48,7 @@ function genJoinSql (tableAbrev, joinArr, joinType = "JOIN") {
             const joinOnTable1Abrv = tableAbrev;
             const joinOn1 = val[1];
             joinOn1SqlArr.push(joinOnTable1Abrv, joinOn1);
-            const joinOnTable2Abrv = tablesJoinOnAbrv[val[0]];
+            const joinOnTable2Abrv = joinTableNameAbrv[val[0]];
             const joinOn2 = val[2];
             joinOn2SqlArr.push(joinOnTable2Abrv, joinOn2);
             const joinOn1Sql = joinOn1SqlArr.join("");

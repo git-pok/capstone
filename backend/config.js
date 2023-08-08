@@ -24,23 +24,8 @@ const recipesFltrKeyToClmnName = {
 };
 
 /**
- * recipesFltrValToQryCode
- * Table abreviations for columns.
- */
-// const recipesFltrValToQryCode = {
-//     author: "a.",
-//     full_name: "a.",
-//     name: "r.",
-//     maincategory: "m.",
-//     subcategory: "s.",
-//     rating: "rt.",
-//     id: "r.",
-//     difficulty: "d."
-// };
-
-/**
- * recipesColumnAbrv
- * Table abreviations for columns.
+ * clmnNameToTblAbrev
+ * Table abreviations for column names.
  */
 const clmnNameToTblAbrev = {
     author: "a.",
@@ -86,12 +71,12 @@ const tablesJoinAbrv = {
 };
 
 /**
- * tablesJoinOnAbrv
+ * joinTableNameAbrv
  * Old name: tablesAndAbrv
  * Table abreviations for join equal to expressions.
  * r.author_id = a.id
  */
-const tablesJoinOnAbrv = {
+const joinTableNameAbrv = {
     authors: "a.",
     units: "u.",
     ingredients: "in.",
@@ -256,6 +241,6 @@ module.exports = {
     isNumbers,
     likRecipeJoinData,
     disRecipeJoinData, userSqlReturnNoAbrv,
-    tablesJoinAbrv, tablesJoinOnAbrv,
+    tablesJoinAbrv, joinTableNameAbrv,
     recipesOnData
 };
