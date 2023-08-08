@@ -3,7 +3,7 @@ process.env.NODE_ENV = "test";
 // const app = require("../app.js");
 const { db } = require("../config.js");
 // const SECRET_KEY = require("../keys.js");
-// const ExpressError = require("../models/error.js");
+const ExpressError = require("../models/error.js");
 // const {
 //     BCRYPT_WORK_FACTOR,
 // } = require("../config.js");

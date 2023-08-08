@@ -67,9 +67,9 @@ class Recipe {
         const sqlWhereObj = genWhereSqlArr (whereObj, 1, true, false, true);
         // Creates query from select query string
         // and where query object.
-        const selectQry = arrayConcat([selectJoinSqlStr, ...sqlWhereObj]);
-        const likQry = arrayConcat([selectLikJoinSqlStr, ...sqlWhereObj]);
-        const disQry = arrayConcat([selectDisJoinSqlStr, ...sqlWhereObj]);
+        const selectQry = arrayConcat([selectJoinSqlStr, sqlWhereObj.whereSql]);
+        const likQry = arrayConcat([selectLikJoinSqlStr, sqlWhereObj.whereSql]);
+        const disQry = arrayConcat([selectDisJoinSqlStr, sqlWhereObj.whereSql]);
         // console.log("SELECT QRY", selectQry);
         // Creates pg values.
         const pgValues = sqlWhereObj.values;
@@ -161,7 +161,7 @@ class Recipe {
         // Concat select and join queries.
         const selectJoinSqlStr = arrayConcat([selectSqlArr.sql, joinSqlStr]);
         // Concat the select/join query and where query.
-        const selectWhereQry = arrayConcat([selectJoinSqlStr, ...whereSqlObj]);
+        const selectWhereQry = arrayConcat([selectJoinSqlStr, whereSqlObj.whereSql]);
         // Create order by query with qry onject.
         const orderByStr = qryObjToOrderBySql(qryParams);
         const orderBy = orderByStr ? orderByStr : "";
