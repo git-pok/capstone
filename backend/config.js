@@ -47,7 +47,7 @@ const clmnNameToTblAbrev = {
 const tablesJoinAbrv = {
     authors: "authors a",
     units: "units u",
-    ingredients: "ingredients in",
+    ingredients: "ingredients ing",
     main_category: "main_category m",
     sub_category: "sub_category s",
     difficulty: "difficulty d",
@@ -79,7 +79,7 @@ const tablesJoinAbrv = {
 const joinTableNameAbrv = {
     authors: "a.",
     units: "u.",
-    ingredients: "in.",
+    ingredients: "ing.",
     main_category: "m.",
     sub_category: "s.",
     difficulty: "d.",
@@ -173,6 +173,14 @@ const recipesRelDataSelectColumns = [
 ];
 
 /**
+ * ingrdsRelDataSelectColumns
+ * Select column names to query all relational data for recipes table.
+ */
+const ingrdsRelDataSelectColumns = [
+    "ri.qty", "u.unit", "ing.ingredient"
+];
+
+/**
  * selectLikRecUsrId
  * Select column names to query user id from liked_recipes table.
  */
@@ -209,6 +217,11 @@ const disRecipeJoinData = [
     ["disliked_recipes", "id", "recipe_id"]
 ];
 
+const ingrdRecipesJoinData = [
+    ["units", "unit_id", "id"],
+    ["ingredients", "ingredient_id", "id"]
+];
+
 const recipeQryFilterKeys = new Set();
         recipeQryFilterKeys.add("name").add("author").add("rating")
         .add("orderBy").add("orderBy2").add("mainCategory").add("subCategory");
@@ -234,13 +247,15 @@ module.exports = {
     recipesFltrKeyToClmnName,
     clmnNameToTblAbrev, sqlOperator, sqlOperatorStrict,
     sqlCommandsObj, sqlCommandsModifsObj,
-    recipesRelDataSelectColumns, selectLikRecUsrId,
+    recipesRelDataSelectColumns, ingrdsRelDataSelectColumns,
+    selectLikRecUsrId,
     selectDisRecUsrId,
     orderByChron, recipeQryFilterKeys,
     recipeFilterKeys, orderByKeys,
     isNumbers,
     likRecipeJoinData,
-    disRecipeJoinData, userSqlReturnNoAbrv,
+    disRecipeJoinData, ingrdRecipesJoinData,
+    userSqlReturnNoAbrv,
     tablesJoinAbrv, joinTableNameAbrv,
     recipesOnData
 };

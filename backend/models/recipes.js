@@ -1,8 +1,10 @@
 const {
         db, recipesRelDataSelectColumns,
+        ingrdsRelDataSelectColumns,
         selectLikRecUsrId, selectDisRecUsrId,
         likRecipeJoinData,
-        disRecipeJoinData, recipeFilterKeys,
+        disRecipeJoinData, ingrdRecipesJoinData,
+        recipeFilterKeys,
         recipesOnData
     } = require("../config.js");
 const {
@@ -98,6 +100,24 @@ class Recipe {
         // Defines new liked and disliked recipes array properites.
         selectRecipesReq.rows[0]["liked_user_ids"] = noNullLikUsrIds;
         selectRecipesReq.rows[0]["disliked_user_ids"] = noNullDisUrdIds;
+        
+        // INGREDIENTS FT
+        const ingrSelectSqlArr = genSql ("select", "recipes_ingredients ri", ingrdsRelDataSelectColumns);
+        const ingrJoinSqlStr = genJoinSql("ri.", ingrdRecipesJoinData, "JOIN");
+        console.log("RECIPES INGEREDIENTS$#$#$#$#$#$", ingrSelectSqlArr);
+        console.log("ingrJoinLikSqlStr$#$#$#$#$#$", ingrJoinSqlStr);
+        const ingrSelectJoinSqlStr = arrayConcat([ingrSelectSqlArr.sql, ingrJoinSqlStr]);
+        const ingrSelectQry = arrayConcat([ingrSelectJoinSqlStr, sqlWhereObj.whereSql]);
+        console.log("ingrSelectQry$#$#$#$#$#$", ingrSelectQry);
+        // `
+        // SELECT ri.qty, u.unit, ing.ingredient
+        // FROM recipes_ingredients ri JOIN ingredients ing
+        // ON ri.ingredient_id = ing.id
+        // JOIN units u ON ri.unit_id = u.id
+        // WHERE ri.recipe_id = 1684;
+        // `
+        // END OF INGREDIENTS FT
+        
         return recipeRow;
     }
 
