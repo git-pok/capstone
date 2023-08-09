@@ -15,6 +15,7 @@ function validateSchema (data, schema) {
 
 async function hashPassword (password) {
     try {
+        // console.log("BCRYPT WORK FACTOR", BCRYPT_WORK_FACTOR)
         const hashedPW = await bcrypt.hash(password, BCRYPT_WORK_FACTOR);
         return hashedPW;
     } catch (err) {
