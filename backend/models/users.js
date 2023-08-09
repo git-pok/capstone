@@ -127,7 +127,7 @@ class User {
     static async getUser(username) {
         const dbUser = await db.query(`SELECT * FROM users WHERE username = $1`, [username]);
         const dbUserRowsLength = dbUser.rows.length;
-        if (dbUserRowsLength === 0) throw new ExpressError(400, "User not found!");
+        if (dbUserRowsLength === 0) throw new ExpressError(404, "User not found!");
         const dbUserRows = JSON.parse(JSON.stringify(dbUser.rows[0]));
         delete dbUserRows["password"];
         return dbUserRows;
@@ -161,11 +161,11 @@ class User {
         const dbUser = await db.query(`SELECT * FROM users WHERE username = $1`, [username]);
         const dbUserRows = dbUser.rows[0];
         const dbUserRowsLength = dbUser.rows.length;
-        if (dbUserRowsLength === 0) throw new ExpressError(400, "User not found!");
+        if (dbUserRowsLength === 0) throw new ExpressError(404, "User not found!");
         const sqlReturn = userSqlReturnNoAbrv;
         const { sql, values } = genSql ("update", "users", data, true);
         const prmTzr = values.length + 1;
-        const whereSqlObj = genWhereSqlArr({ username }, prmTzr, true, sqlReturn);
+        const whereSqlObj = genWhereSqlArr({ username }, prmTzr, true, [...sqlReturn, "is_admin"]);
         const whereSqlCmds = whereSqlObj.whereSql;
         const whereSqlVals = whereSqlObj.values;
         // console.log("FINAL SQL", `${sql} ${whereSqlCmds}`, [...values, ...whereSqlVals]);
@@ -186,7 +186,7 @@ class User {
     static async deleteUser(username) {
         const dbUser = await db.query(`SELECT * FROM users WHERE username = $1`, [username]);
         const dbUserRowsLength = dbUser.rows.length;
-        if (dbUserRowsLength === 0) throw new ExpressError(400, "User not found!");
+        if (dbUserRowsLength === 0) throw new ExpressError(404, "User not found!");
         await db.query(`DELETE FROM users WHERE username = $1`, [username]);
     }
 }

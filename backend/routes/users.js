@@ -14,10 +14,10 @@ const { isLoggedIn } = require("../middleware/auth.js");
 router.post("/register", async (req, res, next) => {
     try {
         const data = req.body;
-        const registeredUser = await User.register(data);
-        return res.status(201).json({
-            user: registeredUser
-        });
+        const user = await User.register(data);
+        return res.status(201).json([
+            user
+        ]);
     } catch (err) {
         return next(err);
     }
@@ -33,9 +33,7 @@ router.post("/login", async (req, res, next) => {
     try {
         const data = req.body;
         const user = await User.login(data);
-        return res.status(200).json({
-            user
-        });
+        return res.status(200).json([{ user }]);
     } catch (err) {
         return next(err);
     }
@@ -51,9 +49,9 @@ router.get("/:username", isLoggedIn, async (req, res, next) => {
     try {
         const { username } = req.params;
         const user = await User.getUser(username);
-        return res.status(200).json({
+        return res.status(200).json([{
             user
-        });
+        }]);
     } catch (err) {
         return next(err);
     }
@@ -70,9 +68,11 @@ router.patch("/:username", isLoggedIn, async (req, res, next) => {
         const { username } = req.params;
         const data = req.body;
         const user = await User.editUser(data, username);
-        return res.status(200).json({
-            user
-        });
+        return res.status(200).json([
+            {
+                user
+            }
+        ]);
     } catch (err) {
         return next(err);
     }

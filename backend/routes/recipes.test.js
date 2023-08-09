@@ -28,7 +28,7 @@ afterAll(async () => {
     await db.end();
 });
 
-describe("/GET /recipes/id", () => {
+describe("/GET /recipes/:id", () => {
     test("get recipe", async () => {
         const req = await request(app).get(`/recipes/${5}`)
             .set("_token", `Bearer ${usr1TokenTest}`);
@@ -56,7 +56,7 @@ describe("/GET /recipes/id", () => {
         }]);
     });
 
-    test("error for non logged in user", async () => {
+    test("400 error for non logged in user", async () => {
         const req = await request(app).get(`/recipes/${5}`)
             .set("_token", `Bearer`);
         expect(req.statusCode).toBe(400);
@@ -102,7 +102,7 @@ describe("/GET /recipes", () => {
         expect(req.body[0].rating).toEqual(5);
     });
 
-    test("error for non logged in user", async () => {
+    test("400 error for non logged in user", async () => {
         const req = await request(app).get("/recipes")
             .set("_token", `Bearer`)
             .query({ orderBy: "rating", chronOrder: "desc" });

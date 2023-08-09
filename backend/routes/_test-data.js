@@ -17,8 +17,8 @@ let usr1Token;
 let usr2Token;
 
 async function genTestUsers () {
-    const pwd1 = hashPassword("password1");
-    const pwd2 = hashPassword("password2");
+    const pwd1 = await hashPassword("password1");
+    const pwd2 = await hashPassword("password2");
 
     usr1 = {
         username: "usr1",
