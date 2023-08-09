@@ -15,13 +15,17 @@ const {
  * deleteObjProps(["one"], obj) => { two: 2 };
  */
 function deleteObjProps (propsArr, obj) {
+    if (!Array.isArray(propsArr)) throw new ExpressError(400, "Invalid data type for propsArr!");
     try {
         propsArr.forEach(prop => {
             delete obj[prop];
         })
         return obj;
     } catch (err) {
-        throw new ExpressError(400, `${err}`);
+        const errMsg = err.msg ? err.msg : "Error!";
+        const statusCode = err.status ? err.status : 400;
+        throw new ExpressError(statusCode, errMsg);
+        // throw new ExpressError(400, `${err}`);
     }
 }
 
@@ -35,13 +39,16 @@ function deleteObjProps (propsArr, obj) {
  */
 function definePropsInObj (propsArr, obj) {
     try {
+        if (!Array.isArray(propsArr)) throw new ExpressError(400, "Invalid data type for propsArr!");
         const objCopy = JSON.parse(JSON.stringify(obj));
         propsArr.forEach(prop => {
             objCopy[prop[0]] = prop[1];
         });
         return objCopy;
     } catch (err) {
-        throw new ExpressError(400, `${err}`);
+        const errMsg = err.msg ? err.msg : `${err}`;
+        const statusCode = err.status ? err.status : 400;
+        throw new ExpressError(statusCode, errMsg);
     }
 }
 
@@ -55,21 +62,24 @@ function definePropsInObj (propsArr, obj) {
  */
 function deleteNullInArr (arr) {
     try {
+        if (!Array.isArray(arr)) throw new ExpressError(400, "Invalid data type for arr!");
         const filteredArr = arr.filter(val => val !== null);
         return filteredArr;
     } catch (err) {
-        throw new ExpressError(400, `${err}`);
+        const errMsg = err.msg ? err.msg : `${err}`;
+        const statusCode = err.status ? err.status : 400;
+        throw new ExpressError(statusCode, errMsg);
     }
 }
 
 /**
  * deletePropsNotInSet
- * Deletes properties form an object if in set.
+ * Deletes properties from an object if in set.
  * Arguments: props set and object
  * Returns new object.
- * const setProps = { "two" };
+ * const set = { "two" };
  * const obj = { one: 1, two: 2 }
- * deleteObjProps(["one"], obj) => { two: 2 };
+ * deletePropsNotInSet(set, obj) => { two: 2 };
  */
 function deletePropsNotInSet (propsSet, obj) {
     try {
@@ -79,16 +89,19 @@ function deletePropsNotInSet (propsSet, obj) {
         }
         return newObj;
     } catch (err) {
-        throw new ExpressError(400, `${err}`);
+        const errMsg = err.msg ? err.msg : `${err}`;
+        const statusCode = err.status ? err.status : 400;
+        throw new ExpressError(statusCode, errMsg);
     }
 }
 
 /**
  * isFilter
  * Verifies if qry object has permitted filters.
- * Arguments: qry object
+ * Arguments: qry object and a set
  * Returns boolean.
- * isFilter({ name: "good" }) => true
+ * const set = { "name" };
+ * isFilter({ name: "good" }, set) => true
  */
 function isFilter (qry, filters = recipeQryFilterKeys) {
     try {
@@ -99,14 +112,16 @@ function isFilter (qry, filters = recipeQryFilterKeys) {
         });
         return filterExists;
     } catch (err) {
-        throw new ExpressError(400, `${err}`);
+        const errMsg = err.msg ? err.msg : `${err}`;
+        const statusCode = err.status ? err.status : 400;
+        throw new ExpressError(statusCode, errMsg);
     }
 }
 
 /**
  * recipesFiltersToSqlClmns
- * Converts recipes filter key name to column name.
- * Arguments: qry object and key filters for sql column names
+ * Converts recipes filter key names to sql column names.
+ * Arguments: qry object and obj of key names set to sql column names
  * Returns object.
  * recipesFiltersToSqlClmns({ name: "chicken", author: "good" }) =>
  * { name: "chicken", full_name: "good" };

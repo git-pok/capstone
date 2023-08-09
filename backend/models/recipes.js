@@ -168,7 +168,7 @@ class Recipe {
         const pgValuesQry = whereSqlObj.values;
         finalSql.push(selectWhereQry, orderBy);
         const finalSqlQry = finalSql.join(" ");
-        console.log("FINAL STRING $#$#$#$#$#$#", finalSqlQry);
+        // console.log("FINAL STRING $#$#$#$#$#$#", finalSqlQry);
         const recipesReq = await db.query(
             `${finalSqlQry}`, pgValuesQry
         );
