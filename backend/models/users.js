@@ -65,7 +65,7 @@ class User {
         const { sql, values } = genSql ("insert", "users", data, false, sqlReturn);
         const duplicate = await db.query(`SELECT * FROM users WHERE username = $1`, [username]);
         const dupRowsLength = duplicate.rows.length;
-        if (dupRowsLength !== 0) throw new ExpressError(400, "Username exists already!"); 
+        if (dupRowsLength !== 0) throw new ExpressError(400, "Username exists already!");
         const results = await db.query(sql, values);
         const resultsRow = JSON.parse(JSON.stringify(results.rows[0]));
         const { id } = resultsRow;
