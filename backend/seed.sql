@@ -1,9 +1,9 @@
--- DROP DATABASE IF EXISTS savour;
--- CREATE DATABASE savour;
--- \c savour
-DROP DATABASE IF EXISTS savour_test;
-CREATE DATABASE savour_test;
-\c savour_test
+DROP DATABASE IF EXISTS savour;
+CREATE DATABASE savour;
+\c savour
+-- DROP DATABASE IF EXISTS savour_test;
+-- CREATE DATABASE savour_test;
+-- \c savour_test
 
 
 
@@ -26555,9 +26555,19 @@ CREATE TABLE users (
 );
 
 INSERT INTO users
-    (username, first_name, last_name, email, password)
+    (username, first_name, last_name, email, header_img, profile_img, password)
 VALUES
-    ('fvin', 'fvin', 'trill', 'trill@.com', 'password');
+    ('fv', 'fvin', 'trill', 'trill@gmail.com', 'headerImage', 'profileImg', 'password1'),
+    ('kz', 'knex', 'oz', 'nx@gmail.com', 'headerImage', 'profileImg', 'password2'),
+    ('nyx', 'onyx', 'oz', 'noz@gmail.com', 'headerImage', 'profileImg', 'password3'),
+    ('kal', 'kali', 'oz', 'koz@gmail.com', 'headerImage', 'profileImg', 'password4'),
+    ('dre', 'dremon', 'green', 'dre@gmail.com', 'headerImage', 'profileImg', 'password5'),
+    ('kd', 'koy', 'dred', 'kd@gmail.com', 'headerImage', 'profileImg', 'password6'),
+    ('rasta', 'rasto', 'loc', 'rasta@gmail.com', 'headerImage', 'profileImg', 'password7'),
+    ('rell', 'latrell', 'green', 'lg@gmail.com', 'headerImage', 'profileImg', 'password8'),
+    ('sky', 'sky', 'fila', 'skyfila@gmail.com', 'headerImage', 'profileImg', 'password9'),
+    ('bz', 'biz', 'droso', 'bz@gmail.com', 'headerImage', 'profileImg', 'password10'),
+    ('lex', 'xel', 'lucas', 'lex@gmail.com', 'headerImage', 'profileImg', 'password11');
 
 CREATE TABLE disliked_recipes (
     user_id INTEGER REFERENCES users (id) ON DELETE CASCADE,
@@ -26573,8 +26583,15 @@ CREATE TABLE liked_recipes (
 
 CREATE TABLE favorite_recipes (
     user_id INTEGER REFERENCES users (id) ON DELETE CASCADE,
-    recipe_id INTEGER REFERENCES recipes (id) ON DELETE CASCADE
+    recipe_id INTEGER REFERENCES recipes (id) ON DELETE CASCADE,
+    PRIMARY KEY (user_id, recipe_id)
 );
+
+INSERT INTO favorite_recipes 
+  (user_id, recipe_id)
+VALUES
+  (11, 5), (11, 13), (11, 57), (11, 53);
+
 
 CREATE TABLE view_later (
     user_id INTEGER REFERENCES users (id) ON DELETE CASCADE,

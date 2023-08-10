@@ -56,6 +56,17 @@ const recipesClmnToTblAbrev = {
     level: "d."
 };
 
+/**
+ * favRecpesClmnToTblAbrev
+ * Column name table abreviations
+ * for recipes table and joined tables
+ * for getting a recipe.
+ */
+const favRecpesClmnToTblAbrev = {
+    user_id: "fr.",
+    recipe_id: "fr."
+};
+
 
 /**
  * recipesClmnToTblAbrev
@@ -164,6 +175,8 @@ const sqlOperator = {
     sub_cat_name: "ILIKE",
     rating: "=",
     id: "=",
+    user_id: "=",
+    recipe_id: "="
 };
 
 
@@ -187,6 +200,8 @@ const sqlOperatorStrict = {
     rating: "=",
     id: "=",
     username: "=",
+    recipe_id: "=",
+    user_id: "=",
     recipe_id: "="
 };
 
@@ -266,27 +281,36 @@ const orderByChron = {
 
 
 const recipesOnData = [
-    ["authors", "author_id", "id"],
-    ["ratings", "id", "recipe_id"],
-    ["difficulty", "difficulty_id", "id"],
-    ["main_category", "main_category_id", "id"],
-    ["sub_category", "sub_category_id", "id"]
+    ["authors", "r.author_id", "a.id"],
+    ["ratings", "r.id", "rt.recipe_id"],
+    ["difficulty", "r.difficulty_id", "d.id"],
+    ["main_category", "r.main_category_id", "m.id"],
+    ["sub_category", "r.sub_category_id", "s.id"]
 ];
+
+const favRecipesjoinArr = [
+    ["recipes", "fr.recipe_id", "r.id"],
+    ["authors", "r.author_id", "a.id"],
+    ["ratings", "r.id", "rt.recipe_id"],
+    ["difficulty", "r.difficulty_id", "d.id"],
+    ["main_category", "r.main_category_id", "m.id"],
+    ["sub_category", "r.sub_category_id", "s.id"]
+]
 
 
 const likRecipeJoinData = [
-    ["liked_recipes", "id", "recipe_id"]
+    ["liked_recipes", "r.id", "lik.recipe_id"]
 ];
 
 
 const disRecipeJoinData = [
-    ["disliked_recipes", "id", "recipe_id"]
+    ["disliked_recipes", "r.id", "dis.recipe_id"]
 ];
 
 
 const ingrdRecipesJoinData = [
-    ["units", "unit_id", "id"],
-    ["ingredients", "ingredient_id", "id"]
+    ["units", "ri.unit_id", "u.id"],
+    ["ingredients", "ri.ingredient_id", "ing.id"]
 ];
 
 
@@ -328,12 +352,14 @@ const userSqlReturnNoAbrv = [
 module.exports = {
     db, BCRYPT_WORK_FACTOR, recipesFltrKeyToClmnName,
     recpesFltrClmnNmToTblAbrev, recipesClmnToTblAbrev,
+    favRecpesClmnToTblAbrev,
     recipesIngrdsClmnToTblAbrev, usersClmnToTblAbrev,
     tablesJoinAbrv, joinTableNameAbrv, sqlOperator,
     sqlOperatorStrict, sqlCommandsObj, sqlCommandsModifsObj,
     recipesRelDataSelectColumns, ingrdsRelDataSelectColumns,
     selectLikRecUsrId, selectDisRecUsrId, orderByChron,
-    recipesOnData, likRecipeJoinData, disRecipeJoinData,
+    recipesOnData, favRecipesjoinArr,
+    likRecipeJoinData, disRecipeJoinData,
     ingrdRecipesJoinData, savourTableNames, recipeQryFilterKeys,
     recipeFilterKeys, orderByKeys, isNumbers,
     userSqlReturnNoAbrv

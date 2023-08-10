@@ -35,17 +35,17 @@ function arrayConcat (arr) {
 /**
  * genJoinSql
  * Creates join query.
- * Arguments: table abreviation, join array, and join type
+ * Arguments: join array, and join type
  * joinArr: array of arrays where the values in each array are:
  *      0: the table name being joined,
  *      1: the column name of the left side of the join equation
  *      2: the column name of the right side of the join equation
  * Returns string.
- * const joinArr = ["authors", "author_id", id];
+ * const joinArr = ["authors", "r.author_id", "a.id"];
  * genJoinSql("r", joinArr, "JOIN") => 
  * "JOIN authors a ON r.author_id = a.id";
  */
-function genJoinSql (tableAbrev, joinArr, joinType = "JOIN") {
+function genJoinSql (joinArr, joinType = "JOIN") {
     try {
         if (!Array.isArray(joinArr)) throw new ExpressError(400, "joinArr must be an array!");
         const finalSql = [];
@@ -55,37 +55,23 @@ function genJoinSql (tableAbrev, joinArr, joinType = "JOIN") {
             const join = tablesJoinAbrv[val[0]];
             const joinOn1SqlArr = [];
             const joinOn2SqlArr = [];
-            // Create joined to table abrev.
-            // => r.
-            const joinOnTable1Abrv = tableAbrev;
-            // Create joined to table val.
-            // => author_id
+            // Define left side of join equation => "author_id" =
             const joinOn1 = val[1];
-            // Push joined to table abrev and column name.
-            // => ("r.", "author_id")
-            joinOn1SqlArr.push(joinOnTable1Abrv, joinOn1);
-            // Create join table abrev.
-            // authors => a.
-            const joinOnTable2Abrv = joinTableNameAbrv[val[0]];
-            // Create join table val.
-            // => id
+            joinOn1SqlArr.push(joinOn1);
+            // Create right side of join equation => = "id"
             const joinOn2 = val[2];
-            // Push join table abrev and column name.
-            // => ("a.", "id")
-            joinOn2SqlArr.push(joinOnTable2Abrv, joinOn2);
+            joinOn2SqlArr.push(joinOn2);
             const joinOn1Sql = joinOn1SqlArr.join("");
             const joinOn2Sql = joinOn2SqlArr.join("");
             finalSql.push(
                 joinType, join, "ON", joinOn1Sql, "=", joinOn2Sql
             );
         });
-        // console.log("GEN JOIN SQL FUNC", finalSql);
         return finalSql.join(" ");
     } catch (err) {
         const errMsg = err.msg ? err.msg : "Error!";
         const statusCode = err.status ? err.status : 400;
         throw new ExpressError(statusCode, errMsg);
-        // throw new ExpressError(400, `${err}`);
     }
 }
 

@@ -1,7 +1,13 @@
 // const bcrypt = require("bcrypt");
-const { db, userSqlReturnNoAbrv } = require("../config.js");
 const {
-        genWhereSqlArr,
+    db, userSqlReturnNoAbrv,
+    recipesRelDataSelectColumns,
+    favRecpesClmnToTblAbrev,
+    recipesOnData, favRecipesjoinArr
+} = require("../config.js");
+const {
+        arrayConcat,
+        genWhereSqlArr, genJoinSql,
         genSelectSql, genUpdateSqlObj,
         genInsertSqlObj
     } = require("../helpers/sql.js");
@@ -63,7 +69,7 @@ class User {
         data["password"] = hashedPw;
         const returnValues = Array.from(Object.keys(data));
         const sqlReturn = ["id", ...returnValues];
-        const insertSqlObj = genInsertSqlObj ("users", data, sqlReturn);
+        const insertSqlObj = genInsertSqlObj("users", data, sqlReturn);
         // console.log("insertSqlObj", insertSqlObj);
         const duplicate = await db.query(`SELECT * FROM users WHERE username = $1`, [username]);
         const dupRowsLength = duplicate.rows.length;
@@ -165,7 +171,7 @@ class User {
         const dbUserRowsLength = dbUser.rows.length;
         if (dbUserRowsLength === 0) throw new ExpressError(404, "User not found!");
         const sqlReturn = [...userSqlReturnNoAbrv];
-        const sqlObj = genUpdateSqlObj ("users", data);
+        const sqlObj = genUpdateSqlObj("users", data);
         const prmTzr = sqlObj.values.length + 1;
         const whereSqlObj = genWhereSqlArr({ username }, prmTzr, true, [...userSqlReturnNoAbrv, "is_admin"]);
         const whereSqlCmds = whereSqlObj.whereSql;
@@ -190,6 +196,32 @@ class User {
         const dbUserRowsLength = dbUser.rows.length;
         if (dbUserRowsLength === 0) throw new ExpressError(404, "User not found!");
         await db.query(`DELETE FROM users WHERE username = $1`, [username]);
+    }
+
+    /**
+     * getFavRecipes
+     * Retrieves user's fav recipes.
+     * Returns favorited recipes.
+     * getFavRecipes(userId) => { favRecipes:  }
+     */
+
+    static async getFavRecipes (userId) {
+        // const selectClmns = ["r.name", "a.full_name AS author"];
+        const selectSqlStr = genSelectSql(recipesRelDataSelectColumns, "favorite_recipes", true);
+        const joinSqlStr = genJoinSql(favRecipesjoinArr, "JOIN");
+        // console.log("joinSqlStr", joinSqlStr);
+        const selectJoinSqlStr = arrayConcat([selectSqlStr, joinSqlStr]);
+        // Creates object with where sql and values properties.
+        const whereObj = { user_id: userId };
+        const sqlWhereObj = genWhereSqlArr(whereObj, 1, true, false, true, favRecpesClmnToTblAbrev);
+        // console.log("sqlWhereObj", sqlWhereObj);
+        const sql = arrayConcat([selectJoinSqlStr, sqlWhereObj.whereSql]);
+        // console.log("sql", sql);
+        const favRecipes = await db.query(`
+            ${sql} ORDER BY r.name, rt.rating
+        `, sqlWhereObj.values);
+        // console.log("favRecipes", favRecipes);
+        return favRecipes.rows;
     }
 }
 
