@@ -10,7 +10,7 @@ const ExpressError = require("../models/error.js");
 
 const {
     arrayConcat, genJoinSql, qryObjToOrderBySql,
-    genSql, genWhereSqlArr,
+    genWhereSqlArr,
     genSelectSql, genUpdateSqlObj,
     genInsertSqlObj
 } = require("../helpers/sql.js");
@@ -30,10 +30,7 @@ afterAll(async () => {
     await db.end();
 });
 
-// console.log("BCRYPT_WORK_FACTOR", BCRYPT_WORK_FACTOR);
-// console.log("SECRET_KEY", SECRET_KEY);
-// console.log("app", app);
-// console.log("request", request);
+
 describe("arrayConcat", () => {
     test("concat array of strings", () => {
         const arr = ["SELECT name", "FROM recipes", "WHERE name = 'chicken'"];
@@ -64,10 +61,10 @@ describe("arrayConcat", () => {
 describe("genJoinSql", () => {
     test("create join sql", () => {
         const joinArr = [
-            ["authors", "author_id", "id"],
-            ["ratings", "rating_id", "id"]
+            ["authors", "r.author_id", "a.id"],
+            ["ratings", "r.rating_id", "rt.id"]
         ];
-        const joinSql = genJoinSql("r.", joinArr, "JOIN");
+        const joinSql = genJoinSql(joinArr, "JOIN");
         expect(joinSql).toEqual(
             "JOIN authors a ON r.author_id = a.id JOIN ratings rt ON r.rating_id = rt.id"
         );
@@ -75,14 +72,14 @@ describe("genJoinSql", () => {
 
     test("error for object", () => {
         function errorJoin() {
-            genJoinSql("r.", {one: 1}, "JOIN");
+            genJoinSql({one: 1}, "JOIN");
         }
         expect(errorJoin).toThrow(ExpressError);
     });
 
     test("error for string", () => {
         function errorJoin() {
-            genJoinSql("r.", "string", "JOIN");
+            genJoinSql("string", "JOIN");
         }
         expect(errorJoin).toThrow(ExpressError);
     });
