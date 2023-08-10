@@ -26593,7 +26593,7 @@ VALUES
   (11, 5), (11, 13), (11, 57), (11, 53);
 
 
-CREATE TABLE view_later (
+CREATE TABLE saved_recipes (
     user_id INTEGER REFERENCES users (id) ON DELETE CASCADE,
     recipe_id INTEGER REFERENCES recipes (id) ON DELETE CASCADE
 );

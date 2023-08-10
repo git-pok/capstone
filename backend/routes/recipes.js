@@ -42,5 +42,38 @@ router.get("/", isLoggedIn, async (req, res, next) => {
     }
 });
 
+/**
+ * "/favorites/:user_id"
+ * route type: GET
+ * Authorization: logged in
+ * Returns favorited recipes.
+ */
+router.get("/favorites/:user_id", isLoggedIn, async (req, res, next) => {
+    try {
+        const { user_id } = req.params;
+        const favRecipes = await Recipe.getFavRecipes(user_id);
+        return res.status(200).json(favRecipes);
+    } catch (err) {
+        return next(err);
+    }
+});
+
+
+/**
+ * "/saved/:user_id"
+ * route type: GET
+ * Authorization: logged in
+ * Returns saved recipes.
+ */
+router.get("/saved/:user_id", isLoggedIn, async (req, res, next) => {
+    try {
+        const { user_id } = req.params;
+        const favRecipes = await Recipe.getSavedRecipes(user_id);
+        return res.status(200).json(favRecipes);
+    } catch (err) {
+        return next(err);
+    }
+})
+
 
 module.exports = router;

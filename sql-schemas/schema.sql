@@ -108,7 +108,7 @@ CREATE TABLE favorite_recipes (
 );
 
 
-CREATE TABLE view_later (
+CREATE TABLE saved_recipes (
     user_id INTEGER REFERENCES users (id) ON DELETE CASCADE,
     recipe_id INTEGER REFERENCES recipes (id) ON DELETE CASCADE
 );

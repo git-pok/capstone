@@ -67,6 +67,17 @@ const favRecpesClmnToTblAbrev = {
     recipe_id: "fr."
 };
 
+/**
+ * savedRecpesClmnToTblAbrev
+ * Column name table abreviations
+ * for recipes table and joined tables
+ * for getting a saved recipe.
+ */
+const savedRecpesClmnToTblAbrev = {
+    user_id: "sv.",
+    recipe_id: "sv."
+};
+
 
 /**
  * recipesClmnToTblAbrev
@@ -114,7 +125,7 @@ const tablesJoinAbrv = {
     disliked_recipes: "disliked_recipes dis",
     liked_recipes: "liked_recipes lik",
     favorite_recipes: "favorite_recipes fr",
-    view_later: "view_later vl",
+    saved_recipes: "saved_recipes sv",
     occasions: "occasions o",
     recipelists: "recipelists rl",
     recipelists_recipes: "recipelists_recipes rlr",
@@ -146,7 +157,7 @@ const joinTableNameAbrv = {
     disliked_recipes: "dis.",
     liked_recipes: "lik.",
     favorite_recipes: "fr.",
-    view_later: "vl.",
+    saved_recipes: "sv.",
     occasions: "o.",
     recipelists: "rl.",
     recipelists_recipes: "rlr.",
@@ -297,6 +308,15 @@ const favRecipesjoinArr = [
     ["sub_category", "r.sub_category_id", "s.id"]
 ]
 
+const savedRecipesjoinArr = [
+    ["recipes", "sv.recipe_id", "r.id"],
+    ["authors", "r.author_id", "a.id"],
+    ["ratings", "r.id", "rt.recipe_id"],
+    ["difficulty", "r.difficulty_id", "d.id"],
+    ["main_category", "r.main_category_id", "m.id"],
+    ["sub_category", "r.sub_category_id", "s.id"]
+]
+
 
 const likRecipeJoinData = [
     ["liked_recipes", "r.id", "lik.recipe_id"]
@@ -352,13 +372,13 @@ const userSqlReturnNoAbrv = [
 module.exports = {
     db, BCRYPT_WORK_FACTOR, recipesFltrKeyToClmnName,
     recpesFltrClmnNmToTblAbrev, recipesClmnToTblAbrev,
-    favRecpesClmnToTblAbrev,
+    favRecpesClmnToTblAbrev, savedRecpesClmnToTblAbrev,
     recipesIngrdsClmnToTblAbrev, usersClmnToTblAbrev,
     tablesJoinAbrv, joinTableNameAbrv, sqlOperator,
     sqlOperatorStrict, sqlCommandsObj, sqlCommandsModifsObj,
     recipesRelDataSelectColumns, ingrdsRelDataSelectColumns,
     selectLikRecUsrId, selectDisRecUsrId, orderByChron,
-    recipesOnData, favRecipesjoinArr,
+    recipesOnData, favRecipesjoinArr, savedRecipesjoinArr,
     likRecipeJoinData, disRecipeJoinData,
     ingrdRecipesJoinData, savourTableNames, recipeQryFilterKeys,
     recipeFilterKeys, orderByKeys, isNumbers,

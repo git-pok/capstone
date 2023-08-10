@@ -1,9 +1,6 @@
 // const bcrypt = require("bcrypt");
 const {
-    db, userSqlReturnNoAbrv,
-    recipesRelDataSelectColumns,
-    favRecpesClmnToTblAbrev,
-    recipesOnData, favRecipesjoinArr
+    db, userSqlReturnNoAbrv
 } = require("../config.js");
 const {
         arrayConcat,
@@ -204,25 +201,6 @@ class User {
      * Returns favorited recipes.
      * getFavRecipes(userId) => { favRecipes:  }
      */
-
-    static async getFavRecipes (userId) {
-        // const selectClmns = ["r.name", "a.full_name AS author"];
-        const selectSqlStr = genSelectSql(recipesRelDataSelectColumns, "favorite_recipes", true);
-        const joinSqlStr = genJoinSql(favRecipesjoinArr, "JOIN");
-        // console.log("joinSqlStr", joinSqlStr);
-        const selectJoinSqlStr = arrayConcat([selectSqlStr, joinSqlStr]);
-        // Creates object with where sql and values properties.
-        const whereObj = { user_id: userId };
-        const sqlWhereObj = genWhereSqlArr(whereObj, 1, true, false, true, favRecpesClmnToTblAbrev);
-        // console.log("sqlWhereObj", sqlWhereObj);
-        const sql = arrayConcat([selectJoinSqlStr, sqlWhereObj.whereSql]);
-        // console.log("sql", sql);
-        const favRecipes = await db.query(`
-            ${sql} ORDER BY r.name, rt.rating
-        `, sqlWhereObj.values);
-        // console.log("favRecipes", favRecipes);
-        return favRecipes.rows;
-    }
 }
 
 module.exports = User;
