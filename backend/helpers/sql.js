@@ -129,88 +129,6 @@ function qryObjToOrderBySql (qry) {
 }
 
 /**
- * genSql
- * Creates select, insert, or update sql query.
- * Arguments: qryType, tableName, data, strict, returning
- * Returns object with sql and values props.
- * select data argument: array of column names.
- * insert data argument: object with column name keys
-        and their values as values.
- * update data argument: object with column name keys
-        and their values as values.
- * const data = [ "first_name", "last_name" ];
- * const returning = [ first_name, last_name ];
- * genSql("select", "recipes", data, false, returning) =>
- * { sql: "SELECT first_name, last_name FROM recipes", values: [] }
- * const data2 = { first_name: "fvin2", last_name: "I2" };
- * const returning2 = [ first_name, last_name ];
- * genSql("update", "users", data2, true, returning2) =>
- * {
- *  sql: "UPDATE users SET first_name = $1, last_name = $2"
- *  values: ["fvin2", "I2"]
- * }
- */
-function genSql (qryType, table, data, strict = false, returning = []) {
-    try {
-        const prmttdQryTypes = new Set();
-        prmttdQryTypes.add("select").add("insert").add("update");
-        qryType = qryType.toLowerCase().trim();
-        if (!prmttdQryTypes.has(qryType)) throw new ExpressError(400, "qryType not allowed!");
-        const isSelect = qryType === "select";
-        const isUpdate = qryType === "update";
-        const returnLen = returning.length;
-        const isStrict = strict !== false;
-        const dataArray = !isSelect ? Object.entries(data) : [...data];
-        const sqlCommand = [sqlCommandsObj[qryType]];
-        const sqlCommandModifs = [sqlCommandsModifsObj[qryType]];
-        const columns = [];
-        const values = [];
-        const sqlArr = [];
-        const parametizers = [];
-        // const returnCommand = isReturn ? ["RETURNING"] : [""];
-        dataArray.forEach((data, idx) => {
-            if (!isSelect && !isUpdate) {
-                columns.push(data[0]);
-                values.push(data[1]);
-                parametizers.push(`$${idx + 1}`);
-            } else if (isUpdate) {
-                const operator = isStrict ? sqlOperatorStrict[data[0]] : sqlOperator[data[0]];
-                const updateSql = [data[0], operator, `$${idx + 1}`].join(" ");
-                columns.push(updateSql);
-                values.push(data[1]);
-            } else {
-                columns.push(data);
-            }
-        })
-        if (!isSelect && !isUpdate) {
-            sqlArr.push(sqlCommand.join(" "), table, "(", columns.join(", "), ")", sqlCommandModifs.join(" "), "(", parametizers.join(", "), ")");
-        } else if (qryType === "select") {
-            sqlArr.push(sqlCommand.join(" "), columns.join(", "), sqlCommandModifs.join(" "), table);
-        } else if (isUpdate) {
-            sqlArr.push(sqlCommand.join(" "), table, sqlCommandModifs.join(" "), columns.join(", "));
-        }
-        const returnStmnt = returnLen ? returning.join(", ") : "";
-        const returnStr = returnLen ? sqlArr.push(`RETURNING ${returnStmnt}`) : null;
-        // console.log("RETUNR STMNT", returnStmnt);
-        // console.log("sqlArr", sqlArr);
-        let sql = sqlArr.join(" ");
-        if (!isSelect && !isUpdate) {
-            sql = sql.replaceAll("( ", "(").replaceAll(" )", ")");
-        }
-        return {
-            sql,
-            values
-        };
-    } catch (err) {
-        const errMsg = err.msg ? err.msg : "Error!";
-        const statusCode = err.status ? err.status : 400;
-        throw new ExpressError(statusCode, errMsg);
-        // throw new ExpressError(400, `${err}`);
-    }
-}
-
-
-/**
  * genWhereSqlArr
  * Creates WHERE sql and parametized values.
  * Arguments: column value array, parametizer, exactMatch, returnArray, table abreviations
@@ -400,6 +318,87 @@ function genInsertSqlObj (tableName, clmnsValsObj, returnArray = []) {
         const errMsg = err.msg ? err.msg : "Error!";
         const statusCode = err.status ? err.status : 400;
         throw new ExpressError(statusCode, errMsg);
+    }
+}
+
+/**
+ * genSql
+ * Creates select, insert, or update sql query.
+ * Arguments: qryType, tableName, data, strict, returning
+ * Returns object with sql and values props.
+ * select data argument: array of column names.
+ * insert data argument: object with column name keys
+        and their values as values.
+ * update data argument: object with column name keys
+        and their values as values.
+ * const data = [ "first_name", "last_name" ];
+ * const returning = [ first_name, last_name ];
+ * genSql("select", "recipes", data, false, returning) =>
+ * { sql: "SELECT first_name, last_name FROM recipes", values: [] }
+ * const data2 = { first_name: "fvin2", last_name: "I2" };
+ * const returning2 = [ first_name, last_name ];
+ * genSql("update", "users", data2, true, returning2) =>
+ * {
+ *  sql: "UPDATE users SET first_name = $1, last_name = $2"
+ *  values: ["fvin2", "I2"]
+ * }
+ */
+function genSql (qryType, table, data, strict = false, returning = []) {
+    try {
+        const prmttdQryTypes = new Set();
+        prmttdQryTypes.add("select").add("insert").add("update");
+        qryType = qryType.toLowerCase().trim();
+        if (!prmttdQryTypes.has(qryType)) throw new ExpressError(400, "qryType not allowed!");
+        const isSelect = qryType === "select";
+        const isUpdate = qryType === "update";
+        const returnLen = returning.length;
+        const isStrict = strict !== false;
+        const dataArray = !isSelect ? Object.entries(data) : [...data];
+        const sqlCommand = [sqlCommandsObj[qryType]];
+        const sqlCommandModifs = [sqlCommandsModifsObj[qryType]];
+        const columns = [];
+        const values = [];
+        const sqlArr = [];
+        const parametizers = [];
+        // const returnCommand = isReturn ? ["RETURNING"] : [""];
+        dataArray.forEach((data, idx) => {
+            if (!isSelect && !isUpdate) {
+                columns.push(data[0]);
+                values.push(data[1]);
+                parametizers.push(`$${idx + 1}`);
+            } else if (isUpdate) {
+                const operator = isStrict ? sqlOperatorStrict[data[0]] : sqlOperator[data[0]];
+                const updateSql = [data[0], operator, `$${idx + 1}`].join(" ");
+                columns.push(updateSql);
+                values.push(data[1]);
+            } else {
+                columns.push(data);
+            }
+        })
+        if (!isSelect && !isUpdate) {
+            sqlArr.push(sqlCommand.join(" "), table, "(", columns.join(", "), ")", sqlCommandModifs.join(" "), "(", parametizers.join(", "), ")");
+        } else if (qryType === "select") {
+            sqlArr.push(sqlCommand.join(" "), columns.join(", "), sqlCommandModifs.join(" "), table);
+        } else if (isUpdate) {
+            sqlArr.push(sqlCommand.join(" "), table, sqlCommandModifs.join(" "), columns.join(", "));
+        }
+        const returnStmnt = returnLen ? returning.join(", ") : "";
+        const returnStr = returnLen ? sqlArr.push(`RETURNING ${returnStmnt}`) : null;
+        // console.log("RETUNR STMNT", returnStmnt);
+        // console.log("sqlArr", sqlArr);
+        let sql = sqlArr.join(" ");
+        if (!isSelect && !isUpdate) {
+            sql = sql.replaceAll("( ", "(").replaceAll(" )", ")");
+        }
+        return {
+            sql,
+            values
+        };
+    } catch (err) {
+        const errMsg = err.msg ? err.msg : "Error!";
+        const statusCode = err.status ? err.status : 400;
+        throw new ExpressError(statusCode, errMsg);
+        // throw new ExpressError(400, `${err}`);
     }
 }
 
