@@ -40,6 +40,41 @@ const clmnNameToTblAbrev = {
 };
 
 /**
+ * recipesClmnToTblAbrev
+ * Table abreviations for column names.
+ */
+const recipesClmnToTblAbrev = {
+    full_name: "a.",
+    name: "r.",
+    main_cat_name: "m.",
+    sub_cat_name: "s.",
+    rating: "rt.",
+    id: "r.",
+    level: "d."
+};
+
+
+/**
+ * recipesClmnToTblAbrev
+ * Table abreviations for column names.
+ */
+const recipesIngrdsClmnToTblAbrev = {
+    id: "ri.",
+    recipe_id: "ri."
+};
+
+const usersClmnToTblAbrev = {
+    username: "u.",
+	first_name: "oro",
+	last_name: "Lokz",
+	email: "oro@g.com",
+	phone: "813 507 4490",
+	header_img: "testHeaderImage",
+	profile_img: "testProfileImage",
+	password: "password"
+};
+
+/**
  * tablesJoinAbrv
  * Table name and abreviation for table name.
  * JOIN authors a
@@ -136,7 +171,8 @@ const sqlOperatorStrict = {
     sub_cat_name: "=",
     rating: "=",
     id: "=",
-    username: "="
+    username: "=",
+    recipe_id: "="
 };
 
 /**
@@ -222,6 +258,16 @@ const ingrdRecipesJoinData = [
     ["ingredients", "ingredient_id", "id"]
 ];
 
+const savourTableNames = new Set();
+    savourTableNames.add("authors").add("units").add("ingredients")
+    .add("main_category").add("sub_category").add("difficulty")
+    .add("recipes").add("recipes_ingredients").add("ratings")
+    .add("users").add("disliked_recipes").add("liked_recipes")
+    .add("favorite_recipes").add("view_later").add("occasions")
+    .add("recipelists").add("recipelists_recipes").add("tips")
+    .add("reviews").add("shoppinglists").add("shoppinglists_items")
+    .add("user_recipes").add("user_recipes_ingredients");
+
 const recipeQryFilterKeys = new Set();
         recipeQryFilterKeys.add("name").add("author").add("rating")
         .add("orderBy").add("orderBy2").add("mainCategory").add("subCategory");
@@ -244,7 +290,8 @@ const userSqlReturnNoAbrv = [
 
 module.exports = {
     db, BCRYPT_WORK_FACTOR,
-    recipesFltrKeyToClmnName,
+    recipesFltrKeyToClmnName, recipesClmnToTblAbrev,
+    recipesIngrdsClmnToTblAbrev,
     clmnNameToTblAbrev, sqlOperator, sqlOperatorStrict,
     sqlCommandsObj, sqlCommandsModifsObj,
     recipesRelDataSelectColumns, ingrdsRelDataSelectColumns,
@@ -257,5 +304,5 @@ module.exports = {
     disRecipeJoinData, ingrdRecipesJoinData,
     userSqlReturnNoAbrv,
     tablesJoinAbrv, joinTableNameAbrv,
-    recipesOnData
+    recipesOnData, savourTableNames
 };

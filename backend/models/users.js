@@ -2,7 +2,9 @@
 const { db, userSqlReturnNoAbrv } = require("../config.js");
 const {
         genSql,
-        genWhereSqlArr
+        genWhereSqlArr,
+        genSelectSql, genUpdateSqlObj,
+        genInsertSqlObj
     } = require("../helpers/sql.js");
 const {
         validateSchema, hashPassword, generateToken,
@@ -62,11 +64,12 @@ class User {
         data["password"] = hashedPw;
         const returnValues = Array.from(Object.keys(data));
         const sqlReturn = ["id", ...returnValues];
-        const { sql, values } = genSql ("insert", "users", data, false, sqlReturn);
+        const insertSqlObj = genInsertSqlObj ("users", data, sqlReturn);
+        // console.log("insertSqlObj", insertSqlObj);
         const duplicate = await db.query(`SELECT * FROM users WHERE username = $1`, [username]);
         const dupRowsLength = duplicate.rows.length;
         if (dupRowsLength !== 0) throw new ExpressError(400, "Username exists already!");
-        const results = await db.query(sql, values);
+        const results = await db.query(insertSqlObj.sql, insertSqlObj.values);
         const resultsRow = JSON.parse(JSON.stringify(results.rows[0]));
         const { id } = resultsRow;
         delete resultsRow["password"];
@@ -162,16 +165,16 @@ class User {
         const dbUserRows = dbUser.rows[0];
         const dbUserRowsLength = dbUser.rows.length;
         if (dbUserRowsLength === 0) throw new ExpressError(404, "User not found!");
-        const sqlReturn = userSqlReturnNoAbrv;
-        const { sql, values } = genSql ("update", "users", data, true);
-        const prmTzr = values.length + 1;
-        const whereSqlObj = genWhereSqlArr({ username }, prmTzr, true, [...sqlReturn, "is_admin"]);
+        const sqlReturn = [...userSqlReturnNoAbrv];
+        const sqlObj = genUpdateSqlObj ("users", data);
+        const prmTzr = sqlObj.values.length + 1;
+        const whereSqlObj = genWhereSqlArr({ username }, prmTzr, true, [...userSqlReturnNoAbrv, "is_admin"]);
         const whereSqlCmds = whereSqlObj.whereSql;
-        const whereSqlVals = whereSqlObj.values;
-        // console.log("FINAL SQL", `${sql} ${whereSqlCmds}`, [...values, ...whereSqlVals]);
+        const pgVals = [...sqlObj.values, ...whereSqlObj.values];
+        // console.log("FINAL SQL", `${sqlObj.sql} ${whereSqlCmds}`, pgVals);
         const user = await db.query(
-            `${sql} ${whereSqlCmds}`,
-            [...values, ...whereSqlVals]
+            `${sqlObj.sql} ${whereSqlCmds}`,
+            pgVals
         );
         const userUpdateRows = user.rows[0];
         return userUpdateRows;

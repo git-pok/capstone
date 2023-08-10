@@ -4,14 +4,16 @@ const {
         selectLikRecUsrId, selectDisRecUsrId,
         likRecipeJoinData,
         disRecipeJoinData, ingrdRecipesJoinData,
-        recipeFilterKeys,
-        recipesOnData
+        recipeFilterKeys, recipesClmnToTblAbrev,
+        recipesOnData, recipesIngrdsClmnToTblAbrev
     } = require("../config.js");
 const {
         genWhereSqlArr,
         arrayConcat,
         genJoinSql,
-        qryObjToOrderBySql, genSql
+        qryObjToOrderBySql, genSql,
+        genSelectSql, genUpdateSqlObj,
+        genInsertSqlObj
     } = require("../helpers/sql.js");
 
 const {
@@ -54,25 +56,31 @@ class Recipe {
         const dbRecipeRowsObj = JSON.parse(JSON.stringify(dbRecipeRows[0]));
         const whereObj = { id: dbRecipeRowsObj.id };
         // Creates object with sql and values properties.
-        const selectSqlArr = genSql ("select", "recipes r", recipesRelDataSelectColumns);
-        const selectLikSqlArr = genSql ("select", "recipes r", selectLikRecUsrId);
-        const selectDisSqlArr = genSql ("select", "recipes r", selectDisRecUsrId);
+        const selectSqlStr = genSelectSql (recipesRelDataSelectColumns, "recipes", true);
+        const selectLikSqlStr = genSelectSql (selectLikRecUsrId, "recipes", true);
+        const selectDisSqlStr = genSelectSql (selectDisRecUsrId, "recipes", true);
+        // console.log("selectSqlStr $#$#$#$#$#$#$#$#$#$#$#$#$#$", selectSqlStr);
+        // console.log("selectLikSqlStr $#$#$#$#$#$#$#$#$#$#$#$#$#$", selectLikSqlStr);
+        // console.log("selectDisSqlStr $#$#$#$#$#$#$#$#$#$#$#$#$#$", selectDisSqlStr);
         // Creates a sql join query string
         const joinSqlStr = genJoinSql("r.", recipesOnData, "JOIN");
         const joinLikSqlStr = genJoinSql("r.", likRecipeJoinData, "FULL JOIN");
         const joinDisSqlStr = genJoinSql("r.", disRecipeJoinData, "FULL JOIN");
         // Creates one string from array of sql strings
-        const selectJoinSqlStr = arrayConcat([selectSqlArr.sql, joinSqlStr]);
-        const selectLikJoinSqlStr = arrayConcat([selectLikSqlArr.sql, joinLikSqlStr]);
-        const selectDisJoinSqlStr = arrayConcat([selectDisSqlArr.sql, joinDisSqlStr]);
+        const selectJoinSqlStr = arrayConcat([selectSqlStr, joinSqlStr]);
+        const selectLikJoinSqlStr = arrayConcat([selectLikSqlStr, joinLikSqlStr]);
+        const selectDisJoinSqlStr = arrayConcat([selectDisSqlStr, joinDisSqlStr]);
         // Creates object with where sql and values properties.
-        const sqlWhereObj = genWhereSqlArr (whereObj, 1, true, false, true);
+        const sqlWhereObj = genWhereSqlArr (whereObj, 1, true, false, true, recipesClmnToTblAbrev);
+        // console.log("sqlWhereObj $#$#$#$#$#$#$#$", sqlWhereObj);
         // Creates query from select query string
         // and where query object.
         const selectQry = arrayConcat([selectJoinSqlStr, sqlWhereObj.whereSql]);
         const likQry = arrayConcat([selectLikJoinSqlStr, sqlWhereObj.whereSql]);
         const disQry = arrayConcat([selectDisJoinSqlStr, sqlWhereObj.whereSql]);
-        // console.log("SELECT QRY", selectQry);
+        // console.log("SELECT QRY $#$#$#$#$#$", selectQry);
+        // console.log("likQry $#$#$#$#$#$", likQry);
+        // console.log("disQry $#$#$#$#$#$", disQry);
         // Creates pg values.
         const pgValues = sqlWhereObj.values;
         // Makes request for recipe with query string.
@@ -101,23 +109,25 @@ class Recipe {
         selectRecipesReq.rows[0]["liked_user_ids"] = noNullLikUsrIds;
         selectRecipesReq.rows[0]["disliked_user_ids"] = noNullDisUrdIds;
         
-        // INGREDIENTS FT
-        const ingrSelectSqlArr = genSql ("select", "recipes_ingredients ri", ingrdsRelDataSelectColumns);
+        // Create recipes_ingredients select string.
+        const ingrSelectSqlStr = genSelectSql (ingrdsRelDataSelectColumns, "recipes_ingredients", true);
+        // Create recipes_ingredients join string.
         const ingrJoinSqlStr = genJoinSql("ri.", ingrdRecipesJoinData, "JOIN");
-        console.log("RECIPES INGEREDIENTS$#$#$#$#$#$", ingrSelectSqlArr);
-        console.log("ingrJoinLikSqlStr$#$#$#$#$#$", ingrJoinSqlStr);
-        const ingrSelectJoinSqlStr = arrayConcat([ingrSelectSqlArr.sql, ingrJoinSqlStr]);
-        const ingrSelectQry = arrayConcat([ingrSelectJoinSqlStr, sqlWhereObj.whereSql]);
-        console.log("ingrSelectQry$#$#$#$#$#$", ingrSelectQry);
-        // `
-        // SELECT ri.qty, u.unit, ing.ingredient
-        // FROM recipes_ingredients ri JOIN ingredients ing
-        // ON ri.ingredient_id = ing.id
-        // JOIN units u ON ri.unit_id = u.id
-        // WHERE ri.recipe_id = 1684;
-        // `
-        // END OF INGREDIENTS FT
-        
+        // Concat recipes_ingredients select and join strings.
+        const ingrSelectJoinSqlStr = arrayConcat([ingrSelectSqlStr, ingrJoinSqlStr]);
+        // Create object with column name and value to pass into genWhereSqlArr.
+        const RecIngrdsObj = { recipe_id: dbRecipeRowsObj.id };
+        // console.log("RecIngrdsObj", RecIngrdsObj);
+        // Generate where sql object.
+        const ingrdsWhereObj = genWhereSqlArr (RecIngrdsObj, 1, true, false, true, recipesIngrdsClmnToTblAbrev);
+        // Concat select, join, and where sql.
+        const ingrSelectQry = arrayConcat([ingrSelectJoinSqlStr, ingrdsWhereObj.whereSql]);
+        // console.log("ingrSelectQry$#$#$#$#$#$", ingrSelectQry, pgValues);
+        // Makes request for recipes_ingredients with query string.
+        const ingredsReq = await db.query(
+            `${ingrSelectQry}`, pgValues
+        );
+        recipeRow.ingredients = ingredsReq.rows  
         return recipeRow;
     }
 
@@ -138,9 +148,11 @@ class Recipe {
 	* }
      */
     static async getRecipes() {
-        const selectSqlArr = genSql ("select", "recipes r", recipesRelDataSelectColumns);
+        // Creates a sql join query string
+        const selectSqlStr = genSelectSql (recipesRelDataSelectColumns, "recipes", true);
         const joinSqlStr = genJoinSql("r.", recipesOnData, "JOIN");
-        const selectJoinSqlStr = arrayConcat([selectSqlArr.sql, joinSqlStr]);
+        const selectJoinSqlStr = arrayConcat([selectSqlStr, joinSqlStr]);
+        // console.log("selectJoinSqlStr $#$#$#$#$#$#$#$#$#$#$#$#$#$", selectJoinSqlStr);
         const recipesReq = await db.query(
             `${selectJoinSqlStr} ORDER BY name ASC`
         );
@@ -173,13 +185,14 @@ class Recipe {
         // Convert qry object keys to sql table column names.
         const filtersConverted = recipesFiltersToSqlClmns(filtersParsed);
         // Create where sql object.
-        const whereSqlObj = genWhereSqlArr(filtersConverted, prmTzr, false, false, true);
+        // console.log("filtersConverted $#$#$#$#$#$#$", filtersConverted)
+        const whereSqlObj = genWhereSqlArr(filtersConverted, prmTzr, false, false, true, recipesClmnToTblAbrev);
         // Create sql select qry.
-        const selectSqlArr = genSql ("select", "recipes r", recipesRelDataSelectColumns);
+        const selectSqlStr = genSelectSql (recipesRelDataSelectColumns, "recipes", true);
         // Create sql join query.
         const joinSqlStr = genJoinSql("r.", recipesOnData, "JOIN");
         // Concat select and join queries.
-        const selectJoinSqlStr = arrayConcat([selectSqlArr.sql, joinSqlStr]);
+        const selectJoinSqlStr = arrayConcat([selectSqlStr, joinSqlStr]);
         // Concat the select/join query and where query.
         const selectWhereQry = arrayConcat([selectJoinSqlStr, whereSqlObj.whereSql]);
         // Create order by query with qry onject.
@@ -188,7 +201,7 @@ class Recipe {
         const pgValuesQry = whereSqlObj.values;
         finalSql.push(selectWhereQry, orderBy);
         const finalSqlQry = finalSql.join(" ");
-        // console.log("FINAL STRING $#$#$#$#$#$#", finalSqlQry);
+        // console.log("FINAL STRING $#$#$#$#$#$#", finalSqlQry, pgValuesQry);
         const recipesReq = await db.query(
             `${finalSqlQry}`, pgValuesQry
         );
