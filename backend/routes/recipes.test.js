@@ -52,7 +52,64 @@ describe("/GET /recipes/:id", () => {
 		    "prep_time": "10 mins",
 		    "cook_time": "6 mins",
 		    "liked_user_ids": [],
-		    "disliked_user_ids": []
+		    "disliked_user_ids": [],
+            "ingredients": [
+                {
+                    "qty": "400",
+                    "unit": "g",
+                    "ingredient": "can  chickpeas, rinsed and drained"
+                },
+                {
+                    "qty": "1",
+                    "unit": "no unit",
+                    "ingredient": "small red onion, roughly chopped"
+                },
+                {
+                    "qty": "1",
+                    "unit": "no unit",
+                    "ingredient": "garlic clove, chopped"
+                },
+                {
+                    "qty": "",
+                    "unit": "no unit",
+                    "ingredient": "handful of flat-leaf parsley  or curly parsley"
+                },
+                {
+                    "qty": "1",
+                    "unit": "tsp",
+                    "ingredient": "ground cumin"
+                },
+                {
+                    "qty": "1",
+                    "unit": "tsp",
+                    "ingredient": "ground coriander"
+                },
+                {
+                    "qty": "½",
+                    "unit": "tsp",
+                    "ingredient": "harissa paste  or chilli powder"
+                },
+                {
+                    "qty": "2",
+                    "unit": "tbsp",
+                    "ingredient": "plain flour"
+                },
+                {
+                    "qty": "2",
+                    "unit": "tbsp",
+                    "ingredient": "sunflower oil"
+                },
+                {
+                    "qty": "",
+                    "unit": "no unit",
+                    "ingredient": "toasted pitta bread, to serve"
+                },
+                {
+                    "qty": "200",
+                    "unit": "g",
+                    "ingredient": "tub tomato salsa, to serve"
+                }
+            ]
         }]);
     });
 
@@ -71,9 +128,9 @@ describe("/GET /recipes", () => {
         expect(req.body.length).toEqual(1686);
         expect(req.body[0].id).toEqual(expect.any(Number));
         expect(req.body[0].name).toEqual(expect.any(String));
-        expect(req.body[0].name).toEqual(expect.any(String));
         expect(req.body[0].description).toEqual(expect.any(String));
         expect(req.body[0].author).toEqual(expect.any(String));
+        expect(req.body[0].steps).toEqual(expect.any(String));
     });
 
     test("get recipes with name filter", async () => {

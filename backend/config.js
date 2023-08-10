@@ -144,12 +144,15 @@ const joinTableNameAbrv = {
  */
 const sqlOperator = {
     full_name: "ILIKE",
+    first_name: "ILIKE",
+    last_name: "ILIKE",
+    username: "ILIKE",
+    email: "ILIKE",
     name: "ILIKE",
     main_cat_name: "ILIKE",
     sub_cat_name: "ILIKE",
     rating: "=",
     id: "=",
-    username: "="
 };
 
 /**

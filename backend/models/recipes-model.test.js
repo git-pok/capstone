@@ -49,7 +49,39 @@ describe("Recipe", () => {
 			"prep_time": "10 mins",
 			"cook_time": "No Time",
 			"liked_user_ids": [],
-			"disliked_user_ids": []
+			"disliked_user_ids": [],
+            "ingredients": [
+                {
+                    "qty": "40",
+                    "unit": "g",
+                    "ingredient": "grated carrot"
+                },
+                {
+                    "qty": "",
+                    "unit": "no unit",
+                    "ingredient": "a big pinch of mixed spice"
+                },
+                {
+                    "qty": "¼",
+                    "unit": "tsp",
+                    "ingredient": "cinnamon"
+                },
+                {
+                    "qty": "50",
+                    "unit": "g",
+                    "ingredient": "rolled porridge oats"
+                },
+                {
+                    "qty": "1",
+                    "unit": "tsp",
+                    "ingredient": "honey"
+                },
+                {
+                    "qty": "1",
+                    "unit": "tsp",
+                    "ingredient": "sultanas"
+                }
+            ]
         });
     });
 

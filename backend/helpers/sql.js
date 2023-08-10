@@ -274,13 +274,22 @@ function genWhereSqlArr (columnValObj, parametizer, exactMatch = false, returnAr
     }
 }
 
-function genSelectSql (selectColumnsArr, tableName, tableNameAbrev = false) {
+function genSelectSql (selectColumnsArr, tableName, tableNameAbrev = false, clmnToTableCvrtObj) {
     try {
         if (!Array.isArray(selectColumnsArr)) throw new ExpressError("selectColumnsArr must be an array!");
         const finalSql = [];
         const columns = [];
         finalSql.push("SELECT");
-        selectColumnsArr.forEach(clmnName => columns.push(clmnName));
+        selectColumnsArr.forEach(clmnName => {
+            if (tableNameAbrev) {
+                const columnAbrev = [];
+                columnAbrev.push(clmnToTableCvrtObj[clmnName]);
+                columnAbrev.push(clmnName);
+                const columnAbrevStr = columnAbrev.join("");
+                columns.push(columnAbrevStr);
+            }
+            else columns.push(clmnName);
+        })
         finalSql.push(columns.join(", "), "FROM");
         if (tableNameAbrev !== false) {
             const tableNameAndAbrev = tablesJoinAbrv[tableName];

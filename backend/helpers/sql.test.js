@@ -11,6 +11,8 @@ const ExpressError = require("../models/error.js");
 const {
     arrayConcat, genJoinSql, qryObjToOrderBySql,
     genSql, genWhereSqlArr,
+    genSelectSql, genUpdateSqlObj,
+    genInsertSqlObj
 } = require("../helpers/sql.js");
 
 // beforeEach(() => {
@@ -32,17 +34,17 @@ afterAll(async () => {
 // console.log("SECRET_KEY", SECRET_KEY);
 // console.log("app", app);
 // console.log("request", request);
-const array1 = ["SELECT name FROM recipes", "WHERE name = 'chicken'"];
-const array2 = ["SELECT rating FROM ratings", "WHERE rating =", 1];
 describe("arrayConcat", () => {
     test("concat array of strings", () => {
-        const concatedArr = arrayConcat(array1);
+        const arr = ["SELECT name", "FROM recipes", "WHERE name = 'chicken'"];
+        const concatedArr = arrayConcat(arr);
         expect(concatedArr).toEqual(
             "SELECT name FROM recipes WHERE name = 'chicken'"
         );
     });
     test("concat array of strings and numbers", () => {
-        const concatedArr = arrayConcat(array2);
+        const arr = ["SELECT rating FROM ratings", "WHERE rating =", 1];
+        const concatedArr = arrayConcat(arr);
         expect(concatedArr).toEqual(
             "SELECT rating FROM ratings WHERE rating = 1"
         );
@@ -132,89 +134,174 @@ describe("qryObjToOrderBySql", () => {
     });
 });
 
-describe("genSql", () => {
-    test("create select sql", () => {
-        const data = [
-            "first_name", "last_name", "age"
-        ];
-        const selectSql = genSql("select", "users", data);
+describe("genWhereSqlArr", () => {
+    test("create where sql with case insensitive values", () => {
+        const columnsVals = { first_name: "l", username: "lmon" };
+        const selectSql = genWhereSqlArr(columnsVals, 1);
         expect(selectSql).toEqual({
-            sql: "SELECT first_name, last_name, age FROM users",
-            values: []
+            whereSql: "WHERE first_name ILIKE $1 AND username ILIKE $2",
+            values: ["%l%", "%lmon%"]
         });
     });
 
-    test("create strict update sql with no returning", () => {
-        const data = { first_name: "fvin2", last_name: "I2" };
-        const selectSql = genSql("update", "users", data, true);
+    test("create where sql with exact match", () => {
+        const columnsVals = { first_name: "l", username: "lmon" };
+        const selectSql = genWhereSqlArr(columnsVals, 1, true);
         expect(selectSql).toEqual({
-            sql: "UPDATE users SET first_name = $1, last_name = $2",
-            values: ["fvin2", "I2" ]
+            whereSql: "WHERE first_name = $1 AND username = $2",
+            values: ["l", "lmon"]
         });
     });
 
-    test("create strict update sql with returning", () => {
-        const data = { first_name: "fvin2", last_name: "I2" };
-        const returning2 = [ "first_name", "last_name" ];
-        const selectSql = genSql("update", "users", data, true, returning2);
+    test("create where sql with table abreviations and returning", () => {
+        const columnsVals = { first_name: "l", username: "lmon" };
+        const returnArr = [ "first_name", "username" ];
+        const usersClmnToTableAbrevsObj = { first_name: "usr.",  username: "usr." }
+        const selectSql = genWhereSqlArr(columnsVals, 1, false, returnArr, true, usersClmnToTableAbrevsObj);
         expect(selectSql).toEqual({
-            sql: "UPDATE users SET first_name = $1, last_name = $2 RETURNING first_name, last_name",
-            values: ["fvin2", "I2" ]
+            whereSql: "WHERE usr.first_name ILIKE $1 AND usr.username ILIKE $2 RETURNING first_name, username",
+            values: ["%l%", "%lmon%"]
         });
     });
+});
 
-    test("create strict insert sql with returning and all caps argument", () => {
-        const data = { first_name: "fvin2", last_name: "I2" };
-        const returning2 = [ "first_name", "last_name" ];
-        const selectSql = genSql("INSERT", "users", data, true, returning2);
-        expect(selectSql).toEqual({
-            sql: "INSERT INTO users (first_name, last_name) VALUES ($1, $2) RETURNING first_name, last_name",
-            values: ["fvin2", "I2" ]
-        });
+describe("genSelectSql", () => {
+    test("create select sql with no table abrevs in front of columns", () => {
+        const columnSelectVals = [ "first_name", "last_name", "username" ];
+        const selectSql = genSelectSql(columnSelectVals, "users");
+        expect(selectSql).toEqual(
+            "SELECT first_name, last_name, username FROM users"
+        );
+    });
+
+    test("create select sql with table abrevs in front of columns", () => {
+        const columnSelectVals = [ "first_name", "last_name", "username" ];
+        const usersAbrevs = { first_name: "usr.", last_name: "usr.", username: "usr." };
+        const selectSql = genSelectSql(columnSelectVals, "users", true, usersAbrevs);
+        expect(selectSql).toEqual(
+            "SELECT usr.first_name, usr.last_name, usr.username FROM users usr"
+        );
     });
 
     test("error for invalid qryType", () => {
-        const data = { first_name: "fvin2", last_name: "I2" };
-        function errorGenSql() {
-            genSql("notallowed", "users", data, true);
+        const columnSelectVals = { first_name: "first_name", last_name: "last_name" };
+        function errorGenSelectSql() {
+            genSelectSql(columnSelectVals, "users");
         }
-        expect(errorGenSql).toThrow(ExpressError);
+        expect(errorGenSelectSql).toThrow(ExpressError);
     });
 });
 
-describe("genWhereSqlArr", () => {
-    test("case insensitive where qry", () => {
-        const columnValObj = {
-            name: "chicken", full_name: "lu",
-        };
-        const selectSql = genWhereSqlArr(columnValObj, 1);
-        expect(selectSql).toEqual({
-            whereSql: "WHERE name ILIKE $1 AND full_name ILIKE $2",
-            values: ["%chicken%", "%lu%"]
-        });
+describe("genSelectSql", () => {
+    test("create select sql with no table abrevs in front of columns", () => {
+        const columnSelectVals = [ "first_name", "last_name", "username" ];
+        const selectSql = genSelectSql(columnSelectVals, "users");
+        expect(selectSql).toEqual(
+            "SELECT first_name, last_name, username FROM users"
+        );
     });
 
-    test("exact values where qry", () => {
-        const columnValObj = {
-            name: "chicken", full_name: "lu",
-            rating: 5
-        };
-        const selectSql = genWhereSqlArr(columnValObj, 1, true);
-        expect(selectSql).toEqual({
-            whereSql: "WHERE name = $1 AND full_name = $2 AND rating = $3",
-            values: ["chicken", "lu", 5]
-        });
+    test("create select sql with table abrevs in front of columns", () => {
+        const columnSelectVals = [ "first_name", "last_name", "username" ];
+        const usersAbrevs = { first_name: "usr.", last_name: "usr.", username: "usr." };
+        const selectSql = genSelectSql(columnSelectVals, "users", true, usersAbrevs);
+        expect(selectSql).toEqual(
+            "SELECT usr.first_name, usr.last_name, usr.username FROM users usr"
+        );
     });
 
-    test("exact values with table abreviations", () => {
-        const columnValObj = {
-            name: "chicken", full_name: "lu",
-            rating: 5
-        };
-        const selectSql = genWhereSqlArr(columnValObj, 1, true, false, true);
-        expect(selectSql).toEqual({
-            whereSql: "WHERE r.name = $1 AND a.full_name = $2 AND rt.rating = $3",
-            values: ["chicken", "lu", 5]
-        });
+    test("error for invalid qryType", () => {
+        const columnSelectVals = { first_name: "first_name", last_name: "last_name" };
+        function errorGenSelectSql() {
+            genSelectSql(columnSelectVals, "users");
+        }
+        expect(errorGenSelectSql).toThrow(ExpressError);
     });
 });
+
+// describe("genSql", () => {
+//     test("create select sql", () => {
+//         const data = [
+//             "first_name", "last_name", "age"
+//         ];
+//         const selectSql = genSql("select", "users", data);
+//         expect(selectSql).toEqual({
+//             sql: "SELECT first_name, last_name, age FROM users",
+//             values: []
+//         });
+//     });
+
+//     test("create strict update sql with no returning", () => {
+//         const data = { first_name: "fvin2", last_name: "I2" };
+//         const selectSql = genSql("update", "users", data, true);
+//         expect(selectSql).toEqual({
+//             sql: "UPDATE users SET first_name = $1, last_name = $2",
+//             values: ["fvin2", "I2" ]
+//         });
+//     });
+
+//     test("create strict update sql with returning", () => {
+//         const data = { first_name: "fvin2", last_name: "I2" };
+//         const returning2 = [ "first_name", "last_name" ];
+//         const selectSql = genSql("update", "users", data, true, returning2);
+//         expect(selectSql).toEqual({
+//             sql: "UPDATE users SET first_name = $1, last_name = $2 RETURNING first_name, last_name",
+//             values: ["fvin2", "I2" ]
+//         });
+//     });
+
+//     test("create strict insert sql with returning and all caps argument", () => {
+//         const data = { first_name: "fvin2", last_name: "I2" };
+//         const returning2 = [ "first_name", "last_name" ];
+//         const selectSql = genSql("INSERT", "users", data, true, returning2);
+//         expect(selectSql).toEqual({
+//             sql: "INSERT INTO users (first_name, last_name) VALUES ($1, $2) RETURNING first_name, last_name",
+//             values: ["fvin2", "I2" ]
+//         });
+//     });
+
+//     test("error for invalid qryType", () => {
+//         const data = { first_name: "fvin2", last_name: "I2" };
+//         function errorGenSql() {
+//             genSql("notallowed", "users", data, true);
+//         }
+//         expect(errorGenSql).toThrow(ExpressError);
+//     });
+// });
+
+// describe("genWhereSqlArr", () => {
+//     test("case insensitive where qry", () => {
+//         const columnValObj = {
+//             name: "chicken", full_name: "lu",
+//         };
+//         const selectSql = genWhereSqlArr(columnValObj, 1);
+//         expect(selectSql).toEqual({
+//             whereSql: "WHERE name ILIKE $1 AND full_name ILIKE $2",
+//             values: ["%chicken%", "%lu%"]
+//         });
+//     });
+
+//     test("exact values where qry", () => {
+//         const columnValObj = {
+//             name: "chicken", full_name: "lu",
+//             rating: 5
+//         };
+//         const selectSql = genWhereSqlArr(columnValObj, 1, true);
+//         expect(selectSql).toEqual({
+//             whereSql: "WHERE name = $1 AND full_name = $2 AND rating = $3",
+//             values: ["chicken", "lu", 5]
+//         });
+//     });
+
+//     test("exact values with table abreviations", () => {
+//         const columnValObj = {
+//             name: "chicken", full_name: "lu",
+//             rating: 5
+//         };
+//         const selectSql = genWhereSqlArr(columnValObj, 1, true, false, true);
+//         expect(selectSql).toEqual({
+//             whereSql: "WHERE r.name = $1 AND a.full_name = $2 AND rt.rating = $3",
+//             values: ["chicken", "lu", 5]
+//         });
+//     });
+// });
