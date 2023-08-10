@@ -73,7 +73,8 @@ router.get("/saved/:user_id", isLoggedIn, async (req, res, next) => {
     } catch (err) {
         return next(err);
     }
-})
+});
+
 
 
 module.exports = router;

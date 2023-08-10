@@ -26627,7 +26627,7 @@ CREATE TABLE reviews (
     id SERIAL PRIMARY KEY,
     user_id INTEGER REFERENCES users (id) ON DELETE CASCADE,
     recipe_id INTEGER REFERENCES recipes (id) ON DELETE CASCADE,
-    rating INTEGER NOT NULL,
+    stars INTEGER NOT NULL CHECK(stars < 6),
     review TEXT NOT NULL
 );
 

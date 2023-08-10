@@ -194,13 +194,6 @@ class User {
         if (dbUserRowsLength === 0) throw new ExpressError(404, "User not found!");
         await db.query(`DELETE FROM users WHERE username = $1`, [username]);
     }
-
-    /**
-     * getFavRecipes
-     * Retrieves user's fav recipes.
-     * Returns favorited recipes.
-     * getFavRecipes(userId) => { favRecipes:  }
-     */
 }
 
 module.exports = User;

@@ -41,7 +41,7 @@ function arrayConcat (arr) {
  *      1: the column name of the left side of the join equation
  *      2: the column name of the right side of the join equation
  * Returns string.
- * const joinArr = ["authors", "r.author_id", "a.id"];
+ * const joinArr = [["authors", "r.author_id", "a.id"]];
  * genJoinSql("r", joinArr, "JOIN") => 
  * "JOIN authors a ON r.author_id = a.id";
  */
