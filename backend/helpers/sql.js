@@ -9,16 +9,16 @@ const {
 } = require("../config.js");
 
 const {
-    deleteObjProps, definePropsInObj,
+    deleteObjProps, definePropsInObjPure,
     deletePropsNotInSet
 } = require("../helpers/recipes.js");
 
 /**
  * arrayConcat
- * Generates string from arr.
+ * Generates string from array values.
  * Arguments: arr
  * Returns string.
- * arrayConcat (["SELECT", "name", "from", "recipes"]) =>
+ * arrayConcat (["SELECT", "name", "FROM", "recipes"]) =>
  * "SELECT name FROM recipes";
  */
 function arrayConcat (arr) {
@@ -36,6 +36,10 @@ function arrayConcat (arr) {
  * genJoinSql
  * Creates join query.
  * Arguments: table abreviation, join array, and join type
+ * joinArr: array of arrays where the values in each array are:
+ *      0: the table name being joined,
+ *      1: the column name of the left side of the join equation
+ *      2: the column name of the right side of the join equation
  * Returns string.
  * const joinArr = ["authors", "author_id", id];
  * genJoinSql("r", joinArr, "JOIN") => 
@@ -46,14 +50,28 @@ function genJoinSql (tableAbrev, joinArr, joinType = "JOIN") {
         if (!Array.isArray(joinArr)) throw new ExpressError(400, "joinArr must be an array!");
         const finalSql = [];
         joinArr.forEach(val => {
+            // Define join table name and abrev.
+            // => authors a
             const join = tablesJoinAbrv[val[0]];
             const joinOn1SqlArr = [];
             const joinOn2SqlArr = [];
+            // Create joined to table abrev.
+            // => r.
             const joinOnTable1Abrv = tableAbrev;
+            // Create joined to table val.
+            // => author_id
             const joinOn1 = val[1];
+            // Push joined to table abrev and column name.
+            // => ("r.", "author_id")
             joinOn1SqlArr.push(joinOnTable1Abrv, joinOn1);
+            // Create join table abrev.
+            // authors => a.
             const joinOnTable2Abrv = joinTableNameAbrv[val[0]];
+            // Create join table val.
+            // => id
             const joinOn2 = val[2];
+            // Push join table abrev and column name.
+            // => ("a.", "id")
             joinOn2SqlArr.push(joinOnTable2Abrv, joinOn2);
             const joinOn1Sql = joinOn1SqlArr.join("");
             const joinOn2Sql = joinOn2SqlArr.join("");
@@ -104,7 +122,8 @@ function qryObjToOrderBySql (qry) {
                 const tableCode = clmnNameToTblAbrev[valNormlzd];
                 if (!isChron && !sqlObj.order.length) sqlObj.order.push(tableCode, valNormlzd);
                 else if (!isChron && sqlObj.order.length) sqlObj.order2.push(tableCode, valNormlzd);
-                else if (isChron && !orderByLen && !orderBy2Len) sqlObj.chronOrder.push("");
+                // Do nothing if chronOrder is selected without an orderBy.
+                else if (isChron && !orderByLen && !orderBy2Len) null;
                 else if (isChron) sqlObj.chronOrder.push(orderByChron[valNormlzd]);
             }
         });
@@ -131,8 +150,8 @@ function qryObjToOrderBySql (qry) {
 /**
  * genWhereSqlArr
  * Creates WHERE sql and parametized values.
- * Arguments: column value array, parametizer, exactMatch, returnArray, table abreviations
- * Returns object of where sql and values.
+ * Arguments: column and value object, parametizer, exactMatch, returnArray, abrev, column name to table abrev object
+ * Returns object with whereSql and values props.
  * genWhereSqlArr({ name: "good" }, 1, true) => {
     whereSql: ["WHERE name = $1"],
     values: ["good"]
@@ -141,14 +160,15 @@ function qryObjToOrderBySql (qry) {
     whereSql: ["WHERE name ILIKE $1"],
     values: ["%good%"]
  * }
- *  genWhereSqlArr({ name: "good" }, 1, false, false, true) => {
+ *  const recipesClmnNameToTblAbrev = { name: "r." "};
+ *  const clmnVals = { name: "good" };
+ *  genWhereSqlArr(clmnVals, 1, false, false, true, recipesClmnNameToTblAbrev) => {
     whereSql: ["WHERE r.name ILIKE $1"],
     values: ["%good%"]
  * 
  */
 function genWhereSqlArr (columnValObj, parametizer, exactMatch = false, returnArray = false, abrv = false, tableAbrevForColmn) {
     try {
-        // console.log("GEN WHERE columnValObj", columnValObj);
         const sqlObj = {
             whereSql: [],
             values: []
@@ -160,56 +180,61 @@ function genWhereSqlArr (columnValObj, parametizer, exactMatch = false, returnAr
             const isValNumber = Number.isInteger(prop[1]);
             const keyNormlzd = prop[0];
             const valNormlzd = !isValNumber ? prop[1].toLowerCase().trim() : prop[1];
-            // console.log("keyNormlzd", keyNormlzd);
-            // console.log("PROP 0", prop[0]);
+            // Define ILIKE or = commands.
             const queryOperator = isStrict ? sqlOperatorStrict[keyNormlzd] : sqlOperator[keyNormlzd];
+            // Define table code for abrev => r.
             const tableCode = abrv ? tableAbrevForColmn[prop[0]] : null;
-            // console.log("tableCode", tableCode);
+            // Define column command => name or r.name.
             const column = !abrv ? [keyNormlzd] : [tableCode, keyNormlzd];
             const columnJoin = column.join("");
-            // console.log("columnJoin", columnJoin);
+            // Define sql command => r.name ILIKE $1.
             const sql = [columnJoin, queryOperator, `$${parametizer}`];
+            // Define value for sql command => "chicken".
             const cmndValue = isStrict ? `${valNormlzd}` : `%${valNormlzd}%`;
             const value = !isNumbers.has(keyNormlzd) ? cmndValue : +valNormlzd;
-            // console.log("value", value);
-            // console.log("sql", sql);
             if (!sqlObj.whereSql.length) sqlObj.whereSql.push("WHERE", sql.join(" "));
             else sqlObj.whereSql.push("AND", sql.join(" "));
-            // console.log("sqlObj.whereSql", sqlObj.whereSql);
             sqlObj.values.push(value);
             parametizer++;
         });
         const returnStmnt = isReturn ? returnArray.join(", ") : "";
         const returnStr = isReturn ? sqlObj.whereSql.push(`RETURNING ${returnStmnt}`) : null;
         sqlObj.whereSql = sqlObj.whereSql.join(" ");
-        // console.log("sqlObj", sqlObj);
         return sqlObj;
     } catch (err) {
         const errMsg = err.msg ? err.msg : "Error!";
         const statusCode = err.status ? err.status : 400;
         throw new ExpressError(statusCode, errMsg);
-        // throw new ExpressError(400, `${err}`);
     }
 }
 
-function genSelectSql (selectColumnsArr, tableName, tableNameAbrev = false, clmnToTableCvrtObj) {
+/**
+ * genSelectSql
+ * Creates select.
+ * Arguments: selectColumnsArr, tableName, tableNameAbrev
+ * selectColumnsArr argument: column values
+        [ "name", "description" ],
+        or ["r.name", "a.author AS author"]
+ * Returns string.
+ * const selectArr = [ "name", "description" ];
+ * genSelectSql(selectArr, "recipes") =>
+ * "SELECT name, description FROM recipes"
+ * const selectArr2 = [ "r.name", "r.description" ];
+ * genSelectSql(selectArr2, "recipes") =>
+ * "SELECT r.name, r.description FROM recipes r"
+ *
+ */
+function genSelectSql (selectColumnsArr, tableName, tableNameAbrev = false) {
     try {
         if (!Array.isArray(selectColumnsArr)) throw new ExpressError("selectColumnsArr must be an array!");
         const finalSql = [];
         const columns = [];
         finalSql.push("SELECT");
-        selectColumnsArr.forEach(clmnName => {
-            if (tableNameAbrev) {
-                const columnAbrev = [];
-                columnAbrev.push(clmnToTableCvrtObj[clmnName]);
-                columnAbrev.push(clmnName);
-                const columnAbrevStr = columnAbrev.join("");
-                columns.push(columnAbrevStr);
-            }
-            else columns.push(clmnName);
-        })
+        // Push column names to array.
+        selectColumnsArr.forEach(clmnName => columns.push(clmnName));
         finalSql.push(columns.join(", "), "FROM");
         if (tableNameAbrev !== false) {
+            // Define table name with table abrev => authors a
             const tableNameAndAbrev = tablesJoinAbrv[tableName];
             finalSql.push(tableNameAndAbrev);
         } else {
@@ -227,14 +252,13 @@ function genSelectSql (selectColumnsArr, tableName, tableNameAbrev = false, clmn
 /**
  * genUpdateSqlObj
  * Creates update sql query object with parametized values.
- * Arguments: tableName, clmnsValsObj, exactMatch, returnArray
+ * Arguments: tableName, clmnsValsObj, returnArray
  * clmnsValsObj argument: object with column name keys
-        and their values as values.
+        and their values as values => { first_name: "lu" }
  * Returns object with sql and values props.
- * const data = [ "first_name", "last_name" ];
- * const returnArray = [ first_name, last_name ];
+ * const returnArray = [ "first_name", "last_name" ];
  * const clmnsValsObj = { first_name: "fvin2", last_name: "I2" };
- * genSql("users", clmnsValsObj, true, returnArray) =>
+ * genUpdateSqlObj("users", clmnsValsObj, returnArray) =>
  * {
  *  sql: "UPDATE users SET first_name = $1, last_name = $2"
  *  values: ["fvin2", "I2"]
@@ -244,7 +268,6 @@ function genUpdateSqlObj (tableName, clmnsValsObj, returnArray = []) {
     try {
         if (!savourTableNames.has(tableName)) throw new ExpressError(400, `Table name ${tableName} dosen't exist!`);
         const returnLen = returnArray.length;
-        // const isStrict = exactMatch !== false;
         const dataArray = Object.entries(clmnsValsObj);
         const sqlCommand = [sqlCommandsObj["update"]];
         const sqlCommandModifs = [sqlCommandsModifsObj["update"]];
@@ -253,7 +276,10 @@ function genUpdateSqlObj (tableName, clmnsValsObj, returnArray = []) {
         const sqlArr = [];
         const parametizers = [];
         dataArray.forEach((data, idx) => {
+            // Define sql operator from column name:
+            // name => ILIKE.
             const operator = sqlOperatorStrict[data[0]];
+            // Define sql command arr => [ "name ILIKE $1" ]
             const updateSql = [data[0], operator, `$${idx + 1}`].join(" ");
             columns.push(updateSql);
             values.push(data[1]);
@@ -276,14 +302,13 @@ function genUpdateSqlObj (tableName, clmnsValsObj, returnArray = []) {
 /**
  * genInsertSqlObj
  * Creates insert sql query object with parametized values.
- * Arguments: tableName, clmnsValsObj, exactMatch, returnArray
+ * Arguments: tableName, clmnsValsObj, returnArray
  * clmnsValsObj argument: object with column name keys
-        and their values as values.
+        and their values as values => { first_name: "lu" }
  * Returns object with sql and values props.
- * const data = [ "first_name", "last_name" ];
- * const returnArray = [ first_name, last_name ];
+ * const returnArray = [ "first_name", "last_name" ];
  * const clmnsValsObj = { first_name: "fvin2", last_name: "I2" };
- * genSql("users", clmnsValsObj, true, returnArray) =>
+ * genInsertSqlObj("users", clmnsValsObj, returnArray) =>
  * {
  *  sql: "INSERT INTO users (first_name, last_name) VALUES ($1, $2)"
  *  values: ["fvin2", "I2"]
@@ -321,92 +346,11 @@ function genInsertSqlObj (tableName, clmnsValsObj, returnArray = []) {
     }
 }
 
-/**
- * genSql
- * Creates select, insert, or update sql query.
- * Arguments: qryType, tableName, data, strict, returning
- * Returns object with sql and values props.
- * select data argument: array of column names.
- * insert data argument: object with column name keys
-        and their values as values.
- * update data argument: object with column name keys
-        and their values as values.
- * const data = [ "first_name", "last_name" ];
- * const returning = [ first_name, last_name ];
- * genSql("select", "recipes", data, false, returning) =>
- * { sql: "SELECT first_name, last_name FROM recipes", values: [] }
- * const data2 = { first_name: "fvin2", last_name: "I2" };
- * const returning2 = [ first_name, last_name ];
- * genSql("update", "users", data2, true, returning2) =>
- * {
- *  sql: "UPDATE users SET first_name = $1, last_name = $2"
- *  values: ["fvin2", "I2"]
- * }
- */
-function genSql (qryType, table, data, strict = false, returning = []) {
-    try {
-        const prmttdQryTypes = new Set();
-        prmttdQryTypes.add("select").add("insert").add("update");
-        qryType = qryType.toLowerCase().trim();
-        if (!prmttdQryTypes.has(qryType)) throw new ExpressError(400, "qryType not allowed!");
-        const isSelect = qryType === "select";
-        const isUpdate = qryType === "update";
-        const returnLen = returning.length;
-        const isStrict = strict !== false;
-        const dataArray = !isSelect ? Object.entries(data) : [...data];
-        const sqlCommand = [sqlCommandsObj[qryType]];
-        const sqlCommandModifs = [sqlCommandsModifsObj[qryType]];
-        const columns = [];
-        const values = [];
-        const sqlArr = [];
-        const parametizers = [];
-        // const returnCommand = isReturn ? ["RETURNING"] : [""];
-        dataArray.forEach((data, idx) => {
-            if (!isSelect && !isUpdate) {
-                columns.push(data[0]);
-                values.push(data[1]);
-                parametizers.push(`$${idx + 1}`);
-            } else if (isUpdate) {
-                const operator = isStrict ? sqlOperatorStrict[data[0]] : sqlOperator[data[0]];
-                const updateSql = [data[0], operator, `$${idx + 1}`].join(" ");
-                columns.push(updateSql);
-                values.push(data[1]);
-            } else {
-                columns.push(data);
-            }
-        })
-        if (!isSelect && !isUpdate) {
-            sqlArr.push(sqlCommand.join(" "), table, "(", columns.join(", "), ")", sqlCommandModifs.join(" "), "(", parametizers.join(", "), ")");
-        } else if (qryType === "select") {
-            sqlArr.push(sqlCommand.join(" "), columns.join(", "), sqlCommandModifs.join(" "), table);
-        } else if (isUpdate) {
-            sqlArr.push(sqlCommand.join(" "), table, sqlCommandModifs.join(" "), columns.join(", "));
-        }
-        const returnStmnt = returnLen ? returning.join(", ") : "";
-        const returnStr = returnLen ? sqlArr.push(`RETURNING ${returnStmnt}`) : null;
-        // console.log("RETUNR STMNT", returnStmnt);
-        // console.log("sqlArr", sqlArr);
-        let sql = sqlArr.join(" ");
-        if (!isSelect && !isUpdate) {
-            sql = sql.replaceAll("( ", "(").replaceAll(" )", ")");
-        }
-        return {
-            sql,
-            values
-        };
-    } catch (err) {
-        const errMsg = err.msg ? err.msg : "Error!";
-        const statusCode = err.status ? err.status : 400;
-        throw new ExpressError(statusCode, errMsg);
-        // throw new ExpressError(400, `${err}`);
-    }
-}
-
 module.exports = {
     arrayConcat,
     genJoinSql,
     qryObjToOrderBySql,
-    genSql, genWhereSqlArr,
+    genWhereSqlArr,
     genSelectSql, genUpdateSqlObj,
     genInsertSqlObj
 };

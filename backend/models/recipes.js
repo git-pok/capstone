@@ -11,15 +11,15 @@ const {
         genWhereSqlArr,
         arrayConcat,
         genJoinSql,
-        qryObjToOrderBySql, genSql,
+        qryObjToOrderBySql,
         genSelectSql, genUpdateSqlObj,
         genInsertSqlObj
     } = require("../helpers/sql.js");
 
 const {
-    deleteObjProps, definePropsInObj,
-    deleteNullInArr,
-    deletePropsNotInSet,
+    deleteObjProps, definePropsInObjPure,
+    deleteNullInArrPure,
+    deletePropsNotInSetPure,
     recipesFiltersToSqlClmns
 } = require("../helpers/recipes.js");
 // const SECRET_KEY = require("../keys.js");
@@ -59,9 +59,6 @@ class Recipe {
         const selectSqlStr = genSelectSql (recipesRelDataSelectColumns, "recipes", true);
         const selectLikSqlStr = genSelectSql (selectLikRecUsrId, "recipes", true);
         const selectDisSqlStr = genSelectSql (selectDisRecUsrId, "recipes", true);
-        // console.log("selectSqlStr $#$#$#$#$#$#$#$#$#$#$#$#$#$", selectSqlStr);
-        // console.log("selectLikSqlStr $#$#$#$#$#$#$#$#$#$#$#$#$#$", selectLikSqlStr);
-        // console.log("selectDisSqlStr $#$#$#$#$#$#$#$#$#$#$#$#$#$", selectDisSqlStr);
         // Creates a sql join query string
         const joinSqlStr = genJoinSql("r.", recipesOnData, "JOIN");
         const joinLikSqlStr = genJoinSql("r.", likRecipeJoinData, "FULL JOIN");
@@ -78,11 +75,9 @@ class Recipe {
         const selectQry = arrayConcat([selectJoinSqlStr, sqlWhereObj.whereSql]);
         const likQry = arrayConcat([selectLikJoinSqlStr, sqlWhereObj.whereSql]);
         const disQry = arrayConcat([selectDisJoinSqlStr, sqlWhereObj.whereSql]);
-        // console.log("SELECT QRY $#$#$#$#$#$", selectQry);
-        // console.log("likQry $#$#$#$#$#$", likQry);
-        // console.log("disQry $#$#$#$#$#$", disQry);
         // Creates pg values.
         const pgValues = sqlWhereObj.values;
+        // console.log("pgValues $#$#$#$#$#$", pgValues);
         // Makes request for recipe with query string.
         const selectRecipesReq = await db.query(
             `${selectQry}`, pgValues
@@ -100,8 +95,8 @@ class Recipe {
         // Maps disliked recipes user ids.
         const disUsrIds = disRecipesReq.rows.map(obj => obj.disliked_user_id);
         // Deletes null values from ids array.
-        const noNullLikUsrIds = deleteNullInArr(likUsrIds);
-        const noNullDisUrdIds = deleteNullInArr(disUsrIds);
+        const noNullLikUsrIds = deleteNullInArrPure(likUsrIds);
+        const noNullDisUrdIds = deleteNullInArrPure(disUsrIds);
         const recipeRow = selectRecipesReq.rows[0];
         // Deletes liked and disliked recipes properites.
         deleteObjProps (["liked_user_id", "disliked_user_id"], recipeRow);
@@ -163,7 +158,7 @@ class Recipe {
     /**
      * recipesFilter
      * Filters recipes by name, author, or rating.
-     * Arguments: query paramns object
+     * Arguments: query params object
      * recipesFilter(author) =>
      * recipes: {
 		name: "Sausage ...",
@@ -181,7 +176,7 @@ class Recipe {
         // Create parametizer for qry values.
         let prmTzr = 1;
         // Parse out qry object keys that aren't permitted filters.
-        const filtersParsed = deletePropsNotInSet(recipeFilterKeys, qryParams);
+        const filtersParsed = deletePropsNotInSetPure(recipeFilterKeys, qryParams);
         // Convert qry object keys to sql table column names.
         const filtersConverted = recipesFiltersToSqlClmns(filtersParsed);
         // Create where sql object.

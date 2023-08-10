@@ -9,8 +9,8 @@ const ExpressError = require("../models/error.js");
 // } = require("../config.js");
 
 const {
-    deleteObjProps, definePropsInObj,
-    deletePropsNotInSet, deleteNullInArr,
+    deleteObjProps, definePropsInObjPure,
+    deletePropsNotInSetPure, deleteNullInArrPure,
     isFilter, recipesFiltersToSqlClmns
 } = require("./recipes.js");
 
@@ -54,10 +54,10 @@ describe("deleteObjProps", () => {
     });
 });
 
-describe("definePropsInObj", () => {
+describe("definePropsInObjPure", () => {
     test("define props in empty object", () => {
         const propsArr = [["username", "biz"], ["first_name", "bizq"]];
-        const newObj = definePropsInObj (propsArr, {});
+        const newObj = definePropsInObjPure (propsArr, {});
         console.log("NEW OBJ $#$#$#$#$#$#$#$#$", newObj);
         expect(newObj).toEqual(
             {
@@ -72,7 +72,7 @@ describe("definePropsInObj", () => {
             name: "V", rating: 5,
             username: "vn", header_img: "img"
         };
-        const newObj = definePropsInObj (propsArr, object);
+        const newObj = definePropsInObjPure (propsArr, object);
         expect(newObj).toEqual(
             {
                 name: "V", rating: 5,
@@ -85,51 +85,51 @@ describe("definePropsInObj", () => {
     test("error for non array in propsArr arg", () => {
         const propsArr = { name: "l", age: 8 };
         function error () {
-            definePropsInObj (propsArr, {});
+            definePropsInObjPure (propsArr, {});
         }
         expect(error).toThrow(ExpressError);
     });
 });
 
-describe("deleteNullInArr", () => {
+describe("deleteNullInArrPure", () => {
     test("delete null values in array", () => {
         const array = [null, "biz", null, "bizq"];
-        const newArr = deleteNullInArr (array);
+        const newArr = deleteNullInArrPure (array);
         expect(newArr).toEqual(["biz", "bizq"]);
     });
 
     test("pass in array with no null", () => {
         const array = ["biz", "bizq"];
-        const newArr = deleteNullInArr (array);
+        const newArr = deleteNullInArrPure (array);
         expect(newArr).toEqual(["biz", "bizq"]);
     });
     
     test("error for non array in arg", () => {
         const arr = { name: "l", age: 8 };
         function error () {
-            deleteNullInArr (arr);
+            deleteNullInArrPure (arr);
         }
         expect(error).toThrow(ExpressError);
     });
 });
 
-describe("deletePropsNotInSet", () => {
+describe("deletePropsNotInSetPure", () => {
     test("delete props not in set", () => {
         const obj = { first_name: "l", age: 5, favColor: "red" };
-        const newObj = deletePropsNotInSet (set, obj);
+        const newObj = deletePropsNotInSetPure (set, obj);
         expect(newObj).toEqual({ first_name: "l" });
     });
 
     test("pass in object where all values exist in set", () => {
         const obj = { first_name: "l", last_name: "m", username: "lm" };
-        const newArr = deletePropsNotInSet (set, obj);
+        const newArr = deletePropsNotInSetPure (set, obj);
         expect(newArr).toEqual(obj);
     });
     
     test("error for non set in arg", () => {
         const set = [ "l", 8 ];
         function error () {
-            deletePropsNotInSet (set, { l: "m"});
+            deletePropsNotInSetPure (set, { l: "m"});
         }
         expect(error).toThrow(ExpressError);
     });
@@ -152,7 +152,7 @@ describe("isFilter", () => {
         const set = [ "l", 8 ];
         const qry = { first_name: "l", age: 5, favColor: "red" };
         function error () {
-            deletePropsNotInSet (set, qry);
+            deletePropsNotInSetPure (set, qry);
         }
         expect(error).toThrow(ExpressError);
     });

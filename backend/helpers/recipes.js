@@ -30,14 +30,14 @@ function deleteObjProps (propsArr, obj) {
 }
 
 /**
- * definePropsInObj
+ * definePropsInObjPure
  * Defines properties in an object.
  * Arguments: props array and object
  * Returns new object.
  * const obj = { two: 2 }
- * definePropsInObj(["one", 1], obj) => { one: 1, two: 2 };
+ * definePropsInObjPure(["one", 1], obj) => { one: 1, two: 2 };
  */
-function definePropsInObj (propsArr, obj) {
+function definePropsInObjPure (propsArr, obj) {
     try {
         if (!Array.isArray(propsArr)) throw new ExpressError(400, "Invalid data type for propsArr!");
         const objCopy = JSON.parse(JSON.stringify(obj));
@@ -53,14 +53,14 @@ function definePropsInObj (propsArr, obj) {
 }
 
 /**
- * deleteNullInArr
+ * deleteNullInArrPure
  * Deletes null values.
  * Arguments: array
  * Returns new array.
  * const arr = [1, null, 2];
- * deleteNullInArr(arr) => [ 1, 2 ];
+ * deleteNullInArrPure(arr) => [ 1, 2 ];
  */
-function deleteNullInArr (arr) {
+function deleteNullInArrPure (arr) {
     try {
         if (!Array.isArray(arr)) throw new ExpressError(400, "Invalid data type for arr!");
         const filteredArr = arr.filter(val => val !== null);
@@ -73,15 +73,15 @@ function deleteNullInArr (arr) {
 }
 
 /**
- * deletePropsNotInSet
+ * deletePropsNotInSetPure
  * Deletes properties from an object if in set.
  * Arguments: props set and object
  * Returns new object.
  * const set = { "two" };
  * const obj = { one: 1, two: 2 }
- * deletePropsNotInSet(set, obj) => { two: 2 };
+ * deletePropsNotInSetPure(set, obj) => { two: 2 };
  */
-function deletePropsNotInSet (propsSet, obj) {
+function deletePropsNotInSetPure (propsSet, obj) {
     try {
         const newObj = JSON.parse(JSON.stringify(obj))
         for (let prop in newObj) {
@@ -143,7 +143,7 @@ function recipesFiltersToSqlClmns (qry, keyFilters = recipesFltrKeyToClmnName) {
 
 
 module.exports = {
-    deleteObjProps, definePropsInObj,
-    deletePropsNotInSet, deleteNullInArr,
+    deleteObjProps, definePropsInObjPure,
+    deletePropsNotInSetPure, deleteNullInArrPure,
     isFilter, recipesFiltersToSqlClmns
 };

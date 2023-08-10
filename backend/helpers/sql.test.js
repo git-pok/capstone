@@ -175,9 +175,8 @@ describe("genSelectSql", () => {
     });
 
     test("create select sql with table abrevs in front of columns", () => {
-        const columnSelectVals = [ "first_name", "last_name", "username" ];
-        const usersAbrevs = { first_name: "usr.", last_name: "usr.", username: "usr." };
-        const selectSql = genSelectSql(columnSelectVals, "users", true, usersAbrevs);
+        const columnSelectVals = [ "usr.first_name", "usr.last_name", "usr.username" ];
+        const selectSql = genSelectSql(columnSelectVals, "users", true);
         expect(selectSql).toEqual(
             "SELECT usr.first_name, usr.last_name, usr.username FROM users usr"
         );
@@ -250,55 +249,5 @@ describe("genInsertSqlObj", () => {
             genUpdateSqlObj ("invalidTable", clmnValInsrtObj, returnArr);
         }
         expect(errorGenUpdateSqlObj).toThrow(ExpressError);
-    });
-});
-
-describe("genSql", () => {
-    test("create select sql", () => {
-        const data = [
-            "first_name", "last_name", "age"
-        ];
-        const selectSql = genSql("select", "users", data);
-        expect(selectSql).toEqual({
-            sql: "SELECT first_name, last_name, age FROM users",
-            values: []
-        });
-    });
-
-    test("create strict update sql with no returning", () => {
-        const data = { first_name: "fvin2", last_name: "I2" };
-        const updateSql = genSql("update", "users", data, true);
-        expect(updateSql).toEqual({
-            sql: "UPDATE users SET first_name = $1, last_name = $2",
-            values: ["fvin2", "I2" ]
-        });
-    });
-
-    test("create strict update sql with returning", () => {
-        const data = { first_name: "fvin2", last_name: "I2" };
-        const returning2 = [ "first_name", "last_name" ];
-        const updateSql = genSql("update", "users", data, true, returning2);
-        expect(updateSql).toEqual({
-            sql: "UPDATE users SET first_name = $1, last_name = $2 RETURNING first_name, last_name",
-            values: ["fvin2", "I2" ]
-        });
-    });
-
-    test("create strict insert sql with returning and all caps argument", () => {
-        const data = { first_name: "fvin2", last_name: "I2" };
-        const returning2 = [ "first_name", "last_name" ];
-        const insertSql = genSql("INSERT", "users", data, true, returning2);
-        expect(insertSql).toEqual({
-            sql: "INSERT INTO users (first_name, last_name) VALUES ($1, $2) RETURNING first_name, last_name",
-            values: ["fvin2", "I2" ]
-        });
-    });
-
-    test("error for invalid qryType", () => {
-        const data = { first_name: "fvin2", last_name: "I2" };
-        function errorGenSql() {
-            genSql("notallowed", "users", data, true);
-        }
-        expect(errorGenSql).toThrow(ExpressError);
     });
 });
