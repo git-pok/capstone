@@ -23,25 +23,28 @@ const recipesFltrKeyToClmnName = {
     difficulty: "level"
 };
 
+
 /**
- * clmnNameToTblAbrev
- * Table abreviations for column names.
+ * recpesFltrClmnNmToTblAbrev
+ * Table abreviations for recipes filter values.
  */
-const clmnNameToTblAbrev = {
+const recpesFltrClmnNmToTblAbrev = {
     author: "a.",
     full_name: "a.",
     name: "r.",
-    username: "usr.",
-    main_cat_name: "m.",
-    sub_cat_name: "s.",
+    mainCategory: "m.",
+    subCategory: "s.",
     rating: "rt.",
     id: "r.",
-    level: "d."
+    difficulty: "d."
 };
+
 
 /**
  * recipesClmnToTblAbrev
- * Table abreviations for column names.
+ * Column name table abreviations
+ * for recipes table and joined tables
+ * for getting a recipe.
  */
 const recipesClmnToTblAbrev = {
     full_name: "a.",
@@ -56,23 +59,30 @@ const recipesClmnToTblAbrev = {
 
 /**
  * recipesClmnToTblAbrev
- * Table abreviations for column names.
+ * column name table abreviations
+ * for recipes_ingredients table.
  */
 const recipesIngrdsClmnToTblAbrev = {
     id: "ri.",
     recipe_id: "ri."
 };
 
+
+/**
+ * usersClmnToTblAbrev
+ * column name table abreviations for users table.
+ */
 const usersClmnToTblAbrev = {
     username: "u.",
-	first_name: "oro",
-	last_name: "Lokz",
-	email: "oro@g.com",
-	phone: "813 507 4490",
-	header_img: "testHeaderImage",
-	profile_img: "testProfileImage",
-	password: "password"
+	first_name: "u.",
+	last_name: "u.",
+	email: "u.",
+	phone: "u.",
+	header_img: "u.",
+	profile_img: "u.",
+	password: "u."
 };
+
 
 /**
  * tablesJoinAbrv
@@ -105,9 +115,9 @@ const tablesJoinAbrv = {
     user_recipes_ingredients: "user_recipes_ingredients uri"
 };
 
+
 /**
  * joinTableNameAbrv
- * Old name: tablesAndAbrv
  * Table abreviations for join equal to expressions.
  * r.author_id = a.id
  */
@@ -137,6 +147,7 @@ const joinTableNameAbrv = {
     user_recipes_ingredients: "uri."
 };
 
+
 /**
  * sqlOperator
  * Sql operators for where query table columns
@@ -154,6 +165,7 @@ const sqlOperator = {
     rating: "=",
     id: "=",
 };
+
 
 /**
  * sqlOperatorStrict
@@ -178,6 +190,7 @@ const sqlOperatorStrict = {
     recipe_id: "="
 };
 
+
 /**
  * sqlCommandsObj
  * Sql commands for queries.
@@ -188,6 +201,7 @@ const sqlCommandsObj = {
     insert: "INSERT INTO",
     update: "UPDATE"
 };
+
 
 /**
  * sqlCommandsModifsObj
@@ -200,9 +214,11 @@ const sqlCommandsModifsObj = {
     update: "SET"
 };
 
+
 /**
  * recipesRelDataSelectColumns
- * Select column names to query all relational data for recipes table.
+ * Select column names to query all
+ * relational data for recipes table.
  */
 const recipesRelDataSelectColumns = [
     "r.id", "r.name", "a.full_name AS author", "rt.rating",
@@ -211,34 +227,43 @@ const recipesRelDataSelectColumns = [
     "r.steps", "r.prep_time", "r.cook_time"
 ];
 
+
 /**
  * ingrdsRelDataSelectColumns
- * Select column names to query all relational data for recipes table.
+ * Select column names to
+ * query all relational data for
+ * recipes_ingredients table.
  */
 const ingrdsRelDataSelectColumns = [
     "ri.qty", "u.unit", "ing.ingredient"
 ];
 
+
 /**
  * selectLikRecUsrId
- * Select column names to query user id from liked_recipes table.
+ * Select column names to
+ * query user id from liked_recipes table.
  */
 const selectLikRecUsrId = [
     "lik.user_id AS liked_user_id"
 ];
 
+
 /**
  * selectDisRecUsrId
- * Select column names to query user id from disliked_recipes table.
+ * Select column names to
+ * query user id from disliked_recipes table.
  */
 const selectDisRecUsrId = [
     "dis.user_id AS disliked_user_id"
 ];
 
+
 const orderByChron = {
     asc: "ASC",
     desc: "DESC"
 };
+
 
 const recipesOnData = [
     ["authors", "author_id", "id"],
@@ -248,18 +273,22 @@ const recipesOnData = [
     ["sub_category", "sub_category_id", "id"]
 ];
 
+
 const likRecipeJoinData = [
     ["liked_recipes", "id", "recipe_id"]
 ];
+
 
 const disRecipeJoinData = [
     ["disliked_recipes", "id", "recipe_id"]
 ];
 
+
 const ingrdRecipesJoinData = [
     ["units", "unit_id", "id"],
     ["ingredients", "ingredient_id", "id"]
 ];
+
 
 const savourTableNames = new Set();
     savourTableNames.add("authors").add("units").add("ingredients")
@@ -271,20 +300,25 @@ const savourTableNames = new Set();
     .add("reviews").add("shoppinglists").add("shoppinglists_items")
     .add("user_recipes").add("user_recipes_ingredients");
 
+
 const recipeQryFilterKeys = new Set();
         recipeQryFilterKeys.add("name").add("author").add("rating")
         .add("orderBy").add("orderBy2").add("mainCategory").add("subCategory");
+
 
 const recipeFilterKeys = new Set();
         recipeFilterKeys.add("name").add("author").add("rating")
         .add("mainCategory").add("subCategory");
 
+
 const orderByKeys = new Set();
         orderByKeys.add("orderby").add("orderby2").add("chronorder");
+
 
 const isNumbers = new Set();
         isNumbers.add("recipe_id").add("user_id").add("rating")
         .add("id").add("vote_count");
+
 
 const userSqlReturnNoAbrv = [
     "id", "username", "first_name", "last_name",
@@ -292,20 +326,15 @@ const userSqlReturnNoAbrv = [
 ];
 
 module.exports = {
-    db, BCRYPT_WORK_FACTOR,
-    recipesFltrKeyToClmnName, recipesClmnToTblAbrev,
-    recipesIngrdsClmnToTblAbrev,
-    clmnNameToTblAbrev, sqlOperator, sqlOperatorStrict,
-    sqlCommandsObj, sqlCommandsModifsObj,
+    db, BCRYPT_WORK_FACTOR, recipesFltrKeyToClmnName,
+    recpesFltrClmnNmToTblAbrev, recipesClmnToTblAbrev,
+    recipesIngrdsClmnToTblAbrev, usersClmnToTblAbrev,
+    tablesJoinAbrv, joinTableNameAbrv, sqlOperator,
+    sqlOperatorStrict, sqlCommandsObj, sqlCommandsModifsObj,
     recipesRelDataSelectColumns, ingrdsRelDataSelectColumns,
-    selectLikRecUsrId,
-    selectDisRecUsrId,
-    orderByChron, recipeQryFilterKeys,
-    recipeFilterKeys, orderByKeys,
-    isNumbers,
-    likRecipeJoinData,
-    disRecipeJoinData, ingrdRecipesJoinData,
-    userSqlReturnNoAbrv,
-    tablesJoinAbrv, joinTableNameAbrv,
-    recipesOnData, savourTableNames
+    selectLikRecUsrId, selectDisRecUsrId, orderByChron,
+    recipesOnData, likRecipeJoinData, disRecipeJoinData,
+    ingrdRecipesJoinData, savourTableNames, recipeQryFilterKeys,
+    recipeFilterKeys, orderByKeys, isNumbers,
+    userSqlReturnNoAbrv
 };

@@ -4,6 +4,7 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const { BCRYPT_WORK_FACTOR } = require("../config.js");
 
+
 function validateSchema (data, schema) {
     try {
         const result = jsonschema.validate(data, schema);
@@ -12,6 +13,7 @@ function validateSchema (data, schema) {
         throw new ExpressError(400, `${err}`);
     }
 }
+
 
 async function hashPassword (password) {
     try {
@@ -23,6 +25,7 @@ async function hashPassword (password) {
     }
 }
 
+
 async function verifyPassword (formPw, dbPw) {
     try {
         const pwVerify = await bcrypt.compare(formPw, dbPw);
@@ -31,6 +34,7 @@ async function verifyPassword (formPw, dbPw) {
         throw new ExpressError(400, `${err}`);
     }
 }
+
 
 function generateToken (payload, SECRET_KEY) {
     try {
@@ -41,6 +45,7 @@ function generateToken (payload, SECRET_KEY) {
     }
 }
 
+
 function decodeToken (token, SECRET_KEY) {
     try {
         const payload = jwt.verify(token, SECRET_KEY);
@@ -49,6 +54,7 @@ function decodeToken (token, SECRET_KEY) {
         throw new ExpressError(400, `${err}`);
     }
 }
+
 
 module.exports = {
     validateSchema, hashPassword, generateToken,
