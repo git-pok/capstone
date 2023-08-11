@@ -110,7 +110,8 @@ CREATE TABLE favorite_recipes (
 
 CREATE TABLE saved_recipes (
     user_id INTEGER REFERENCES users (id) ON DELETE CASCADE,
-    recipe_id INTEGER REFERENCES recipes (id) ON DELETE CASCADE
+    recipe_id INTEGER REFERENCES recipes (id) ON DELETE CASCADE,
+    PRIMARY KEY (user_id, recipe_id)
 );
 
 
@@ -144,11 +145,12 @@ CREATE TABLE tips (
 
 
 CREATE TABLE reviews (
-    id SERIAL PRIMARY KEY,
+    id SERIAL,
     user_id INTEGER REFERENCES users (id) ON DELETE CASCADE,
     recipe_id INTEGER REFERENCES recipes (id) ON DELETE CASCADE,
     stars INTEGER NOT NULL CHECK(stars < 6),
-    review TEXT NOT NULL
+    review TEXT NOT NULL,
+    PRIMARY KEY (user_id, recipe_id)
 );
 
 

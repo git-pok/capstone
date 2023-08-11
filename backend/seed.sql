@@ -1,9 +1,9 @@
--- DROP DATABASE IF EXISTS savour;
--- CREATE DATABASE savour;
--- \c savour
-DROP DATABASE IF EXISTS savour_test;
-CREATE DATABASE savour_test;
-\c savour_test
+DROP DATABASE IF EXISTS savour;
+CREATE DATABASE savour;
+\c savour
+-- DROP DATABASE IF EXISTS savour_test;
+-- CREATE DATABASE savour_test;
+-- \c savour_test
 
 
 
@@ -26600,8 +26600,14 @@ VALUES
 
 CREATE TABLE saved_recipes (
     user_id INTEGER REFERENCES users (id) ON DELETE CASCADE,
-    recipe_id INTEGER REFERENCES recipes (id) ON DELETE CASCADE
+    recipe_id INTEGER REFERENCES recipes (id) ON DELETE CASCADE,
+    PRIMARY KEY (user_id, recipe_id)
 );
+
+INSERT INTO saved_recipes 
+  (user_id, recipe_id)
+VALUES
+  (6, 100), (6, 120), (6, 14), (6, 63);
 
 CREATE TABLE occasions (
     id SERIAL PRIMARY KEY,
@@ -26629,12 +26635,21 @@ CREATE TABLE tips (
 );
 
 CREATE TABLE reviews (
-    id SERIAL PRIMARY KEY,
+    id SERIAL,
     user_id INTEGER REFERENCES users (id) ON DELETE CASCADE,
     recipe_id INTEGER REFERENCES recipes (id) ON DELETE CASCADE,
     stars INTEGER NOT NULL CHECK(stars < 6),
-    review TEXT NOT NULL
+    review TEXT NOT NULL,
+    PRIMARY KEY (user_id, recipe_id)
 );
+
+INSERT INTO reviews 
+  (user_id, recipe_id, stars, review)
+VALUES
+  (6, 100, 3, 'Good.'), (6, 120, 3, 'Good.'),
+  (4, 120, 3, 'Good.'), (7, 120, 3, 'Good.'),
+  (6, 14, 1, 'Did not like seeds.'),
+  (6, 63, 3, 'Good.');
 
 
 CREATE TABLE shoppinglists (
