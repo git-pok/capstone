@@ -2,6 +2,7 @@ const express = require("express");
 const ExpressError = require("../models/error.js");
 const router = new express.Router();
 const User = require("../models/users.js");
+const Recipe = require("../models/recipes.js");
 const { validateSchema, hashPassword } = require("../helpers/users.js");
 const { isLoggedIn } = require("../middleware/auth.js");
 /**
@@ -127,6 +128,42 @@ router.get("/:id/saved-recipes", isLoggedIn, async (req, res, next) => {
     } catch (err) {
         return next(err);
     }
+});
+
+/**
+ * "/:id/recipelists"
+ * route type: GET
+ * Authorization: logged in
+ * Returns recipelists.
+ */
+router.get("/:id/recipelists", isLoggedIn, async (req, res, next) => {
+    const { id } = req.params;
+    const recipeLists = await User.getRecipeLists(id);
+    return res.status(200).json(recipeLists);
+});
+
+/**
+ * "/:id/recipelists/:list_id/recipes"
+ * route type: GET
+ * Authorization: logged in
+ * Returns recipelist recipes.
+ */
+router.get("/:id/recipelists/:list_id/recipes", isLoggedIn, async (req, res, next) => {
+    const { id, list_id } = req.params;
+    const recipes = await User.getListRecipes(id, list_id);
+    return res.status(200).json(recipes);
+});
+
+/**
+ * "/:id/recipelists/:list_id/recipes/:recipe_id"
+ * route type: GET
+ * Authorization: logged in
+ * Returns recipe from recipelist recipes.
+ */
+router.get("/:id/recipelists/:list_id/recipes/:recipe_id", isLoggedIn, async (req, res, next) => {
+    const { recipe_id } = req.params;
+    const recipe = await Recipe.getRecipe(recipe_id);
+    return res.status(200).json(recipe);
 });
 
 

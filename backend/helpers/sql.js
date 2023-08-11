@@ -105,7 +105,6 @@ function qryObjToOrderBySql (qry) {
                 const orderByLen = sqlObj.order.length;
                 const orderBy2Len = sqlObj.order2.length;
                 const isChron = valNormlzd === "asc" || valNormlzd === "desc";
-                console.log("QRY OBJECT", qry);
                 const tableCode = recpesFltrClmnNmToTblAbrev[valNormlzd];
                 if (!isChron && !sqlObj.order.length) sqlObj.order.push(tableCode, valNormlzd);
                 else if (!isChron && sqlObj.order.length) sqlObj.order2.push(tableCode, valNormlzd);

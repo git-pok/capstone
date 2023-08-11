@@ -187,7 +187,8 @@ const sqlOperator = {
     rating: "=",
     id: "=",
     user_id: "=",
-    recipe_id: "="
+    recipe_id: "=",
+    list_id: "="
 };
 
 
@@ -213,7 +214,8 @@ const sqlOperatorStrict = {
     username: "=",
     recipe_id: "=",
     user_id: "=",
-    recipe_id: "="
+    recipe_id: "=",
+    list_id: "="
 };
 
 

@@ -26614,6 +26614,13 @@ CREATE TABLE occasions (
     occasion VARCHAR (121) UNIQUE NOT NULL
 );
 
+INSERT INTO occasions
+  (occasion)
+VALUES
+  ('holiday'), ('party'), ('convention'),
+  ('get together'), ('birthday'),
+  ('date'), ('meal prep');
+
 CREATE TABLE recipelists (
     id SERIAL PRIMARY KEY,
     user_id INTEGER REFERENCES users (id) ON DELETE CASCADE,
@@ -26621,11 +26628,23 @@ CREATE TABLE recipelists (
     list_name VARCHAR (30) NOT NULL
 );
 
+INSERT INTO recipelists
+  (user_id, occasion_id, list_name)
+VALUES
+  (3, 7, 'weekly meals'),
+  (3, 2, 'rasta bash'),
+  (4, 1, 'christmas appetizers');
+
 CREATE TABLE recipelists_recipes (
     user_id INTEGER REFERENCES users (id) ON DELETE CASCADE,
     recipe_id INTEGER REFERENCES recipes (id),
     list_id INTEGER REFERENCES recipelists (id) ON DELETE CASCADE
 );
+
+INSERT INTO recipelists_recipes
+  (user_id, recipe_id, list_id)
+VALUES
+  (4, 450, 3), (4, 460, 3);
 
 CREATE TABLE tips (
     id SERIAL PRIMARY KEY,

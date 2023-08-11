@@ -1,7 +1,9 @@
 // const bcrypt = require("bcrypt");
+const Recipe = require("./recipes.js");
 const {
     db, userSqlReturnNoAbrv,
     recipesRelDataSelectColumns,
+    recipesOnData,
     favRecipesjoinArr, favRecpesClmnToTblAbrev,
     savedRecipesjoinArr, savedRecpesClmnToTblAbrev
 } = require("../config.js");
@@ -32,7 +34,7 @@ class User {
     /**
      * register
      * Registers a user.
-     * Returns the submitted data and a token.
+     * Returns the object of submitted data and a token.
      * const data = {
 		"username": "fin",
 		"first_name": "Vin",
@@ -198,6 +200,12 @@ class User {
         await db.query(`DELETE FROM users WHERE username = $1`, [username]);
     }
 
+    /**
+     * getFavRecipes
+     * Retrives user's favorite recipes.
+     * Returns array of favorite recipes.
+     * getFavRecipes(id) => [{ name: "chicken", ...}, ...]
+     */
     static async getFavRecipes (id) {
         // Check if user exists.
         await recipeUsrExists("user", "id", "users", id, "id");
@@ -216,6 +224,12 @@ class User {
         return favRecipes.rows;
     }
 
+    /**
+     * getSavedRecipes
+     * Retrives user's saved recipes.
+     * Returns array of saved recipes.
+     * getSavedRecipes(id) => [{ name: "chicken", ...}, ...]
+     */
     static async getSavedRecipes (id) {
         await recipeUsrExists("user", "id", "users", id, "id");
         const selectSqlStr = genSelectSql(recipesRelDataSelectColumns, "saved_recipes", true);
@@ -230,6 +244,51 @@ class User {
             ${sql} ORDER BY r.name, rt.rating
         `, sqlWhereObj.values);
         return savedRecipes.rows;
+    }
+
+    /**
+     * getRecipeLists
+     * Retrives user's recipelists.
+     * Returns array of recipelists.
+     * getRecipeLists(id) => [{ "weekly meal prep", ...}, ...]
+     */
+    static async getRecipeLists (id) {
+        await recipeUsrExists("user", "id", "users", id, "id");
+        const recipeListsSelStr = genSelectSql(["rl.id", "rl.list_name"], "recipelists", true);
+        const abrevTable = { user_id: "rl." };
+        const whereSqlObj = genWhereSqlArr({ user_id: id }, 1, true, false, true, abrevTable);
+        const reqSqlArr = [recipeListsSelStr, whereSqlObj.whereSql];
+        const reqSql = reqSqlArr.join(" ");
+        const req = await db.query(`
+            ${reqSql}
+        `, whereSqlObj.values);
+        return req.rows;
+    }
+
+    /**
+     * getListRecipes
+     * Retrives a recipelists recipes.
+     * Returns array of recipes
+     * getListRecipes(id) => [{ name: "chicken", ...}, ...]
+     */
+    static async getListRecipes (id, listId) {
+        await recipeUsrExists("user", "id", "users", id, "id");
+        const recipeListSelStr = genSelectSql(recipesRelDataSelectColumns, "recipelists_recipes", true);
+        const joinArr = [["recipes", "rlr.recipe_id", "r.id"]];
+        const joinSql1 = genJoinSql(joinArr, "JOIN");
+        const joinSql2 = genJoinSql(recipesOnData, "JOIN");
+        const joinSql = [joinSql1, joinSql2].join(" ");
+        const abrevTable = { list_id: "rlr." };
+        const whereSqlObj = genWhereSqlArr({ list_id: listId }, 1, true, false, true, abrevTable);
+        const reqSqlArr = [recipeListSelStr, joinSql, whereSqlObj.whereSql];
+        const reqSql = reqSqlArr.join(" ");
+
+        const req = await db.query(`
+            ${reqSql}
+        `, whereSqlObj.values);
+
+        const recipeRows = req.rows;
+        return recipeRows;
     }
 }
 
