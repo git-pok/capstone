@@ -4,24 +4,40 @@ process.env.NODE_ENV = "test";
 const { db } = require("../config.js");
 // const SECRET_KEY = require("../keys.js");
 const ExpressError = require("../models/error.js");
-// const {
-//     BCRYPT_WORK_FACTOR,
-// } = require("../config.js");
-
 const {
     arrayConcat, genJoinSql, qryObjToOrderBySql,
     genWhereSqlArr,
     genSelectSql, genUpdateSqlObj,
-    genInsertSqlObj
-} = require("../helpers/sql.js");
+    genInsertSqlObj, recipeUsrExists
+} = require("./sql.js");
+const { genTestUsers } = require("../models/_models-test-data.js");
 
-// beforeEach(() => {
 
-// })
+let usr1Test;
+let usr2Test;
+let usr1TokenTest;
+let usr2TokenTest;
+let usr1IdTest;
+let usr2IdTest;
 
-// afterEach(() => {
-    
-// })
+beforeEach(async () => {
+    const { 
+            usr1, usr1Token, usr2, usr2Token,
+            usr1Id, usr2Id
+        } = await genTestUsers();
+    usr1Test = {...usr1};
+    usr2Test = {...usr2};
+    usr1TokenTest = usr1Token;
+    usr2TokenTest = usr2Token;
+    usr1IdTest = usr1Id;
+    usr2IdTest = usr2Id;
+})
+
+afterEach(async () => {
+    await db.query(`
+        DELETE FROM users;
+    `);
+});
 // Without db.end the test results will
 // have the waiting for functions output
 // because of supertest.
@@ -246,5 +262,20 @@ describe("genInsertSqlObj", () => {
             genUpdateSqlObj ("invalidTable", clmnValInsrtObj, returnArr);
         }
         expect(errorGenUpdateSqlObj).toThrow(ExpressError);
+    });
+});
+
+describe("recipeUsrExists", () => {
+    test("404 error for not found user", async () => {
+        const id = usr2IdTest + 1;
+        await expect(async () => {
+            await recipeUsrExists("user", "id", "users", id, "id");
+        }).rejects.toThrow(ExpressError);
+    });
+    
+    test("404 error for not found recipe", async () => {
+        await expect(async () => {
+            await recipeUsrExists("recipe", "id", "recipes", 2000, "id");
+        }).rejects.toThrow(ExpressError);
     });
 });

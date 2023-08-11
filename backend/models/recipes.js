@@ -15,7 +15,7 @@ const {
         genJoinSql,
         qryObjToOrderBySql,
         genSelectSql, genUpdateSqlObj,
-        genInsertSqlObj
+        genInsertSqlObj, recipeUsrExists
     } = require("../helpers/sql.js");
 
 const {
@@ -46,10 +46,9 @@ class Recipe {
      * getRecipeLikes(id) => [1, 2, 3]
      */
     static async getRecipeLikes(id) {
+        await recipeUsrExists("recipe", "id", "recipes", id, "id");
         const dbRecipe = await db.query(`SELECT * FROM recipes WHERE id = $1`, [id]);
         const dbRecipeRows = JSON.parse(JSON.stringify(dbRecipe.rows));
-        const dbRecipeRowsLength = dbRecipe.rows.length;
-        if (dbRecipeRowsLength === 0) throw new ExpressError(400, "Recipe not found!");
         const dbRecipeRowsObj = JSON.parse(JSON.stringify(dbRecipeRows[0]));
         // Creates select sql strings.
         const selectLikSqlStr = genSelectSql(selectLikRecUsrId, "recipes", true);
@@ -74,7 +73,6 @@ class Recipe {
         const likUsrIds = likRecipesReq.rows.map(obj => obj.liked_user_id);
         // Deletes null values from usr ids arrays.
         const noNullLikUsrIds = deleteNullInArrPure(likUsrIds);
-        console.log("noNullLikUsrIds", noNullLikUsrIds);
         return noNullLikUsrIds;
     }
 
@@ -85,10 +83,9 @@ class Recipe {
      * getRecipeDisLikes(id) => [1, 2, 3]
      */
     static async getRecipeDisLikes(id) {
+        await recipeUsrExists("recipe", "id", "recipes", id, "id");
         const dbRecipe = await db.query(`SELECT * FROM recipes WHERE id = $1`, [id]);
         const dbRecipeRows = JSON.parse(JSON.stringify(dbRecipe.rows));
-        const dbRecipeRowsLength = dbRecipe.rows.length;
-        if (dbRecipeRowsLength === 0) throw new ExpressError(400, "Recipe not found!");
         const dbRecipeRowsObj = JSON.parse(JSON.stringify(dbRecipeRows[0]));
         // Creates select sql string.
         const selectDisSqlStr = genSelectSql(selectDisRecUsrId, "recipes", true);
@@ -128,10 +125,10 @@ class Recipe {
      * },...  
      */
     static async getRecipeIngrdts(id) {
+        // Check if recipe exists.
+        await recipeUsrExists("recipe", "id", "recipes", id, "id");
         const dbRecipe = await db.query(`SELECT * FROM recipes WHERE id = $1`, [id]);
         const dbRecipeRows = JSON.parse(JSON.stringify(dbRecipe.rows));
-        const dbRecipeRowsLength = dbRecipe.rows.length;
-        if (dbRecipeRowsLength === 0) throw new ExpressError(400, "Recipe not found!");
         const dbRecipeRowsObj = JSON.parse(JSON.stringify(dbRecipeRows[0]));
         // Creates select sql string.
         const ingrSelectSqlStr = genSelectSql(ingrdsRelDataSelectColumns, "recipes_ingredients", true);
@@ -167,10 +164,10 @@ class Recipe {
 	 * },...
      */
     static async getRecipeReviews(id) {
+        // Check if recipe exists.
+        await recipeUsrExists("recipe", "id", "recipes", id, "id");
         const dbRecipe = await db.query(`SELECT * FROM recipes WHERE id = $1`, [id]);
         const dbRecipeRows = JSON.parse(JSON.stringify(dbRecipe.rows));
-        const dbRecipeRowsLength = dbRecipe.rows.length;
-        if (dbRecipeRowsLength === 0) throw new ExpressError(400, "Recipe not found!");
         const dbRecipeRowsObj = JSON.parse(JSON.stringify(dbRecipeRows[0]));
         // Creates select sql string.
         const selectRvwsSqlStr = genSelectSql(["rv.stars", "rv.review", "rv.user_id"], "reviews", true);
@@ -189,12 +186,13 @@ class Recipe {
         // Creates pg values.
         const pgValues = sqlWhereObj.values;
         // Makes request with query string.
-        // const rvwRecipesReq = await db.query(
-        //     `${rvwQry}`, pgValues
-        // );
         const rvwRecipesReq = await db.query(
-            `SELECT rv.stars, rv.review, rv.user_id FROM reviews rv JOIN recipes r ON rv.recipe_id = r.id WHERE r.id = $1`, pgValues
+            `${rvwQry}`, pgValues
         );
+        // Debug query.
+        // const rvwRecipesReq = await db.query(
+        //     `SELECT rv.stars, rv.review, rv.user_id FROM reviews rv JOIN recipes r ON rv.recipe_id = r.id WHERE r.id = $1`, pgValues
+        // );
         return rvwRecipesReq.rows;
     }
 
@@ -210,10 +208,10 @@ class Recipe {
 	* }
      */
     static async getRecipe(id) {
+        // Check if recipe exists.
+        await recipeUsrExists("recipe", "id", "recipes", id, "id");
         const dbRecipe = await db.query(`SELECT * FROM recipes WHERE id = $1`, [id]);
         const dbRecipeRows = JSON.parse(JSON.stringify(dbRecipe.rows));
-        const dbRecipeRowsLength = dbRecipe.rows.length;
-        if (dbRecipeRowsLength === 0) throw new ExpressError(400, "Recipe not found!");
         const dbRecipeRowsObj = JSON.parse(JSON.stringify(dbRecipeRows[0]));
         // Creates select sql strings.
         const selectSqlStr = genSelectSql(recipesRelDataSelectColumns, "recipes", true);
@@ -275,7 +273,7 @@ class Recipe {
         const selectSqlStr = genSelectSql(recipesRelDataSelectColumns, "recipes", true);
         const joinSqlStr = genJoinSql(recipesOnData, "JOIN");
         const selectJoinSqlStr = arrayConcat([selectSqlStr, joinSqlStr]);
-        console.log("selectJoinSqlStr $#$#$#$#$#$#$#$#$#$#$#$#$#$", selectJoinSqlStr);
+        // console.log("selectJoinSqlStr $#$#$#$#$#$#$#$#$#$#$#$#$#$", selectJoinSqlStr);
         const recipesReq = await db.query(
             `${selectJoinSqlStr} ORDER BY name ASC`
         );
@@ -324,7 +322,7 @@ class Recipe {
         const pgValuesQry = whereSqlObj.values;
         finalSql.push(selectWhereQry, orderBy);
         const finalSqlQry = finalSql.join(" ");
-        console.log("FINAL STRING $#$#$#$#$#$#", finalSqlQry, pgValuesQry);
+        // console.log("FINAL STRING $#$#$#$#$#$#", finalSqlQry, pgValuesQry);
         const recipesReq = await db.query(
             `${finalSqlQry}`, pgValuesQry
         );
@@ -332,6 +330,9 @@ class Recipe {
     }
 
     static async getFavRecipes (userId) {
+        // Check if user exists.
+        await recipeUsrExists("user", "id", "users", userId, "id");
+        
         const selectSqlStr = genSelectSql(recipesRelDataSelectColumns, "favorite_recipes", true);
         const joinSqlStr = genJoinSql(favRecipesjoinArr, "JOIN");
         const selectJoinSqlStr = arrayConcat([selectSqlStr, joinSqlStr]);
@@ -347,6 +348,7 @@ class Recipe {
     }
 
     static async getSavedRecipes (userId) {
+        await recipeUsrExists("user", "id", "users", userId, "id");
         const selectSqlStr = genSelectSql(recipesRelDataSelectColumns, "saved_recipes", true);
         const joinSqlStr = genJoinSql(savedRecipesjoinArr, "JOIN");
         const selectJoinSqlStr = arrayConcat([selectSqlStr, joinSqlStr]);

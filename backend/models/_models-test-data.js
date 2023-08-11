@@ -53,7 +53,7 @@ async function genTestUsers () {
 
     usr1Token = generateToken(usr1Res.rows[0], SECRET_KEY);
     usr2Token = generateToken(usr2Res.rows[0], SECRET_KEY);
-
+    
     const usr1Id = usr1Res.rows[0].id;
     const usr2Id = usr2Res.rows[0].id;
     await db.query(`
