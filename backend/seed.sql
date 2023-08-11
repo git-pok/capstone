@@ -1,9 +1,9 @@
-DROP DATABASE IF EXISTS savour;
-CREATE DATABASE savour;
-\c savour
--- DROP DATABASE IF EXISTS savour_test;
--- CREATE DATABASE savour_test;
--- \c savour_test
+-- DROP DATABASE IF EXISTS savour;
+-- CREATE DATABASE savour;
+-- \c savour
+DROP DATABASE IF EXISTS savour_test;
+CREATE DATABASE savour_test;
+\c savour_test
 
 
 
@@ -26580,6 +26580,11 @@ CREATE TABLE liked_recipes (
     recipe_id INTEGER REFERENCES recipes (id) ON DELETE CASCADE,
     PRIMARY KEY (user_id, recipe_id)
 );
+
+INSERT INTO liked_recipes
+  (user_id, recipe_id)
+VALUES
+  (1, 1684), (2, 1684), (3, 1684);
 
 CREATE TABLE favorite_recipes (
     user_id INTEGER REFERENCES users (id) ON DELETE CASCADE,

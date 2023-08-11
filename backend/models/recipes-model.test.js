@@ -11,25 +11,81 @@ let usr2Test;
 let usr1TokenTest;
 let usr2TokenTest;
 
-beforeEach(async () => {
-    const { usr1, usr1Token, usr2, usr2Token } = await genTestUsers();
-    usr1Test = {...usr1};
-    usr2Test = {...usr2};
-    usr1TokenTest = usr1Token;
-    usr2TokenTest = usr2Token;
-})
+// beforeEach(async () => {
+//     const { usr1, usr1Token, usr2, usr2Token } = await genTestUsers();
+//     usr1Test = {...usr1};
+//     usr2Test = {...usr2};
+//     usr1TokenTest = usr1Token;
+//     usr2TokenTest = usr2Token;
+// })
 
-afterEach(async () => {
-    await db.query(`
-        DELETE FROM users;
-    `);
-});
+// afterEach(async () => {
+//     await db.query(`
+//         DELETE FROM users;
+//     `);
+// });
 
 afterAll(async () => {
     await db.end();
 });
 
 describe("Recipe", () => {
+    test("Recipe.getRecipeLikes", async () => {
+        const recipeLiks = await Recipe.getRecipeLikes(1684);
+        expect(recipeLiks).toEqual([1, 2, 3]);
+    });
+
+    test("Recipe.getRecipeDisLikes", async () => {
+        const recipeDisliks = await Recipe.getRecipeDisLikes(1684);
+        expect(recipeDisliks).toEqual([]);
+    });
+
+    test("Recipe.getRecipeIngrdts", async () => {
+        const recipeIngrdts = await Recipe.getRecipeIngrdts(1684);
+        expect(recipeIngrdts).toEqual(
+            [
+                {
+                    "qty": "410",
+                    "unit": "g",
+                    "ingredient": "can  peach halves"
+                },
+                {
+                    "qty": "100",
+                    "unit": "g",
+                    "ingredient": "frozen raspberry, plus a few for garnish"
+                },
+                {
+                    "qty": "100",
+                    "unit": "ml",
+                    "ingredient": "orange juice"
+                }
+            ]
+        )
+    });
+
+    test("Recipe.getRecipeReviews", async () => {
+        const recipeRvws = await Recipe.getRecipeReviews(1684);
+        expect(recipeRvws).toEqual(
+            [
+                {
+                    "stars": 1,
+                    "review": "Too Sweet.",
+                    "user_id": 4
+                },
+                {
+                    "stars": 1,
+                    "review": "Too Sweet.",
+                    "user_id": 5
+                },
+                {
+                    "stars": 1,
+                    "review": "Too Sweet.",
+                    "user_id": 6
+                }
+            ]
+        )
+    });
+
     test("Recipe.getRecipe", async () => {
         const recipe = await Recipe.getRecipe(220);
         expect(recipe).toEqual({
@@ -50,6 +106,7 @@ describe("Recipe", () => {
 			"cook_time": "No Time",
 			"liked_user_ids": [],
 			"disliked_user_ids": [],
+            "reviews": [],
             "ingredients": [
                 {
                     "qty": "40",
