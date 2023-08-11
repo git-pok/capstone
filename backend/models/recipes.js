@@ -328,40 +328,6 @@ class Recipe {
         );
         return recipesReq.rows;
     }
-
-    static async getFavRecipes (userId) {
-        // Check if user exists.
-        await recipeUsrExists("user", "id", "users", userId, "id");
-        
-        const selectSqlStr = genSelectSql(recipesRelDataSelectColumns, "favorite_recipes", true);
-        const joinSqlStr = genJoinSql(favRecipesjoinArr, "JOIN");
-        const selectJoinSqlStr = arrayConcat([selectSqlStr, joinSqlStr]);
-        // Creates object with where sql and values properties.
-        const whereObj = { user_id: userId };
-        const sqlWhereObj = genWhereSqlArr(whereObj, 1, true, false, true, favRecpesClmnToTblAbrev);
-        const sql = arrayConcat([selectJoinSqlStr, sqlWhereObj.whereSql]);
-        
-        const favRecipes = await db.query(`
-            ${sql} ORDER BY r.name, rt.rating
-        `, sqlWhereObj.values);
-        return favRecipes.rows;
-    }
-
-    static async getSavedRecipes (userId) {
-        await recipeUsrExists("user", "id", "users", userId, "id");
-        const selectSqlStr = genSelectSql(recipesRelDataSelectColumns, "saved_recipes", true);
-        const joinSqlStr = genJoinSql(savedRecipesjoinArr, "JOIN");
-        const selectJoinSqlStr = arrayConcat([selectSqlStr, joinSqlStr]);
-        // Creates object with where sql and values properties.
-        const whereObj = { user_id: userId };
-        const sqlWhereObj = genWhereSqlArr(whereObj, 1, true, false, true, savedRecpesClmnToTblAbrev);
-        const sql = arrayConcat([selectJoinSqlStr, sqlWhereObj.whereSql]);
-
-        const savedRecipes = await db.query(`
-            ${sql} ORDER BY r.name, rt.rating
-        `, sqlWhereObj.values);
-        return savedRecipes.rows;
-    }
 }
 
 module.exports = Recipe;

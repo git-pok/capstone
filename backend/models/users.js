@@ -1,12 +1,15 @@
 // const bcrypt = require("bcrypt");
 const {
-    db, userSqlReturnNoAbrv
+    db, userSqlReturnNoAbrv,
+    recipesRelDataSelectColumns,
+    favRecipesjoinArr, favRecpesClmnToTblAbrev,
+    savedRecipesjoinArr, savedRecpesClmnToTblAbrev
 } = require("../config.js");
 const {
         arrayConcat,
         genWhereSqlArr, genJoinSql,
         genSelectSql, genUpdateSqlObj,
-        genInsertSqlObj
+        genInsertSqlObj, recipeUsrExists
     } = require("../helpers/sql.js");
 const {
         validateSchema, hashPassword, generateToken,
@@ -193,6 +196,40 @@ class User {
         const dbUserRowsLength = dbUser.rows.length;
         if (dbUserRowsLength === 0) throw new ExpressError(404, "User not found!");
         await db.query(`DELETE FROM users WHERE username = $1`, [username]);
+    }
+
+    static async getFavRecipes (id) {
+        // Check if user exists.
+        await recipeUsrExists("user", "id", "users", id, "id");
+        
+        const selectSqlStr = genSelectSql(recipesRelDataSelectColumns, "favorite_recipes", true);
+        const joinSqlStr = genJoinSql(favRecipesjoinArr, "JOIN");
+        const selectJoinSqlStr = arrayConcat([selectSqlStr, joinSqlStr]);
+        // Creates object with where sql and values properties.
+        const whereObj = { user_id: id };
+        const sqlWhereObj = genWhereSqlArr(whereObj, 1, true, false, true, favRecpesClmnToTblAbrev);
+        const sql = arrayConcat([selectJoinSqlStr, sqlWhereObj.whereSql]);
+        
+        const favRecipes = await db.query(`
+            ${sql} ORDER BY r.name, rt.rating
+        `, sqlWhereObj.values);
+        return favRecipes.rows;
+    }
+
+    static async getSavedRecipes (id) {
+        await recipeUsrExists("user", "id", "users", id, "id");
+        const selectSqlStr = genSelectSql(recipesRelDataSelectColumns, "saved_recipes", true);
+        const joinSqlStr = genJoinSql(savedRecipesjoinArr, "JOIN");
+        const selectJoinSqlStr = arrayConcat([selectSqlStr, joinSqlStr]);
+        // Creates object with where sql and values properties.
+        const whereObj = { user_id: id };
+        const sqlWhereObj = genWhereSqlArr(whereObj, 1, true, false, true, savedRecpesClmnToTblAbrev);
+        const sql = arrayConcat([selectJoinSqlStr, sqlWhereObj.whereSql]);
+
+        const savedRecipes = await db.query(`
+            ${sql} ORDER BY r.name, rt.rating
+        `, sqlWhereObj.values);
+        return savedRecipes.rows;
     }
 }
 

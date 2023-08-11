@@ -96,5 +96,38 @@ router.delete("/:username", isLoggedIn, async (req, res, next) => {
     }
 });
 
+/**
+ * "/:id/favorite-recipes"
+ * route type: GET
+ * Authorization: logged in
+ * Returns favorited recipes.
+ */
+router.get("/:id/favorite-recipes", isLoggedIn, async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        const favRecipes = await User.getFavRecipes(id);
+        return res.status(200).json(favRecipes);
+    } catch (err) {
+        return next(err);
+    }
+});
+
+
+/**
+ * "/:id/saved-recipes"
+ * route type: GET
+ * Authorization: logged in
+ * Returns saved recipes.
+ */
+router.get("/:id/saved-recipes", isLoggedIn, async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        const savedRecipes = await User.getSavedRecipes(id);
+        return res.status(200).json(savedRecipes);
+    } catch (err) {
+        return next(err);
+    }
+});
+
 
 module.exports = router;
