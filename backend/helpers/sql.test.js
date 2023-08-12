@@ -8,9 +8,9 @@ const {
     arrayConcat, genJoinSql, qryObjToOrderBySql,
     genWhereSqlArr,
     genSelectSql, genUpdateSqlObj,
-    genInsertSqlObj, recipeUsrExists
+    genInsertSqlObj, rowExists
 } = require("./sql.js");
-const { genTestUsers } = require("../models/_models-test-data.js");
+const { genTestUsers } = require("../routes/_test-data.js");
 
 
 let usr1Test;
@@ -265,17 +265,17 @@ describe("genInsertSqlObj", () => {
     });
 });
 
-describe("recipeUsrExists", () => {
+describe("rowExists", () => {
     test("404 error for not found user", async () => {
         const id = usr2IdTest + 1;
         await expect(async () => {
-            await recipeUsrExists("user", "id", "users", id, "id");
+            await rowExists("user", "id", "users", [["id", id]]);
         }).rejects.toThrow(ExpressError);
     });
-    
+
     test("404 error for not found recipe", async () => {
         await expect(async () => {
-            await recipeUsrExists("recipe", "id", "recipes", 2000, "id");
+            await rowExists("recipe", "id", "recipes", [["id", 2000]]);
         }).rejects.toThrow(ExpressError);
     });
 });

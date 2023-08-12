@@ -11,7 +11,7 @@ const {
         arrayConcat,
         genWhereSqlArr, genJoinSql,
         genSelectSql, genUpdateSqlObj,
-        genInsertSqlObj, recipeUsrExists
+        genInsertSqlObj, rowExists
     } = require("../helpers/sql.js");
 const {
         validateSchema, hashPassword, generateToken,
@@ -208,7 +208,7 @@ class User {
      */
     static async getFavRecipes (id) {
         // Check if user exists.
-        await recipeUsrExists("user", "id", "users", id, "id");
+        await rowExists("user", "id", "users", [["id", id]]);
         
         const selectSqlStr = genSelectSql(recipesRelDataSelectColumns, "favorite_recipes", true);
         const joinSqlStr = genJoinSql(favRecipesjoinArr, "JOIN");
@@ -231,7 +231,7 @@ class User {
      * getSavedRecipes(id) => [{ name: "chicken", ...}, ...]
      */
     static async getSavedRecipes (id) {
-        await recipeUsrExists("user", "id", "users", id, "id");
+        await rowExists("user", "id", "users", [["id", id]]);
         const selectSqlStr = genSelectSql(recipesRelDataSelectColumns, "saved_recipes", true);
         const joinSqlStr = genJoinSql(savedRecipesjoinArr, "JOIN");
         const selectJoinSqlStr = arrayConcat([selectSqlStr, joinSqlStr]);
@@ -253,12 +253,16 @@ class User {
      * getRecipeLists(id) => [{ "weekly meal prep", ...}, ...]
      */
     static async getRecipeLists (id) {
-        await recipeUsrExists("user", "id", "users", id, "id");
-        const recipeListsSelStr = genSelectSql(["rl.id", "rl.list_name"], "recipelists", true);
+        await rowExists("user", "id", "users", [["id", id]]);
+        const selectClmns = ["rl.id", "rl.list_name", "o.occasion"];
+        const recipeListsSelStr = genSelectSql(selectClmns, "recipelists", true);
+        const joinArr = [["occasions", "rl.occasion_id", "o.id"]];
+        const joinSql = genJoinSql(joinArr, "JOIN");
         const abrevTable = { user_id: "rl." };
         const whereSqlObj = genWhereSqlArr({ user_id: id }, 1, true, false, true, abrevTable);
-        const reqSqlArr = [recipeListsSelStr, whereSqlObj.whereSql];
+        const reqSqlArr = [recipeListsSelStr, joinSql, whereSqlObj.whereSql];
         const reqSql = reqSqlArr.join(" ");
+        // console.log("RECIPE LISTS FINAL SQL $#$#$#$#$#$#$", reqSql);
         const req = await db.query(`
             ${reqSql}
         `, whereSqlObj.values);
@@ -272,7 +276,8 @@ class User {
      * getListRecipes(id) => [{ name: "chicken", ...}, ...]
      */
     static async getListRecipes (id, listId) {
-        await recipeUsrExists("user", "id", "users", id, "id");
+        await rowExists("user", "id", "users", [["id", id]]);
+        await rowExists("list", "id", "recipelists", [["id", listId]]);
         const recipeListSelStr = genSelectSql(recipesRelDataSelectColumns, "recipelists_recipes", true);
         const joinArr = [["recipes", "rlr.recipe_id", "r.id"]];
         const joinSql1 = genJoinSql(joinArr, "JOIN");
@@ -282,7 +287,7 @@ class User {
         const whereSqlObj = genWhereSqlArr({ list_id: listId }, 1, true, false, true, abrevTable);
         const reqSqlArr = [recipeListSelStr, joinSql, whereSqlObj.whereSql];
         const reqSql = reqSqlArr.join(" ");
-
+        // console.log("RECIPE LIST RECIPES FINAL SQL $#$#$#$#$#$#$", reqSql);
         const req = await db.query(`
             ${reqSql}
         `, whereSqlObj.values);

@@ -1,9 +1,9 @@
-DROP DATABASE IF EXISTS savour;
-CREATE DATABASE savour;
-\c savour
--- DROP DATABASE IF EXISTS savour_test;
--- CREATE DATABASE savour_test;
--- \c savour_test
+-- DROP DATABASE IF EXISTS savour;
+-- CREATE DATABASE savour;
+-- \c savour
+DROP DATABASE IF EXISTS savour_test;
+CREATE DATABASE savour_test;
+\c savour_test
 
 
 
@@ -26636,15 +26636,16 @@ VALUES
   (4, 1, 'christmas appetizers');
 
 CREATE TABLE recipelists_recipes (
-    user_id INTEGER REFERENCES users (id) ON DELETE CASCADE,
-    recipe_id INTEGER REFERENCES recipes (id),
-    list_id INTEGER REFERENCES recipelists (id) ON DELETE CASCADE
+    -- user_id INTEGER REFERENCES users (id) ON DELETE CASCADE,
+    id SERIAL,
+    list_id INTEGER REFERENCES recipelists (id) ON DELETE CASCADE,
+    recipe_id INTEGER REFERENCES recipes (id)
 );
 
 INSERT INTO recipelists_recipes
-  (user_id, recipe_id, list_id)
+  (list_id, recipe_id)
 VALUES
-  (4, 450, 3), (4, 460, 3);
+  (3, 450), (3, 460);
 
 CREATE TABLE tips (
     id SERIAL PRIMARY KEY,

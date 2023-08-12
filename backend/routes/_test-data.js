@@ -68,13 +68,49 @@ async function genTestUsers () {
         [usr1Id, 300, usr1Id, 400]
     );
 
+    const listId1Req = await db.query(`
+        INSERT INTO recipelists (user_id, occasion_id, list_name)
+        VALUES ($1, $2, $3) RETURNING id`,
+        [usr1Id, 7,  "weekly meals"]
+    );
+
+    const listId2Req = await db.query(`
+        INSERT INTO recipelists (user_id, occasion_id, list_name)
+        VALUES ($1, $2, $3) RETURNING id`,
+        [usr1Id, 2, "rasta bash",]
+    );
+
+    const listId3Req = await db.query(`
+        INSERT INTO recipelists (user_id, occasion_id, list_name)
+        VALUES ($1, $2, $3) RETURNING id`,
+        [
+            usr2Id, 1, "christmas appetizers"
+        ]
+    );
+    // console.log("LIST IDS $#$#$#$$#$#$#$#$", listId3Req.rows);
+    const { id: listId1 } = listId1Req.rows[0];
+    const { id: listId2 } = listId2Req.rows[0];
+    const { id: listId3 } = listId3Req.rows[0];
+
+    await db.query(`
+        INSERT INTO recipelists_recipes (list_id, recipe_id)
+        VALUES ($1, $2), ($3, $4)`,
+        [
+            listId1, 450,
+            listId1, 460
+        ]
+    );
+
     return {
         usr1,
         usr1Token,
         usr2,
         usr2Token,
         usr1Id,
-        usr2Id
+        usr2Id,
+        listId1,
+        listId2,
+        listId3
     };
 }
 

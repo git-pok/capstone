@@ -4,7 +4,9 @@ const router = new express.Router();
 const User = require("../models/users.js");
 const Recipe = require("../models/recipes.js");
 const { validateSchema, hashPassword } = require("../helpers/users.js");
+const { rowExists } = require("../helpers/sql.js");
 const { isLoggedIn } = require("../middleware/auth.js");
+
 /**
  * "/register"
  * route type: POST
@@ -137,33 +139,50 @@ router.get("/:id/saved-recipes", isLoggedIn, async (req, res, next) => {
  * Returns recipelists.
  */
 router.get("/:id/recipelists", isLoggedIn, async (req, res, next) => {
-    const { id } = req.params;
-    const recipeLists = await User.getRecipeLists(id);
-    return res.status(200).json(recipeLists);
+    try {
+        const { id } = req.params;
+        const recipeLists = await User.getRecipeLists(id);
+        return res.status(200).json(recipeLists);
+    } catch(err) {
+        return next(err);
+    }
 });
 
 /**
- * "/:id/recipelists/:list_id/recipes"
+ * "/:id/recipelists/:list_id"
  * route type: GET
  * Authorization: logged in
  * Returns recipelist recipes.
  */
 router.get("/:id/recipelists/:list_id", isLoggedIn, async (req, res, next) => {
-    const { id, list_id } = req.params;
-    const recipes = await User.getListRecipes(id, list_id);
-    return res.status(200).json(recipes);
+    try {
+        const { id, list_id } = req.params;
+        const recipes = await User.getListRecipes(id, list_id);
+        return res.status(200).json(recipes);
+    } catch(err) {
+        return next(err);
+    }
 });
 
 /**
- * "/:id/recipelists/:list_id/recipes/:recipe_id"
+ * "/:id/recipelists/:list_id/:recipe_id"
  * route type: GET
  * Authorization: logged in
  * Returns recipe from recipelist recipes.
  */
 router.get("/:id/recipelists/:list_id/:recipe_id", isLoggedIn, async (req, res, next) => {
-    const { recipe_id } = req.params;
-    const recipe = await Recipe.getRecipe(recipe_id);
-    return res.status(200).json(recipe);
+    try {
+        const { id, list_id, recipe_id } = req.params;
+        await rowExists("user", "id", "users", [["id", +id]]);
+        await rowExists("list", "id", "recipelists", [["id", +list_id]]);
+        const clmnsNvals = [["list_id", +list_id], ["recipe_id", +recipe_id]];
+        const tableName = "recipelists_recipes";
+        await rowExists("recipe", "id", tableName, clmnsNvals);
+        const recipe = await Recipe.getRecipe(recipe_id);
+        return res.status(200).json([recipe]);
+    } catch(err) {
+        return next(err);
+    }
 });
 
 

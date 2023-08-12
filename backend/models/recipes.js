@@ -15,7 +15,7 @@ const {
         genJoinSql,
         qryObjToOrderBySql,
         genSelectSql, genUpdateSqlObj,
-        genInsertSqlObj, recipeUsrExists
+        genInsertSqlObj, rowExists
     } = require("../helpers/sql.js");
 
 const {
@@ -46,7 +46,7 @@ class Recipe {
      * getRecipeLikes(id) => [1, 2, 3]
      */
     static async getRecipeLikes(id) {
-        await recipeUsrExists("recipe", "id", "recipes", id, "id");
+        await rowExists("recipe", "id", "recipes", [["id", id]]);
         const dbRecipe = await db.query(`SELECT * FROM recipes WHERE id = $1`, [id]);
         const dbRecipeRows = JSON.parse(JSON.stringify(dbRecipe.rows));
         const dbRecipeRowsObj = JSON.parse(JSON.stringify(dbRecipeRows[0]));
@@ -83,7 +83,7 @@ class Recipe {
      * getRecipeDisLikes(id) => [1, 2, 3]
      */
     static async getRecipeDisLikes(id) {
-        await recipeUsrExists("recipe", "id", "recipes", id, "id");
+        await rowExists("recipe", "id", "recipes", [["id", id]]);
         const dbRecipe = await db.query(`SELECT * FROM recipes WHERE id = $1`, [id]);
         const dbRecipeRows = JSON.parse(JSON.stringify(dbRecipe.rows));
         const dbRecipeRowsObj = JSON.parse(JSON.stringify(dbRecipeRows[0]));
@@ -126,7 +126,7 @@ class Recipe {
      */
     static async getRecipeIngrdts(id) {
         // Check if recipe exists.
-        await recipeUsrExists("recipe", "id", "recipes", id, "id");
+        await rowExists("recipe", "id", "recipes", [["id", id]]);
         const dbRecipe = await db.query(`SELECT * FROM recipes WHERE id = $1`, [id]);
         const dbRecipeRows = JSON.parse(JSON.stringify(dbRecipe.rows));
         const dbRecipeRowsObj = JSON.parse(JSON.stringify(dbRecipeRows[0]));
@@ -165,7 +165,7 @@ class Recipe {
      */
     static async getRecipeReviews(id) {
         // Check if recipe exists.
-        await recipeUsrExists("recipe", "id", "recipes", id, "id");
+        await rowExists("recipe", "id", "recipes", [["id", id]]);
         const dbRecipe = await db.query(`SELECT * FROM recipes WHERE id = $1`, [id]);
         const dbRecipeRows = JSON.parse(JSON.stringify(dbRecipe.rows));
         const dbRecipeRowsObj = JSON.parse(JSON.stringify(dbRecipeRows[0]));
@@ -209,7 +209,7 @@ class Recipe {
      */
     static async getRecipe(id) {
         // Check if recipe exists.
-        await recipeUsrExists("recipe", "id", "recipes", id, "id");
+        await rowExists("recipe", "id", "recipes", [["id", id]]);
         const dbRecipe = await db.query(`SELECT * FROM recipes WHERE id = $1`, [id]);
         const dbRecipeRows = JSON.parse(JSON.stringify(dbRecipe.rows));
         const dbRecipeRowsObj = JSON.parse(JSON.stringify(dbRecipeRows[0]));

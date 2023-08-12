@@ -340,14 +340,29 @@ function genInsertSqlObj (tableName, clmnsValsObj, returnArray = []) {
  *      serchFor: string to search for => "recipes"
  *      columnSelStr: select column => "id"
  */
-async function recipeUsrExists (searchFor, columnSelStr, tableName, recUsrId, columnToCheck) {
+async function rowExists (searchFor, columnSelStr, tableName, clmnsNvalsArr) {
     try {
         // Define sql array for select command.
         const selectSql = ["SELECT", columnSelStr, "FROM", tableName];
         // Define sql array for where command.
-        const whereSql = ["WHERE", columnToCheck, "=", "$1"];
+        const whereSql = ["WHERE"];
         // Define sql array for values.
-        const values = [recUsrId];
+        const values = [];
+        const arrLgth = clmnsNvalsArr.length
+        clmnsNvalsArr.forEach((val, idx) => {
+            if (arrLgth === 1) {
+                // Push sql where commands to array.
+                whereSql.push(val[0], "=", `$${idx + 1}`);
+                // Push sql values to array.
+                values.push(val[1]);
+            } else if (arrLgth > 1 && idx !== 0) {
+                whereSql.push("AND", val[0], "=", `$${idx + 1}`);
+                values.push(val[1]);
+            } else if (arrLgth > 1 && idx === 0) {
+                whereSql.push(val[0], "=", `$${idx + 1}`);
+                values.push(val[1]);
+            }
+        });
         // Define final sql array.
         const finalsql = [selectSql.join(" "), whereSql.join(" ")];
         // Define final sql string.
@@ -373,5 +388,5 @@ module.exports = {
     qryObjToOrderBySql,
     genWhereSqlArr,
     genSelectSql, genUpdateSqlObj,
-    genInsertSqlObj, recipeUsrExists
+    genInsertSqlObj, rowExists
 };

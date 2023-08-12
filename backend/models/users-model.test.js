@@ -12,11 +12,15 @@ let usr1TokenTest;
 let usr2TokenTest;
 let usr1IdTest;
 let usr2IdTest;
+let listId1Test;
+let listId2Test;
+let listId3Test;
 
 beforeEach(async () => {
     const { 
 			usr1, usr1Token, usr2, usr2Token,
-			usr1Id, usr2Id
+			usr1Id, usr2Id, listId1, listId2,
+			listId3
 		} = await genTestUsers();
     usr1Test = {...usr1};
     usr2Test = {...usr2};
@@ -24,6 +28,9 @@ beforeEach(async () => {
     usr2TokenTest = usr2Token;
 	usr1IdTest = usr1Id;
     usr2IdTest = usr2Id;
+	listId1Test = listId1;
+	listId2Test = listId2;
+	listId3Test = listId3;
 })
 
 afterEach(async () => {
@@ -208,4 +215,82 @@ describe("User.getSavedRecipes", () => {
             ]
         )
     });
+});
+
+describe("User.getRecipeLists", () => {
+	test("get recipelists", async () => {
+		const req = await User.getRecipeLists(usr1IdTest);
+		expect(req).toEqual([
+			{
+				"id": expect.any(Number),
+				"list_name": "weekly meals",
+				"occasion": "meal prep"
+			},
+			{
+				"id": expect.any(Number),
+				"list_name": "rasta bash",
+				"occasion": "party"
+			}
+		]);
+	});
+
+	test("404 error for not found user", async () => {
+		await expect(async () => {
+            await User.getRecipeLists(usr2IdTest + 1);
+        }).rejects.toThrow(ExpressError);
+	});
+});
+
+describe("User.getListRecipes", () => {
+	test("get recipelists", async () => {
+		const req = await User.getListRecipes(usr1IdTest, listId1Test);
+		expect(req).toEqual([
+			{
+				"id": 450,
+				"name": "sticky cinnamon figs",
+				"author": "jane hornby",
+				"rating": 5,
+				"vote_count": 30,
+				"url": "https://www.bbcgoodfood.com/recipes/sticky-cinnamon-figs",
+				"image": "https://images.immediate.co.uk/production/volatile/sites/30/2020/08/recipe-image-legacy-id-339086_11-8e6b423.jpg",
+				"description": "A simple and stylish nutty fig pudding ready in just 10 minutes",
+				"serves": 4,
+				"level": "easy",
+				"main_cat_name": "recipes",
+				"sub_cat_name": "desserts",
+				"steps": "Heat grill to medium high. Cut a deep cross in the top of each fig then ease the top apart like a flower. Sit the figs in a baking dish and drop a small piece of the butter into the centre of each fruit. Drizzle the honey over the figs, then sprinkle with the nuts and spice. Grill for 5 mins until figs are softened and the honey and butter make a sticky sauce in the bottom of the dish. Serve warm, with dollops of mascarpone or yogurt.",
+				"prep_time": "5 mins",
+				"cook_time": "5 mins"
+			},
+			{
+				"id": 460,
+				"name": "apple flapjack crumble",
+				"author": "mary cadogan",
+				"rating": 5,
+				"vote_count": 154,
+				"url": "https://www.bbcgoodfood.com/recipes/apple-flapjack-crumble",
+				"image": "https://images.immediate.co.uk/production/volatile/sites/30/2020/08/recipe-image-legacy-id-1069547_10-f1dcd02.jpg",
+				"description": "Sweetening the apples with apricot jam and orange juice makes it twice as fruity and adding a little syrup to the oaty crumble makes great little chewy clusters",
+				"serves": 6,
+				"level": "easy",
+				"main_cat_name": "recipes",
+				"sub_cat_name": "desserts",
+				"steps": "Heat oven to 190C/fan 170C/gas 5. Peel, core and thinly slice the apples and mix with the jam and orange juice. Spread evenly over a buttered 1.5-litre ovenproof dish, not too deep. Mix the oats, flour and cinnamon in a large bowl. Add the butter in small chunks and rub in gently. Stir in the sugar and rub in again. Drizzle over the syrup, mixing with a knife so it forms small clumps. Sprinkle evenly over the apples and bake for 30-35 mins until the juices from the apples start to bubble up. Cool for 10 mins, then serve with custard, cream or ice cream.",
+				"prep_time": "20 mins",
+				"cook_time": "35 mins"
+			}
+		]);
+	});
+
+	test("404 error for not found user", async () => {
+		await expect(async () => {
+            await User.getListRecipes(usr2IdTest + 1, listId3Test);
+        }).rejects.toThrow(ExpressError);
+	});
+
+	test("404 error for not found list", async () => {
+		await expect(async () => {
+            await User.getListRecipes(usr2IdTest, listId3Test + 1);
+        }).rejects.toThrow(ExpressError);
+	});
 });
