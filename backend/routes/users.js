@@ -148,7 +148,7 @@ router.get("/:id/recipelists", isLoggedIn, async (req, res, next) => {
  * Authorization: logged in
  * Returns recipelist recipes.
  */
-router.get("/:id/recipelists/:list_id/recipes", isLoggedIn, async (req, res, next) => {
+router.get("/:id/recipelists/:list_id", isLoggedIn, async (req, res, next) => {
     const { id, list_id } = req.params;
     const recipes = await User.getListRecipes(id, list_id);
     return res.status(200).json(recipes);
@@ -160,7 +160,7 @@ router.get("/:id/recipelists/:list_id/recipes", isLoggedIn, async (req, res, nex
  * Authorization: logged in
  * Returns recipe from recipelist recipes.
  */
-router.get("/:id/recipelists/:list_id/recipes/:recipe_id", isLoggedIn, async (req, res, next) => {
+router.get("/:id/recipelists/:list_id/:recipe_id", isLoggedIn, async (req, res, next) => {
     const { recipe_id } = req.params;
     const recipe = await Recipe.getRecipe(recipe_id);
     return res.status(200).json(recipe);
