@@ -186,3 +186,9 @@ CREATE TABLE user_recipes_ingredients (
     unit_id INTEGER REFERENCES units (id),
     ingredient_id INTEGER REFERENCES ingredients (id)
 );
+
+CREATE TABLE user_recipes_steps (
+    id SERIAL PRIMARY KEY,
+    user_recipe_id INTEGER REFERENCES user_recipes (id) ON DELETE CASCADE,
+    step TEXT NOT NULL
+);

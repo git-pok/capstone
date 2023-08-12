@@ -365,29 +365,57 @@ class User {
     }
 
     /**
+     * recipeSteps
+     * Retrives user's recipe steps.
+     * Returns array of recipe steps.
+     * recipes(id) => [{ step: "Trun bacon", ...} ...]
+     */
+    static async recipeSteps (userId, recipeId) {
+        await rowExists("user", "id", "users", [["id", +userId]]);
+        await rowExists("recipe", "id", "user_recipes", [["id", +recipeId]]);
+        const selectClmns = ["urs.step"];
+        const listSelStr = genSelectSql(selectClmns, "user_recipes_steps", true);
+        const joinVals = [["user_recipes", "urs.user_recipe_id", "ur.id"]];
+        const joinSql = genJoinSql(joinVals, "JOIN");
+        const clmNvals = { user_recipe_id: recipeId, user_id: userId };
+        const clmnAbrevConvrs = {user_id: "ur.", user_recipe_id: "urs."};
+        const whereSqlObj = genWhereSqlArr(clmNvals, 1, true, false, true, clmnAbrevConvrs);
+        const selectSql = arrayConcat([listSelStr, joinSql, whereSqlObj.whereSql]);
+        // console.log("selectSql RECIPES STEPS FINAL SQL $#$#$#$#$#$#$", selectSql, whereSqlObj.values);
+        const req = await db.query(`
+            ${selectSql}
+        `, whereSqlObj.values);
+        return req.rows;
+    }
+
+    /**
      * recipe
      * Retrives user's recipe.
      * Returns array of recipes.
      * recipes(id) => [{ id: 2, recipe_name: "dump. tweak", ...}, ...]
      */
     static async recipe (userId, recipeId) {
-        await rowExists("user", "id", "users", [["id", userId]]);
-        await rowExists("recipe", "id", "user_recipes", [["id", recipeId]]);
+        await rowExists("user", "id", "users", [["id", +userId]]);
+        await rowExists("recipe", "id", "user_recipes", [["id", +recipeId]]);
         const selectClmns = ["uri.qty", "u.unit", "ing.ingredient"];
-        const listSelStr = genSelectSql(selectClmns, "user_recipes_ingredients", true);
+        const listSelStr = genSelectSql(selectClmns, "user_recipes", true);
         const joinClmns = [
+            ["user_recipes_ingredients", "ur.id", "uri.user_recipe_id"],
             ["units", "uri.unit_id", "u.id"],
             ["ingredients", "uri.ingredient_id", "ing.id"]
         ];
         const joinSql = genJoinSql(joinClmns, "JOIN");
-        const whereSqlObj = genWhereSqlArr({ user_recipe_id: recipeId }, 1, true, false, true, {user_recipe_id: "uri."});
+        const clmNvals = { user_id: userId, user_recipe_id: recipeId };
+        const clmnAbrevConvrs = {user_id: "ur.", user_recipe_id: "uri."};
+        const whereSqlObj = genWhereSqlArr(clmNvals, 1, true, false, true, clmnAbrevConvrs);
         const selectSql = arrayConcat([listSelStr, joinSql, whereSqlObj.whereSql]);
         // console.log("selectSql RECIPES FINAL SQL $#$#$#$#$#$#$", selectSql, whereSqlObj.values);
         const req = await db.query(`
             ${selectSql}
         `, whereSqlObj.values);
-        const recipeRows = req.rows;
-        return recipeRows;
+        const steps = await User.recipeSteps(userId, recipeId);
+        const recipeRows = JSON.parse(JSON.stringify(req.rows));
+        return { ingredients: recipeRows, steps };
     }
 }
 

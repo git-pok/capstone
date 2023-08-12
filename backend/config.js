@@ -134,7 +134,8 @@ const tablesJoinAbrv = {
     shoppinglists: "shoppinglists sl",
     shoppinglists_items: "shoppinglists_items sli",
     user_recipes: "user_recipes ur",
-    user_recipes_ingredients: "user_recipes_ingredients uri"
+    user_recipes_ingredients: "user_recipes_ingredients uri",
+    user_recipes_steps: "user_recipes_steps urs",
 };
 
 
@@ -166,7 +167,8 @@ const joinTableNameAbrv = {
     shoppinglists: "sl.",
     shoppinglists_items: "sli.",
     user_recipes: "ur.",
-    user_recipes_ingredients: "uri."
+    user_recipes_ingredients: "uri.",
+    user_recipes_steps: "urs.",
 };
 
 
