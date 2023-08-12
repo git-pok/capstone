@@ -188,7 +188,11 @@ const sqlOperator = {
     id: "=",
     user_id: "=",
     recipe_id: "=",
-    list_id: "="
+    list_id: "=",
+    user_recipe_id: "=",
+    ingredient_id: "=",
+    unit_id: "=",
+    occasion_id: "="
 };
 
 
@@ -215,7 +219,11 @@ const sqlOperatorStrict = {
     recipe_id: "=",
     user_id: "=",
     recipe_id: "=",
-    list_id: "="
+    list_id: "=",
+    user_recipe_id: "=",
+    ingredient_id: "=",
+    unit_id: "=",
+    occasion_id: "="
 };
 
 
@@ -363,7 +371,8 @@ const orderByKeys = new Set();
 
 const isNumbers = new Set();
         isNumbers.add("recipe_id").add("user_id").add("rating")
-        .add("id").add("vote_count");
+        .add("id").add("vote_count").add("list_id")
+        .add("user_recipe_id");
 
 
 const userSqlReturnNoAbrv = [

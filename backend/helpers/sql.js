@@ -177,6 +177,9 @@ function genWhereSqlArr (columnValObj, parametizer, exactMatch = false, returnAr
             const sql = [columnJoin, queryOperator, `$${parametizer}`];
             // Define value for sql command => "chicken".
             const cmndValue = isStrict ? `${valNormlzd}` : `%${valNormlzd}%`;
+            // Checks if column val is number;
+            const isValNum = isNumbers.has(valNormlzd);
+            // checks if column's value should be number.
             const value = !isNumbers.has(keyNormlzd) ? cmndValue : +valNormlzd;
             if (!sqlObj.whereSql.length) sqlObj.whereSql.push("WHERE", sql.join(" "));
             else sqlObj.whereSql.push("AND", sql.join(" "));

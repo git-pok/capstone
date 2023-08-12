@@ -185,5 +185,69 @@ router.get("/:id/recipelists/:list_id/:recipe_id", isLoggedIn, async (req, res, 
     }
 });
 
+/**
+ * "/:id/shoppinglists"
+ * route type: GET
+ * Authorization: logged in
+ * Returns shoppinglists.
+ */
+router.get("/:id/shoppinglists", isLoggedIn, async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        const lists = await User.getShopLists(id);
+        return res.status(200).json(lists);
+    } catch(err) {
+        return next(err);
+    }
+});
+
+/**
+ * "/:id/shoppinglists/:list_id"
+ * route type: GET
+ * Authorization: logged in
+ * Returns shoppinglist items.
+ */
+router.get("/:id/shoppinglists/:list_id", isLoggedIn, async (req, res, next) => {
+    try {
+        const { id, list_id } = req.params;
+        const lists = await User.shopListsItems(id, list_id);
+        return res.status(200).json(lists);
+    } catch(err) {
+        return next(err);
+    }
+});
+
+/**
+ * "/:id/recipes"
+ * route type: GET
+ * Authorization: logged in
+ * Returns users recipes.
+ */
+router.get("/:id/recipes", isLoggedIn, async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        const lists = await User.recipes(id);
+        return res.status(200).json(lists);
+    } catch(err) {
+        return next(err);
+    }
+});
+
+/**
+ * "/:user_id/recipes/:id"
+ * route type: GET
+ * Authorization: logged in
+ * Returns user's recipe.
+ */
+router.get("/:user_id/recipes/:id", isLoggedIn, async (req, res, next) => {
+    try {
+        const { user_id, id } = req.params;
+        const lists = await User.recipe(user_id, id);
+        return res.status(200).json(lists);
+    } catch(err) {
+        return next(err);
+    }
+});
+
 
 module.exports = router;

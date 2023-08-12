@@ -295,6 +295,100 @@ class User {
         const recipeRows = req.rows;
         return recipeRows;
     }
+
+    /**
+     * getShopLists
+     * Retrives shopping lists.
+     * Returns array of shopping lists
+     * getShopLists(id) => [{ name: "chicken recipe", ...}, ...]
+     */
+    static async getShopLists (id) {
+        await rowExists("user", "id", "users", [["id", id]]);
+        const selectClmns = ["id", "list_name"];
+        const listSelStr = genSelectSql(selectClmns, "shoppinglists");
+        const whereSqlObj = genWhereSqlArr({ user_id: id }, 1, true);
+        // console.log("listSelStr RECIPES FINAL SQL $#$#$#$#$#$#$", listSelStr, whereSqlObj.whereSql);
+        const selectSql = arrayConcat([listSelStr, whereSqlObj.whereSql]);
+        console.log("selectSql RECIPES FINAL SQL $#$#$#$#$#$#$", selectSql);
+        const req = await db.query(`
+            ${selectSql}
+        `, whereSqlObj.values);
+
+        const recipeRows = req.rows;
+        return recipeRows;
+    }
+
+    /**
+     * shopListsItems
+     * Retrives shopping list items.
+     * Returns array of shopping lists
+     * getShopLists(id) => [{ qty: 2, unit: "g", ...}, ...]
+     */
+    static async shopListsItems (id, listId) {
+        await rowExists("user", "id", "users", [["id", id]]);
+        await rowExists("list", "id", "shoppinglists", [["id", listId]]);
+        const selectClmns = ["sli.qty", "u.unit", "ing.ingredient"];
+        const listSelStr = genSelectSql(selectClmns, "shoppinglists_items", true);
+        const joinClmns = [
+            ["units", "sli.unit_id", "u.id"],
+            ["ingredients", "sli.ingredient_id", "ing.id"]
+        ];
+        const joinSql = genJoinSql(joinClmns, "JOIN");
+        const whereSqlObj = genWhereSqlArr({ list_id: listId }, 1, true, false, true, {list_id: "sli."});
+        const selectSql = arrayConcat([listSelStr, joinSql, whereSqlObj.whereSql]);
+        // console.log("selectSql RECIPES FINAL SQL $#$#$#$#$#$#$", selectSql, whereSqlObj.values);
+        const req = await db.query(`
+            ${selectSql}
+        `, whereSqlObj.values);
+        const recipeRows = req.rows;
+        return recipeRows;
+    }
+
+    /**
+     * recipes
+     * Retrives user recipes.
+     * Returns array of recipes.
+     * recipes(id) => [{ id: 2, recipe_name: "dump. tweak", ...}, ...]
+     */
+    static async recipes (id) {
+        await rowExists("user", "id", "users", [["id", id]]);
+        const selectClmns = ["id", "recipe_name"];
+        const listSelStr = genSelectSql(selectClmns, "user_recipes");
+        const whereSqlObj = genWhereSqlArr({ user_id: id }, 1, true);
+        const selectSql = arrayConcat([listSelStr, whereSqlObj.whereSql]);
+        // console.log("selectSql RECIPES FINAL SQL $#$#$#$#$#$#$", selectSql, whereSqlObj.values);
+        const req = await db.query(`
+            ${selectSql}
+        `, whereSqlObj.values);
+        const recipeRows = req.rows;
+        return recipeRows;
+    }
+
+    /**
+     * recipe
+     * Retrives user's recipe.
+     * Returns array of recipes.
+     * recipes(id) => [{ id: 2, recipe_name: "dump. tweak", ...}, ...]
+     */
+    static async recipe (userId, recipeId) {
+        await rowExists("user", "id", "users", [["id", userId]]);
+        await rowExists("recipe", "id", "user_recipes", [["id", recipeId]]);
+        const selectClmns = ["uri.qty", "u.unit", "ing.ingredient"];
+        const listSelStr = genSelectSql(selectClmns, "user_recipes_ingredients", true);
+        const joinClmns = [
+            ["units", "uri.unit_id", "u.id"],
+            ["ingredients", "uri.ingredient_id", "ing.id"]
+        ];
+        const joinSql = genJoinSql(joinClmns, "JOIN");
+        const whereSqlObj = genWhereSqlArr({ user_recipe_id: recipeId }, 1, true, false, true, {user_recipe_id: "uri."});
+        const selectSql = arrayConcat([listSelStr, joinSql, whereSqlObj.whereSql]);
+        // console.log("selectSql RECIPES FINAL SQL $#$#$#$#$#$#$", selectSql, whereSqlObj.values);
+        const req = await db.query(`
+            ${selectSql}
+        `, whereSqlObj.values);
+        const recipeRows = req.rows;
+        return recipeRows;
+    }
 }
 
 module.exports = User;

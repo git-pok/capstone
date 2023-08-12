@@ -1,9 +1,9 @@
--- DROP DATABASE IF EXISTS savour;
--- CREATE DATABASE savour;
--- \c savour
-DROP DATABASE IF EXISTS savour_test;
-CREATE DATABASE savour_test;
-\c savour_test
+DROP DATABASE IF EXISTS savour;
+CREATE DATABASE savour;
+\c savour
+-- DROP DATABASE IF EXISTS savour_test;
+-- CREATE DATABASE savour_test;
+-- \c savour_test
 
 
 
@@ -26676,8 +26676,18 @@ CREATE TABLE shoppinglists (
     id SERIAL PRIMARY KEY,
     user_id INTEGER REFERENCES users (id) ON DELETE CASCADE,
     recipe_id INTEGER REFERENCES recipes (id),
-    list_name VARCHAR (121) NOT NULL
+    list_name VARCHAR (121) NOT NULL,
+    UNIQUE (user_id, recipe_id)
 );
+
+INSERT INTO shoppinglists
+  (user_id, recipe_id, list_name)
+VALUES
+  (4, 202, 'user 4 list items'),
+  (4, 230, 'user 4 list items II'),
+  (6, 430, 'user 6 list items'),
+  (6, 436, 'user 6 list items II');
+
 
 CREATE TABLE shoppinglists_items (
     id SERIAL PRIMARY KEY,
@@ -26687,11 +26697,22 @@ CREATE TABLE shoppinglists_items (
     ingredient_id INTEGER REFERENCES ingredients (id)
 );
 
+INSERT INTO shoppinglists_items
+  (list_id, qty, unit_id, ingredient_id)
+VALUES
+  (4, 2, 3, 20), (4, 3, 3, 10), (4, 2, 5, 40),
+  (4, 2, 1, 12), (4, 12, 2, 11), (4, 30, 3, 21);
+
 CREATE TABLE user_recipes (
     id SERIAL PRIMARY KEY,
     user_id INTEGER REFERENCES users (id) ON DELETE CASCADE,
     recipe_name VARCHAR (121) NOT NULL
 );
+
+INSERT INTO user_recipes
+  (user_id, recipe_name)
+VALUES
+  (4, 'chicken tweak'), (4, 'dumpling tweak');
 
 CREATE TABLE user_recipes_ingredients (
     id SERIAL PRIMARY KEY,
@@ -26700,3 +26721,9 @@ CREATE TABLE user_recipes_ingredients (
     unit_id INTEGER REFERENCES units (id),
     ingredient_id INTEGER REFERENCES ingredients (id)
 );
+
+INSERT INTO user_recipes_ingredients
+  (user_recipe_id, qty, unit_id, ingredient_id)
+VALUES
+  (1, 2, 3, 20), (1, 3, 3, 10), (1, 2, 5, 40),
+  (1, 2, 1, 12), (1, 12, 2, 11), (1, 30, 3, 21);

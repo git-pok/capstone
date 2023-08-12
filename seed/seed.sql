@@ -1,6 +1,9 @@
-DROP DATABASE IF EXISTS savour;
-CREATE DATABASE savour;
-\c savour
+-- DROP DATABASE IF EXISTS savour;
+-- CREATE DATABASE savour;
+-- \c savour
+DROP DATABASE IF EXISTS savour_test;
+CREATE DATABASE savour_test;
+\c savour_test
 
 
 
@@ -26548,38 +26551,75 @@ CREATE TABLE users (
     phone TEXT,
     header_img TEXT,
     profile_img TEXT,
-    password TEXT UNIQUE NOT NULL
+    password TEXT NOT NULL
 );
 
 INSERT INTO users
-    (username, first_name, last_name, email, password)
+    (username, first_name, last_name, email, header_img, profile_img, password)
 VALUES
-    ('fvin', 'fvin', 'trill', 'trill@.com', 'password');
+    ('fv', 'fvin', 'trill', 'trill@gmail.com', 'headerImage', 'profileImg', 'password1'),
+    ('kz', 'knex', 'oz', 'nx@gmail.com', 'headerImage', 'profileImg', 'password2'),
+    ('nyx', 'onyx', 'oz', 'noz@gmail.com', 'headerImage', 'profileImg', 'password3'),
+    ('kal', 'kali', 'oz', 'koz@gmail.com', 'headerImage', 'profileImg', 'password4'),
+    ('dre', 'dremon', 'green', 'dre@gmail.com', 'headerImage', 'profileImg', 'password5'),
+    ('kd', 'koy', 'dred', 'kd@gmail.com', 'headerImage', 'profileImg', 'password6'),
+    ('rasta', 'rasto', 'loc', 'rasta@gmail.com', 'headerImage', 'profileImg', 'password7'),
+    ('rell', 'latrell', 'green', 'lg@gmail.com', 'headerImage', 'profileImg', 'password8'),
+    ('sky', 'sky', 'fila', 'skyfila@gmail.com', 'headerImage', 'profileImg', 'password9'),
+    ('bz', 'biz', 'droso', 'bz@gmail.com', 'headerImage', 'profileImg', 'password10'),
+    ('lex', 'xel', 'lucas', 'lex@gmail.com', 'headerImage', 'profileImg', 'password11');
 
 CREATE TABLE disliked_recipes (
     user_id INTEGER REFERENCES users (id) ON DELETE CASCADE,
-    recipe_id INTEGER REFERENCES recipes (id) ON DELETE CASCADE
+    recipe_id INTEGER REFERENCES recipes (id) ON DELETE CASCADE,
+    PRIMARY KEY (user_id, recipe_id)
 );
 
 CREATE TABLE liked_recipes (
     user_id INTEGER REFERENCES users (id) ON DELETE CASCADE,
-    recipe_id INTEGER REFERENCES recipes (id) ON DELETE CASCADE
+    recipe_id INTEGER REFERENCES recipes (id) ON DELETE CASCADE,
+    PRIMARY KEY (user_id, recipe_id)
 );
+
+INSERT INTO liked_recipes
+  (user_id, recipe_id)
+VALUES
+  (1, 1684), (2, 1684), (3, 1684);
 
 CREATE TABLE favorite_recipes (
     user_id INTEGER REFERENCES users (id) ON DELETE CASCADE,
-    recipe_id INTEGER REFERENCES recipes (id) ON DELETE CASCADE
+    recipe_id INTEGER REFERENCES recipes (id) ON DELETE CASCADE,
+    PRIMARY KEY (user_id, recipe_id)
 );
 
-CREATE TABLE view_later (
+INSERT INTO favorite_recipes 
+  (user_id, recipe_id)
+VALUES
+  (11, 5), (11, 13), (11, 57), (11, 53);
+
+
+CREATE TABLE saved_recipes (
     user_id INTEGER REFERENCES users (id) ON DELETE CASCADE,
-    recipe_id INTEGER REFERENCES recipes (id) ON DELETE CASCADE
+    recipe_id INTEGER REFERENCES recipes (id) ON DELETE CASCADE,
+    PRIMARY KEY (user_id, recipe_id)
 );
+
+INSERT INTO saved_recipes 
+  (user_id, recipe_id)
+VALUES
+  (6, 100), (6, 120), (6, 14), (6, 63);
 
 CREATE TABLE occasions (
     id SERIAL PRIMARY KEY,
     occasion VARCHAR (121) UNIQUE NOT NULL
 );
+
+INSERT INTO occasions
+  (occasion)
+VALUES
+  ('holiday'), ('party'), ('convention'),
+  ('get together'), ('birthday'),
+  ('date'), ('meal prep');
 
 CREATE TABLE recipelists (
     id SERIAL PRIMARY KEY,
@@ -26588,11 +26628,24 @@ CREATE TABLE recipelists (
     list_name VARCHAR (30) NOT NULL
 );
 
+INSERT INTO recipelists
+  (user_id, occasion_id, list_name)
+VALUES
+  (3, 7, 'weekly meals'),
+  (3, 2, 'rasta bash'),
+  (4, 1, 'christmas appetizers');
+
 CREATE TABLE recipelists_recipes (
-    user_id INTEGER REFERENCES users (id) ON DELETE CASCADE,
-    recipe_id INTEGER REFERENCES recipes (id),
-    list_id INTEGER REFERENCES recipelists (id) ON DELETE CASCADE
+    -- user_id INTEGER REFERENCES users (id) ON DELETE CASCADE,
+    id SERIAL,
+    list_id INTEGER REFERENCES recipelists (id) ON DELETE CASCADE,
+    recipe_id INTEGER REFERENCES recipes (id)
 );
+
+INSERT INTO recipelists_recipes
+  (list_id, recipe_id)
+VALUES
+  (3, 450), (3, 460);
 
 CREATE TABLE tips (
     id SERIAL PRIMARY KEY,
@@ -26602,12 +26655,21 @@ CREATE TABLE tips (
 );
 
 CREATE TABLE reviews (
-    id SERIAL PRIMARY KEY,
+    id SERIAL,
     user_id INTEGER REFERENCES users (id) ON DELETE CASCADE,
     recipe_id INTEGER REFERENCES recipes (id) ON DELETE CASCADE,
-    rating INTEGER NOT NULL,
-    review TEXT NOT NULL
+    stars INTEGER NOT NULL CHECK(stars < 6),
+    review TEXT NOT NULL,
+    PRIMARY KEY (user_id, recipe_id)
 );
+
+INSERT INTO reviews 
+  (user_id, recipe_id, stars, review)
+VALUES
+  (6, 100, 3, 'Good.'), (6, 120, 3, 'Good.'),
+  (4, 120, 3, 'Good.'), (7, 120, 3, 'Good.'),
+  (6, 14, 1, 'Did not like seeds.'),
+  (6, 63, 3, 'Good.');
 
 
 CREATE TABLE shoppinglists (
@@ -26615,7 +26677,14 @@ CREATE TABLE shoppinglists (
     user_id INTEGER REFERENCES users (id) ON DELETE CASCADE,
     recipe_id INTEGER REFERENCES recipes (id),
     list_name VARCHAR (121) NOT NULL
+    -- PRIMARY KEY FOREIGN KEY (user_id, recipe_id)
 );
+
+-- INSERT INTO shoppinglists
+--   (user_id, recipe_id, list_name)
+-- VALUES
+--   (4, 202, 'list items');
+
 
 CREATE TABLE shoppinglists_items (
     id SERIAL PRIMARY KEY,
