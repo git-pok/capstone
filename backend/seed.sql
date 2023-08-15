@@ -26700,8 +26700,8 @@ CREATE TABLE shoppinglists_items (
 INSERT INTO shoppinglists_items
   (list_id, qty, unit_id, ingredient_id)
 VALUES
-  (4, 2, 3, 20), (4, 3, 3, 10), (4, 2, 5, 40),
-  (4, 2, 1, 12), (4, 12, 2, 11), (4, 30, 3, 21);
+  (1, 2, 3, 20), (1, 3, 3, 10), (1, 2, 5, 40),
+  (1, 2, 1, 12), (1, 12, 2, 11), (1, 30, 3, 21);
 
 CREATE TABLE user_recipes (
     id SERIAL PRIMARY KEY,
@@ -26726,7 +26726,8 @@ INSERT INTO user_recipes_ingredients
   (user_recipe_id, qty, unit_id, ingredient_id)
 VALUES
   (1, 2, 3, 20), (1, 3, 3, 10), (1, 2, 5, 40),
-  (1, 2, 1, 12), (1, 12, 2, 11), (1, 30, 3, 21);
+  (1, 2, 1, 12), (1, 12, 2, 11), (1, 30, 3, 21),
+  (2, 30, 3, 21);
 
 CREATE TABLE user_recipes_steps (
     id SERIAL PRIMARY KEY,
