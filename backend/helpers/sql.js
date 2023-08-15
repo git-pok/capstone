@@ -19,7 +19,7 @@ const {
  * Arguments: arr
  * Returns string.
  * arrayConcat (["SELECT", "name", "FROM", "recipes"]) =>
- * "SELECT name FROM recipes";
+ * "SELECT name FROM recipes"
  */
 function arrayConcat (arr) {
     try {
@@ -28,13 +28,12 @@ function arrayConcat (arr) {
         const errMsg = err.msg ? err.msg : "Error!";
         const statusCode = err.status ? err.status : 400;
         throw new ExpressError(statusCode, errMsg);
-        // throw new ExpressError(400, `${err}`);
     }
 }
 
 /**
  * genJoinSql
- * Creates join query.
+ * Creates join sql.
  * Arguments: join array, and join type
  * joinArr: array of arrays where the values in each array are:
  *      0: the table name being joined,
@@ -78,7 +77,7 @@ function genJoinSql (joinArr, joinType = "JOIN") {
 /**
  * qryObjToOrderBySql
  * Creates ORDER BY sql.
- * Arguments: qry object
+ * Arguments: query object
  * Returns string with order by statement.
  * qryObjToOrderBySql({ orderBy: "name", chronOrder: "DESC" }) => "ORDER BY r.name DESC"
  */
@@ -129,7 +128,6 @@ function qryObjToOrderBySql (qry) {
         const errMsg = err.msg ? err.msg : "Error!";
         const statusCode = err.status ? err.status : 400;
         throw new ExpressError(statusCode, errMsg);
-        // throw new ExpressError(400, `${err}`);
     }
 }
 
@@ -199,7 +197,7 @@ function genWhereSqlArr (columnValObj, parametizer, exactMatch = false, returnAr
 
 /**
  * genSelectSql
- * Creates select.
+ * Creates select sql.
  * Arguments: selectColumnsArr, tableName, tableNameAbrev
  * selectColumnsArr argument: column values
         [ "name", "description" ],
@@ -209,7 +207,7 @@ function genWhereSqlArr (columnValObj, parametizer, exactMatch = false, returnAr
  * genSelectSql(selectArr, "recipes") =>
  * "SELECT name, description FROM recipes"
  * const selectArr2 = [ "r.name", "r.description" ];
- * genSelectSql(selectArr2, "recipes") =>
+ * genSelectSql(selectArr2, "recipes", true) =>
  * "SELECT r.name, r.description FROM recipes r"
  *
  */
@@ -249,7 +247,8 @@ function genSelectSql (selectColumnsArr, tableName, tableNameAbrev = false) {
  * const clmnsValsObj = { first_name: "fvin2", last_name: "I2" };
  * genUpdateSqlObj("users", clmnsValsObj, returnArray) =>
  * {
- *  sql: "UPDATE users SET first_name = $1, last_name = $2"
+ *  sql: "UPDATE users SET first_name = $1, last_name = $2
+ *  RETURNING first_name, last_name"
  *  values: ["fvin2", "I2"]
  * }
  */
@@ -299,7 +298,8 @@ function genUpdateSqlObj (tableName, clmnsValsObj, returnArray = []) {
  * const clmnsValsObj = { first_name: "fvin2", last_name: "I2" };
  * genInsertSqlObj("users", clmnsValsObj, returnArray) =>
  * {
- *  sql: "INSERT INTO users (first_name, last_name) VALUES ($1, $2)"
+ *  sql: "INSERT INTO users (first_name, last_name) VALUES ($1, $2)
+ *  RETURNING first_name, last_name"
  *  values: ["fvin2", "I2"]
  * }
  */
@@ -336,12 +336,14 @@ function genInsertSqlObj (tableName, clmnsValsObj, returnArray = []) {
 }
 
 /**
- * recipeUsrExists
- * Creates select sql for a specific user or recipe
+ * rowExists
+ * Creates select sql for a specific row
  * to see if it exists.
- * Arguments: searchFor, columnSelStr, tableName, recUsrId, columnToCheck
+ * Arguments: searchFor, columnSelStr, tableName, clmnsNvalsArr
  *      serchFor: string to search for => "recipes"
  *      columnSelStr: select column => "id"
+ *      clmnsNvalsArr: array of nested arrays where each array has
+ *      two values: column name, column value.
  */
 async function rowExists (searchFor, columnSelStr, tableName, clmnsNvalsArr) {
     try {
