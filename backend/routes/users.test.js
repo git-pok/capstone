@@ -365,13 +365,13 @@ describe("/GET /users/:id/recipelists", () => {
         expect(req.body).toEqual([
             {
 				"id": expect.any(Number),
-				"list_name": "weekly meals",
-				"occasion": "meal prep"
-			},
-			{
-				"id": expect.any(Number),
 				"list_name": "rasta bash",
 				"occasion": "party"
+			},
+            {
+				"id": expect.any(Number),
+				"list_name": "weekly meals",
+				"occasion": "meal prep"
 			}
         ]);
     });

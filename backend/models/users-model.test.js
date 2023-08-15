@@ -223,13 +223,13 @@ describe("User.getRecipeLists", () => {
 		expect(req).toEqual([
 			{
 				"id": expect.any(Number),
-				"list_name": "weekly meals",
-				"occasion": "meal prep"
+				"list_name": "rasta bash",
+				"occasion": "party"
 			},
 			{
 				"id": expect.any(Number),
-				"list_name": "rasta bash",
-				"occasion": "party"
+				"list_name": "weekly meals",
+				"occasion": "meal prep"
 			}
 		]);
 	});

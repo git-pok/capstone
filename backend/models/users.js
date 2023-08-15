@@ -263,7 +263,7 @@ class User {
         const reqSql = reqSqlArr.join(" ");
         // console.log("RECIPE LISTS FINAL SQL $#$#$#$#$#$#$", reqSql);
         const req = await db.query(`
-            ${reqSql}
+            ${reqSql} ORDER BY rl.list_name
         `, whereSqlObj.values);
         return req.rows;
     }
