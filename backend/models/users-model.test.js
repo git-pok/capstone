@@ -15,12 +15,17 @@ let usr2IdTest;
 let listId1Test;
 let listId2Test;
 let listId3Test;
+let shopList1IdTest;
+let shopList2IdTest;
+let user1RecipeIdTest;
+let user2RecipeIdTest;
 
 beforeEach(async () => {
     const { 
 			usr1, usr1Token, usr2, usr2Token,
 			usr1Id, usr2Id, listId1, listId2,
-			listId3
+			listId3, shopList1Id, shopList2Id,
+			user1RecipeId, user2RecipeId
 		} = await genTestUsers();
     usr1Test = {...usr1};
     usr2Test = {...usr2};
@@ -31,6 +36,10 @@ beforeEach(async () => {
 	listId1Test = listId1;
 	listId2Test = listId2;
 	listId3Test = listId3;
+	shopList1IdTest = shopList1Id;
+	shopList2IdTest = shopList2Id;
+	user1RecipeIdTest = user1RecipeId;
+	user2RecipeIdTest = user2RecipeId;
 })
 
 afterEach(async () => {
@@ -292,5 +301,217 @@ describe("User.getListRecipes", () => {
 		await expect(async () => {
             await User.getListRecipes(usr2IdTest, listId3Test + 1);
         }).rejects.toThrow(ExpressError);
+	});
+});
+
+describe("User.getShopLists", () => {
+	test("get user1 shoplists", async () => {
+		const list = await User.getShopLists(usr1IdTest);
+		expect(list).toEqual([
+			{
+				"id": expect.any(Number),
+				"list_name": "User 1 Shoplist for Recipe 120"
+			}
+		]);
+	});
+
+	test("get user2 shoplists", async () => {
+		const list = await User.getShopLists(usr2IdTest);
+		expect(list).toEqual([
+			{
+				"id": expect.any(Number),
+				"list_name": "User 2 Shoplist for Recipe 320"
+			}
+		]);
+	});
+
+	test("error for not found user", async () => {
+		await expect(async () => {
+			await User.getShopLists(usr2IdTest + 1);
+		}).rejects.toThrow(ExpressError);
+	});
+});
+
+describe("User.shopListsItems", () => {
+	test("get user1 shoplist items", async () => {
+		const list = await User.shopListsItems(usr1IdTest, shopList1IdTest);
+		expect(list).toEqual(
+			{
+				"list_name": "User 1 Shoplist for Recipe 120",
+				"items": [
+					{
+						"qty": 3,
+						"unit": "tbsp",
+						"ingredient": "garlic granules"
+					},
+					{
+						"qty": 20,
+						"unit": "oz",
+						"ingredient": "boneless, skinless chicken breast"
+					}
+				]
+			}
+		);
+	});
+
+	test("get user2 shoplist items", async () => {
+		const list = await User.shopListsItems(usr2IdTest, shopList2IdTest);
+		expect(list).toEqual(
+			{
+				"list_name": "User 2 Shoplist for Recipe 320",
+				"items": [
+					{
+						"qty": 20,
+						"unit": "oz",
+						"ingredient": "boneless, skinless chicken breast"
+					}
+				]
+			}
+		);
+	});
+
+	test("error for not found user", async () => {
+		await expect(async () => {
+			await User.shopListsItems(usr2IdTest + 1, shopList2IdTest);
+		}).rejects.toThrow(ExpressError);
+	});
+
+	test("error for not found list", async () => {
+		await expect(async () => {
+			await User.shopListsItems(usr2IdTest, shopList2IdTest + 1);
+		}).rejects.toThrow(ExpressError);
+	});
+});
+
+describe("User.recipes", () => {
+	test("get user1 recipes", async () => {
+		const list = await User.recipes(usr1IdTest);
+		expect(list).toEqual([
+			{
+				"id": expect.any(Number),
+				"recipe_name": "User 1 Chicken Dumplings Tweak"
+			},
+		]);
+	});
+
+	test("get user2 recipes", async () => {
+		const list = await User.recipes(usr2IdTest);
+		expect(list).toEqual([
+			{
+				"id": expect.any(Number),
+				"recipe_name": "User 2 Stuffed Shells Tweak"
+			},
+		]);
+	});
+
+	test("error for not found user", async () => {
+		await expect(async () => {
+			await User.recipes(usr2IdTest + 1);
+		}).rejects.toThrow(ExpressError);
+	});
+});
+
+describe("User.recipeSteps", () => {
+	test("get user1 recipe steps", async () => {
+		const list = await User.recipeSteps(usr1IdTest, user1RecipeIdTest);
+		expect(list).toEqual([
+			{
+				"step": "User 1 Test Step 1",
+			},
+			{
+				"step": "User 1 Test Step 2",
+			},
+			{
+				"step": "User 1 Test Step 3",
+			}
+		]);
+	});
+
+	test("get user2 recipe steps", async () => {
+		const list = await User.recipeSteps(usr2IdTest, user2RecipeIdTest);
+		expect(list).toEqual([
+			{
+				"step": "User 2 Test Step 1",
+			},
+			{
+				"step": "User 2 Test Step 2",
+			}
+		]);
+	});
+
+	test("error for not found user", async () => {
+		await expect(async () => {
+			await User.recipeSteps(usr2IdTest + 1, user2RecipeIdTest);
+		}).rejects.toThrow(ExpressError);
+	});
+
+	test("error for not found recipe", async () => {
+		await expect(async () => {
+			await User.recipeSteps(usr2IdTest, user2RecipeIdTest + 1);
+		}).rejects.toThrow(ExpressError);
+	});
+});
+
+describe("User.recipe", () => {
+	test("get user1 recipe", async () => {
+		const list = await User.recipe(usr1IdTest, user1RecipeIdTest);
+		expect(list).toEqual(
+			{
+				"recipe_name": "User 1 Chicken Dumplings Tweak",
+				"ingredients": [
+					{
+						"qty": 4,
+						"unit": "tbsp",
+						"ingredient": "garlic granules"
+					},
+					{
+						"qty": 10,
+						"unit": "oz",
+						"ingredient": "boneless, skinless chicken breast"
+					}
+				],
+				"steps": [
+					{
+						"step": "User 1 Test Step 1",
+					},
+					{
+						"step": "User 1 Test Step 2",
+					},
+					{
+						"step": "User 1 Test Step 3",
+					}
+				]
+			}
+		);
+	});
+
+	test("get user2 recipe", async () => {
+		const list = await User.recipe(usr2IdTest, user2RecipeIdTest);
+		expect(list).toEqual(
+			{
+				"recipe_name": "User 2 Stuffed Shells Tweak",
+				"ingredients": [],
+				"steps": [
+					{
+						"step": "User 2 Test Step 1",
+					},
+					{
+						"step": "User 2 Test Step 2",
+					}
+				]
+			}
+		);
+	});
+
+	test("error for not found user", async () => {
+		await expect(async () => {
+			await User.recipe(usr2IdTest + 1, user2RecipeIdTest);
+		}).rejects.toThrow(ExpressError);
+	});
+
+	test("error for not found recipe", async () => {
+		await expect(async () => {
+			await User.recipe(usr2IdTest, user2RecipeIdTest + 1);
+		}).rejects.toThrow(ExpressError);
 	});
 });

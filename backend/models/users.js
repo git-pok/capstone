@@ -419,19 +419,18 @@ class User {
         ];
         // JOIN sql for recipe ingredients.
         const joinSql = genJoinSql(joinClmns, "JOIN");
-        // JOIN sql for recipe name.
-        const recpNameJoinClmns = [
-            ["user_recipes_ingredients", "ur.id", "uri.user_recipe_id"]
-        ];
-        const recpNameJoinSql = genJoinSql(recpNameJoinClmns, "JOIN");
+        // WHERE sql for recipe name.
+        const rcpNameClmNvals = { user_id: userId, id: recipeId };
+        const rcpNameClmnAbrevConvrs = {user_id: "ur.", id: "ur."};
+        const rcpNameWhereSqlObj = genWhereSqlArr(rcpNameClmNvals, 1, true, false, true, rcpNameClmnAbrevConvrs);
+        // WHERE sql for recipe ingredients.
         const clmNvals = { user_id: userId, user_recipe_id: recipeId };
         const clmnAbrevConvrs = {user_id: "ur.", user_recipe_id: "uri."};
         const whereSqlObj = genWhereSqlArr(clmNvals, 1, true, false, true, clmnAbrevConvrs);
         // Recipe ingredients sql concat.
         const selectSql = arrayConcat([listSelStr, joinSql, whereSqlObj.whereSql]);
         // Recipe name sql concat.
-        const recpNameSelectSql = arrayConcat([recpNameSelStr, recpNameJoinSql, whereSqlObj.whereSql]);
-        // console.log("selectSql RECIPES FINAL SQL $#$#$#$#$#$#$", selectSql, whereSqlObj.values);
+        const recpNameSelectSql = arrayConcat([recpNameSelStr, rcpNameWhereSqlObj.whereSql]);
         // Request recipe ingredients.
         const req = await db.query(`
             ${selectSql}
@@ -439,7 +438,7 @@ class User {
         // Request recipe name.
         const recpNameReq = await db.query(`
             ${recpNameSelectSql}
-        `, whereSqlObj.values);
+        `, rcpNameWhereSqlObj.values);
         // Destructure recipe_name if exists and empty array if not.
         const { recipe_name = "" } = recpNameReq.rows[0] || recpNameReq.rows;
         const steps = await User.recipeSteps(userId, recipeId);
