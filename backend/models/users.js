@@ -491,33 +491,16 @@ class User {
     }
 
     /**
-     * register
-     * Registers a user.
-     * Returns the object of submitted data and a token.
+     * favOrSavRecipe
+     * Favorite or save a recipe.
+     * Returns message object.
      * const data = {
-		"username": "fin",
-		"first_name": "Vin",
-		"last_name": "I",
-		"email": "bank@g.com",
-		"phone": "813 507 4490",
-		"header_img": "testHeaderImage",
-		"profile_img": "testProfileImage",
-        password: "password"
+		"recipeId": 1
 	* }
-     * register(data) =>
-     * user: {
-        id: 1,
-		username: "fin",
-		first_name: "Vin",
-		last_name: "I",
-		email: "bank@g.com",
-		phone: "813 507 4490",
-		header_img: "testHeaderImage",
-		profile_img: "testProfileImage",
-		token: "eyJhbGciOiJIUzI1N"
-	* }
-     */
-    static async favArecipe(userId, data) {
+    * favOrSavRecipe(1, data) => {message: "Favorited recipe!"}
+    * favOrSavRecipe(1, data, false) => {message: "Saved recipe!"}
+    */
+    static async favOrSavRecipe (userId, data, fav = true) {
         const isValid = validateSchema(data, favRecipeSchema);
         if (isValid.errors.length !== 0) {
             const jsonErrors = isValid.errors.map(error => error.message);
@@ -525,9 +508,11 @@ class User {
         }
         const { recipeId } = data;
         const clmnValObj = { user_id: +userId, recipe_id: recipeId };
-        const insertSql = genInsertSqlObj("favorite_recipes", clmnValObj);
-
-        await db.query(`${insertSql.sql}`, insertSql.values);
+        const tableName = fav === true ? "favorite_recipes" : "saved_recipes";
+        const insertSqlObj = genInsertSqlObj(tableName, clmnValObj);
+        await db.query(`${insertSqlObj.sql}`, insertSqlObj.values);
+        const msg = fav === true ? "Favorited recipe!" : "Saved recipe!";
+        return { message: msg };
     }
 }
 

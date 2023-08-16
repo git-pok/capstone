@@ -354,7 +354,8 @@ const savourTableNames = new Set();
     .add("favorite_recipes").add("view_later").add("occasions")
     .add("recipelists").add("recipelists_recipes").add("tips")
     .add("reviews").add("shoppinglists").add("shoppinglists_items")
-    .add("user_recipes").add("user_recipes_ingredients");
+    .add("user_recipes").add("user_recipes_ingredients")
+    .add("saved_recipes");
 
 
 const recipeQryFilterKeys = new Set();

@@ -119,14 +119,14 @@ router.get("/:id/favorite-recipes", isLoggedIn, async (req, res, next) => {
  * "/:id/favorite-recipes"
  * route type: POST
  * Authorization: logged in
- * Returns favorited recipe.
+ * Returns message.
  */
 router.post("/:id/favorite-recipes", isLoggedIn, async (req, res, next) => {
     try {
         const { id } = req.params;
         const qry = req.body;
-        const favReq = await User.favArecipe(id, qry);
-        return res.status(200).json({message: `Favorited recipe!`});
+        const favMsg = await User.favOrSavRecipe(id, qry);
+        return res.status(200).json(favMsg);
     } catch (err) {
         return next(err);
     }
@@ -159,6 +159,23 @@ router.get("/:id/saved-recipes", isLoggedIn, async (req, res, next) => {
         const { id } = req.params;
         const savedRecipes = await User.getSavedRecipes(id);
         return res.status(200).json(savedRecipes);
+    } catch (err) {
+        return next(err);
+    }
+});
+
+/**
+ * "/:id/saved-recipes"
+ * route type: POST
+ * Authorization: logged in
+ * Returns message.
+ */
+router.post("/:id/saved-recipes", isLoggedIn, async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        const qry = req.body;
+        const savMsg = await User.favOrSavRecipe(id, qry, false);
+        return res.status(200).json(savMsg);
     } catch (err) {
         return next(err);
     }
