@@ -296,6 +296,25 @@ router.get("/:id/recipelists/:list_id", isLoggedIn, async (req, res, next) => {
 });
 
 /**
+ * "/:id/recipelists/:list_id"
+ * Deletes recipelist.
+ * route type: DELETE
+ * Authorization: logged in
+ * Returns deleted message.
+ */
+router.delete("/:id/recipelists/:list_id", isLoggedIn, async (req, res, next) => {
+    try {
+        const { id, list_id } = req.params;
+        const msg = "Deleted recipelist from user's recipelists!"
+        const clmnNameValObj = { user_id: +id,  id: +list_id };
+        const deletedMsg = await User.deleteRow("recipelists", clmnNameValObj, msg);
+        return res.status(200).json(deletedMsg);
+    } catch (err) {
+        return next(err);
+    }
+});
+
+/**
  * "/:id/recipelists/:list_id/:recipe_id"
  * route type: GET
  * Authorization: logged in
@@ -312,6 +331,25 @@ router.get("/:id/recipelists/:list_id/:recipe_id", isLoggedIn, async (req, res, 
         const recipe = await Recipe.getRecipe(recipe_id);
         return res.status(200).json([recipe]);
     } catch(err) {
+        return next(err);
+    }
+});
+
+/**
+ * "/:id/recipelists/:list_id/:recipe_id"
+ * Deletes recipelist recipe.
+ * route type: DELETE
+ * Authorization: logged in
+ * Returns deleted message.
+ */
+router.delete("/:id/recipelists/:list_id/:recipe_id", isLoggedIn, async (req, res, next) => {
+    try {
+        const { list_id, recipe_id } = req.params;
+        const msg = "Deleted recipelist from user's recipelists!"
+        const clmnNameValObj = { list_id: +list_id,  recipe_id: +recipe_id };
+        const deletedMsg = await User.deleteRow("recipelists_recipes", clmnNameValObj, msg);
+        return res.status(200).json(deletedMsg);
+    } catch (err) {
         return next(err);
     }
 });
@@ -370,6 +408,25 @@ router.get("/:id/shoppinglists/:list_id", isLoggedIn, async (req, res, next) => 
 });
 
 /**
+ * "/:id/shoppinglists/:list_id"
+ * Deletes shoppinglist.
+ * route type: DELETE
+ * Authorization: logged in
+ * Returns deleted message.
+ */
+router.delete("/:id/shoppinglists/:list_id", isLoggedIn, async (req, res, next) => {
+    try {
+        const { id: user_id, list_id } = req.params;
+        const msg = "Deleted shoppinglist from user's shoppinglists!"
+        const clmnNameValObj = { user_id: +user_id, id: +list_id };
+        const deletedMsg = await User.deleteRow("shoppinglists", clmnNameValObj, msg);
+        return res.status(200).json(deletedMsg);
+    } catch (err) {
+        return next(err);
+    }
+});
+
+/**
  * "/:id/recipes"
  * route type: GET
  * Authorization: logged in
@@ -399,11 +456,8 @@ router.post("/:id/recipes", isLoggedIn, async (req, res, next) => {
         const returnClmns = ["id"];
         const listRes = await User.insertRow("user_recipes", data, recipesSchema, returnClmns);
         const { id: listId } = listRes.rows[0];
-        const list = await User.recipes(+user_id, listId);
-        const steps = await User.recipeSteps(+user_id, listId);
-        const listCpy = JSON.parse(JSON.stringify(list[0]))
-        listCpy.steps = steps;
-        return res.status(201).json(listCpy);
+        const list = await User.recipe(+user_id, listId);
+        return res.status(201).json(list);
     } catch(err) {
         return next(err);
     }
@@ -421,6 +475,25 @@ router.get("/:user_id/recipes/:id", isLoggedIn, async (req, res, next) => {
         const lists = await User.recipe(user_id, id);
         return res.status(200).json(lists);
     } catch(err) {
+        return next(err);
+    }
+});
+
+/**
+ * "/:user_id/recipes/:id"
+ * Deletes user recipe.
+ * route type: DELETE
+ * Authorization: logged in
+ * Returns deleted message.
+ */
+router.delete("/:user_id/recipes/:id", isLoggedIn, async (req, res, next) => {
+    try {
+        const { user_id, id } = req.params;
+        const msg = "Deleted recipe from user's recipes!"
+        const clmnNameValObj = { user_id: +user_id, id: +id };
+        const deletedMsg = await User.deleteRow("user_recipes", clmnNameValObj, msg);
+        return res.status(200).json(deletedMsg);
+    } catch (err) {
         return next(err);
     }
 });
