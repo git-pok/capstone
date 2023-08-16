@@ -30,29 +30,6 @@ function deleteObjProps (propsArr, obj) {
 }
 
 /**
- * definePropsInObjPure
- * Defines properties in an object.
- * Arguments: props array and object
- * Returns new object.
- * const obj = { two: 2 }
- * definePropsInObjPure(["one", 1], obj) => { one: 1, two: 2 };
- */
-function definePropsInObjPure (propsArr, obj) {
-    try {
-        if (!Array.isArray(propsArr)) throw new ExpressError(400, "Invalid data type for propsArr!");
-        const objCopy = JSON.parse(JSON.stringify(obj));
-        propsArr.forEach(prop => {
-            objCopy[prop[0]] = prop[1];
-        });
-        return objCopy;
-    } catch (err) {
-        const errMsg = err.msg ? err.msg : `${err}`;
-        const statusCode = err.status ? err.status : 400;
-        throw new ExpressError(statusCode, errMsg);
-    }
-}
-
-/**
  * deleteNullInArrPure
  * Deletes null values.
  * Arguments: array
@@ -143,7 +120,7 @@ function recipesFiltersToSqlClmns (qry, keyFilters = recipesFltrKeyToClmnName) {
 
 
 module.exports = {
-    deleteObjProps, definePropsInObjPure,
+    deleteObjProps,
     deletePropsNotInSetPure, deleteNullInArrPure,
     isFilter, recipesFiltersToSqlClmns
 };

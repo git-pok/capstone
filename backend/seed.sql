@@ -26663,7 +26663,7 @@ CREATE TABLE reviews (
     PRIMARY KEY (user_id, recipe_id)
 );
 
-INSERT INTO reviews 
+INSERT INTO reviews
   (user_id, recipe_id, stars, review)
 VALUES
   (6, 100, 3, 'Good.'), (6, 120, 3, 'Good.'),

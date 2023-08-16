@@ -9,7 +9,7 @@ const ExpressError = require("../models/error.js");
 // } = require("../config.js");
 
 const {
-    deleteObjProps, definePropsInObjPure,
+    deleteObjProps,
     deletePropsNotInSetPure, deleteNullInArrPure,
     isFilter, recipesFiltersToSqlClmns
 } = require("./recipes.js");
@@ -49,43 +49,6 @@ describe("deleteObjProps", () => {
         };
         function error () {
             deleteObjProps (propsArr, filters);
-        }
-        expect(error).toThrow(ExpressError);
-    });
-});
-
-describe("definePropsInObjPure", () => {
-    test("define props in empty object", () => {
-        const propsArr = [["username", "biz"], ["first_name", "bizq"]];
-        const newObj = definePropsInObjPure (propsArr, {});
-        console.log("NEW OBJ $#$#$#$#$#$#$#$#$", newObj);
-        expect(newObj).toEqual(
-            {
-                username: "biz", first_name: "bizq"
-            }
-        );
-    });
-
-    test("define props in object", () => {
-        const propsArr = [["first_name", "bizq"], ["last_name", "dreco"]];
-        const object = {
-            name: "V", rating: 5,
-            username: "vn", header_img: "img"
-        };
-        const newObj = definePropsInObjPure (propsArr, object);
-        expect(newObj).toEqual(
-            {
-                name: "V", rating: 5,
-                username: "vn", header_img: "img",
-                first_name: "bizq", last_name: "dreco"
-            }
-        );
-    });
-    
-    test("error for non array in propsArr arg", () => {
-        const propsArr = { name: "l", age: 8 };
-        function error () {
-            definePropsInObjPure (propsArr, {});
         }
         expect(error).toThrow(ExpressError);
     });

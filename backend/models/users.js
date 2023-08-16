@@ -17,6 +17,9 @@ const {
         validateSchema, hashPassword, generateToken,
         decodeToken, verifyPassword
     } = require("../helpers/users.js");
+const {
+        definePropsPure, defineProps
+    } = require("../helpers/all-purpose.js");
 const SECRET_KEY = require("../keys.js");
 // const jsonschema = require("jsonschema");
 const userSchema = require("../schemas/userRegister.json");
@@ -205,15 +208,15 @@ class User {
      * Returns array of favorite recipes.
      * getFavRecipes(id) => [{ name: "chicken", ...}, ...]
      */
-    static async getFavRecipes (id, recipeId = false) {
+    static async getFavRecipes (userId, recipeId = false) {
         // Check if user exists.
-        await rowExists("user", "id", "users", [["id", id]]);
+        await rowExists("user", "id", "users", [["id", userId]]);
         
         const selectSqlStr = genSelectSql(recipesRelDataSelectColumns, "favorite_recipes", true);
         const joinSqlStr = genJoinSql(favRecipesjoinArr, "JOIN");
         const selectJoinSqlStr = arrayConcat([selectSqlStr, joinSqlStr]);
         // Creates object with where sql and values properties.
-        const whereObj = recipeId === false ? { user_id: id } : { user_id: id, recipe_id: recipeId };
+        const whereObj = recipeId === false ? { user_id: userId } : { user_id: userId, recipe_id: recipeId };
         const sqlWhereObj = genWhereSqlArr(whereObj, 1, true, false, true, favRecpesClmnToTblAbrev);
         const sql = arrayConcat([selectJoinSqlStr, sqlWhereObj.whereSql]);
 
@@ -221,7 +224,9 @@ class User {
             ${sql} ORDER BY r.name, rt.rating
         `, sqlWhereObj.values);
 
-        if (recipeId !== false && favRecipes.rows.length) {
+        const favRecipeRows = JSON.parse(JSON.stringify(favRecipes.rows))
+
+        if (recipeId !== false && favRecipeRows.length) {
             // Retrieves recipe likes user ids.
             const usrsRecipeLiks = await Recipe.getRecipeLikes(recipeId);
             // Retireves recipe dislikes user ids.
@@ -230,13 +235,15 @@ class User {
             const recipeIngredts = await Recipe.getRecipeIngrdts(recipeId);
             // Retrieves recipe's reviews.
             const recipeRvws = await Recipe.getRecipeReviews(recipeId);
+            const recipeProps = [
+                ["liked_user_ids", usrsRecipeLiks],
+                ["disliked_user_ids", usrsRecipeDislikes],
+                ["reviews", recipeRvws], ["ingredients", recipeIngredts]
+            ]
             // Defines new liked/disliked recipe user ids and reviews props.
-            favRecipes.rows[0]["liked_user_ids"] = usrsRecipeLiks;
-            favRecipes.rows[0]["disliked_user_ids"] = usrsRecipeDislikes;
-            favRecipes.rows[0]["reviews"] = recipeRvws;
-            favRecipes.rows[0].ingredients = recipeIngredts;
+            const newObj = defineProps(recipeProps, favRecipeRows[0]);
         }
-        return favRecipes.rows;
+        return favRecipeRows;
     }
 
     /**
@@ -245,13 +252,13 @@ class User {
      * Returns array of saved recipes.
      * getSavedRecipes(id) => [{ name: "chicken", ...}, ...]
      */
-    static async getSavedRecipes (id, recipeId = false) {
-        await rowExists("user", "id", "users", [["id", id]]);
+    static async getSavedRecipes (userId, recipeId = false) {
+        await rowExists("user", "id", "users", [["id", userId]]);
         const selectSqlStr = genSelectSql(recipesRelDataSelectColumns, "saved_recipes", true);
         const joinSqlStr = genJoinSql(savedRecipesjoinArr, "JOIN");
         const selectJoinSqlStr = arrayConcat([selectSqlStr, joinSqlStr]);
         // Creates object with where sql and values properties.
-        const whereObj = recipeId === false ? { user_id: id } : { user_id: id, recipe_id: recipeId };
+        const whereObj = recipeId === false ? { user_id: userId } : { user_id: userId, recipe_id: recipeId };
         const sqlWhereObj = genWhereSqlArr(whereObj, 1, true, false, true, savedRecpesClmnToTblAbrev);
         const sql = arrayConcat([selectJoinSqlStr, sqlWhereObj.whereSql]);
 
@@ -259,7 +266,9 @@ class User {
             ${sql} ORDER BY r.name, rt.rating
         `, sqlWhereObj.values);
 
-        if (recipeId !== false && savedRecipes.rows.length) {
+        const savedRecipeRows = JSON.parse(JSON.stringify(savedRecipes.rows));
+
+        if (recipeId !== false && savedRecipeRows.length) {
             // Retrieves recipe likes user ids.
             const usrsRecipeLiks = await Recipe.getRecipeLikes(recipeId);
             // Retireves recipe dislikes user ids.
@@ -268,13 +277,15 @@ class User {
             const recipeIngredts = await Recipe.getRecipeIngrdts(recipeId);
             // Retrieves recipe's reviews.
             const recipeRvws = await Recipe.getRecipeReviews(recipeId);
+            const recipeProps = [
+                ["liked_user_ids", usrsRecipeLiks],
+                ["disliked_user_ids", usrsRecipeDislikes],
+                ["reviews", recipeRvws], ["ingredients", recipeIngredts]
+            ]
             // Defines new liked/disliked recipe user ids and reviews props.
-            savedRecipes.rows[0]["liked_user_ids"] = usrsRecipeLiks;
-            savedRecipes.rows[0]["disliked_user_ids"] = usrsRecipeDislikes;
-            savedRecipes.rows[0]["reviews"] = recipeRvws;
-            savedRecipes.rows[0].ingredients = recipeIngredts;
+            const newObj = defineProps(recipeProps, savedRecipeRows[0]);
         }
-        return savedRecipes.rows;
+        return savedRecipeRows;
     }
 
     /**
@@ -283,14 +294,14 @@ class User {
      * Returns array of recipelists.
      * getRecipeLists(id) => [{ "weekly meal prep", ...}, ...]
      */
-    static async getRecipeLists (id) {
-        await rowExists("user", "id", "users", [["id", id]]);
+    static async getRecipeLists (userId) {
+        await rowExists("user", "id", "users", [["id", userId]]);
         const selectClmns = ["rl.id", "rl.list_name", "o.occasion"];
         const recipeListsSelStr = genSelectSql(selectClmns, "recipelists", true);
         const joinArr = [["occasions", "rl.occasion_id", "o.id"]];
         const joinSql = genJoinSql(joinArr, "JOIN");
         const abrevTable = { user_id: "rl." };
-        const whereSqlObj = genWhereSqlArr({ user_id: id }, 1, true, false, true, abrevTable);
+        const whereSqlObj = genWhereSqlArr({ user_id: userId }, 1, true, false, true, abrevTable);
         const reqSqlArr = [recipeListsSelStr, joinSql, whereSqlObj.whereSql];
         const reqSql = reqSqlArr.join(" ");
         // console.log("RECIPE LISTS FINAL SQL $#$#$#$#$#$#$", reqSql);
@@ -306,8 +317,8 @@ class User {
      * Returns array of recipes
      * getListRecipes(id) => [{ name: "chicken", ...}, ...]
      */
-    static async getListRecipes (id, listId) {
-        await rowExists("user", "id", "users", [["id", id]]);
+    static async getListRecipes (userId, listId) {
+        await rowExists("user", "id", "users", [["id", userId]]);
         await rowExists("list", "id", "recipelists", [["id", listId]]);
         const recipeListSelStr = genSelectSql(recipesRelDataSelectColumns, "recipelists_recipes", true);
         const joinArr = [["recipes", "rlr.recipe_id", "r.id"]];
@@ -333,11 +344,11 @@ class User {
      * Returns array of shopping lists
      * getShopLists(id) => [{ name: "chicken recipe", ...}, ...]
      */
-    static async getShopLists (id) {
-        await rowExists("user", "id", "users", [["id", id]]);
+    static async getShopLists (userId) {
+        await rowExists("user", "id", "users", [["id", userId]]);
         const selectClmns = ["id", "list_name"];
         const listSelStr = genSelectSql(selectClmns, "shoppinglists");
-        const whereSqlObj = genWhereSqlArr({ user_id: id }, 1, true);
+        const whereSqlObj = genWhereSqlArr({ user_id: userId }, 1, true);
         const selectSql = arrayConcat([listSelStr, whereSqlObj.whereSql]);
         // console.log("selectSql RECIPES FINAL SQL $#$#$#$#$#$#$", selectSql);
         const req = await db.query(`
@@ -354,8 +365,8 @@ class User {
      * Returns array of shopping lists
      * getShopLists(id) => [{ qty: 2, unit: "g", ...}, ...]
      */
-    static async shopListsItems (id, listId) {
-        await rowExists("user", "id", "users", [["id", id]]);
+    static async shopListsItems (userId, listId) {
+        await rowExists("user", "id", "users", [["id", userId]]);
         await rowExists("list", "id", "shoppinglists", [["id", listId]]);
         const selectClmns = ["sli.qty", "u.unit", "ing.ingredient"];
         const listSelStr = genSelectSql(selectClmns, "shoppinglists_items", true);
@@ -370,7 +381,7 @@ class User {
         ];
         const joinSql = genJoinSql(joinClmns, "JOIN");
         const lstNameJoinSql = genJoinSql(lstNameJoinClmns, "JOIN");
-        const whereSqlObj = genWhereSqlArr({ user_id: id, list_id: listId }, 1, true, false, true, {user_id: "sl.", list_id: "sli."});
+        const whereSqlObj = genWhereSqlArr({ user_id: userId, list_id: listId }, 1, true, false, true, {user_id: "sl.", list_id: "sli."});
         const selectSql = arrayConcat([listSelStr, joinSql, whereSqlObj.whereSql]);
         const lstNameSelectSql = arrayConcat([lstNameSelStr, lstNameJoinSql, whereSqlObj.whereSql]);
         // console.log("selectSql RECIPES FINAL SQL $#$#$#$#$#$#$", selectSql, whereSqlObj.values);
@@ -391,11 +402,11 @@ class User {
      * Returns array of recipes.
      * recipes(id) => [{ id: 2, recipe_name: "dump. tweak", ...}, ...]
      */
-    static async recipes (id) {
-        await rowExists("user", "id", "users", [["id", id]]);
+    static async recipes (userId) {
+        await rowExists("user", "id", "users", [["id", userId]]);
         const selectClmns = ["id", "recipe_name"];
         const listSelStr = genSelectSql(selectClmns, "user_recipes");
-        const whereSqlObj = genWhereSqlArr({ user_id: id }, 1, true);
+        const whereSqlObj = genWhereSqlArr({ user_id: userId }, 1, true);
         const selectSql = arrayConcat([listSelStr, whereSqlObj.whereSql]);
         // console.log("selectSql RECIPES FINAL SQL $#$#$#$#$#$#$", selectSql, whereSqlObj.values);
         const req = await db.query(`

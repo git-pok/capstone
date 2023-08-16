@@ -311,6 +311,206 @@ describe("/GET /users/:id/favorite-recipes", () => {
     });
 });
 
+describe("/GET /users/:id/favorite-recipes/:recipe_id", () => {
+    test("get recipe from user's favorite recipes", async () => {
+        const req = await request(app).get(`/users/${usr1IdTest}/favorite-recipes/${100}`)
+            .set("_token", `Bearer ${usr1TokenTest}`);
+        expect(req.statusCode).toBe(200);
+        expect(req.body).toEqual([
+            {
+                "id": 100,
+                "name": "next level chilli con carne",
+		        "author": "barney desmazery",
+		        "rating": 4,
+		        "vote_count": 43,
+		        "url": "https://www.bbcgoodfood.com/recipes/next-level-chilli-con-carne",
+		        "image": "https://images.immediate.co.uk/production/volatile/sites/30/2020/08/the-ultimate-chilli-edb1c8c.jpg",
+		        "description": "Reinvent this classic comfort food with our one-pan version that is enrichened with peanut butter, espresso powder and dark chocolate. You won't look back",
+		        "serves": 8,
+		        "level": "more effort",
+		        "main_cat_name": "recipes",
+		        "sub_cat_name": "dinner recipes",
+		        "steps": "Heat oven to 140C/120C fan/gas 1. Over a high heat, toast the whole chillies on all sides until you can smell them cooking, then remove and set aside. Keep the pan on the heat and toast the peppercorns, cumin seeds and coriander seeds until they just start to change colour, then grind to a powder using a pestle and mortar or spice grinder. Mix with the smoked paprika and oregano (this is a standard tex-mex seasoning), then set aside. Return the casserole to the heat, add half the oil and heat until shimmering. Fry the beef in batches, adding more oil if you need to, until it’s browned on all sides, then set aside. Fry the onions in the pan over a low heat for about 8 mins until soft and golden, then add the garlic and cook for 1 min more. Working fast, add the meat and juices, the spice mix, tomato purée, peanut butter and coffee to the pan and cook for 2-3 mins, stirring to coat the meat until everything is thick and gloopy, then pour in the vinegar and stock. Add the toasted chillies back into the casserole, along with the bay leaves, cinnamon and some salt. Bring to a simmer and stir well, then cover with the lid and cook in the oven for 3hrs, stirring occasionally, until the meat is very tender but not falling apart. Take the casserole out of the oven, put back on the stove and remove the lid. Simmer the sauce for 5 mins, then stir in the semolina flour and simmer for 2-3 mins more. Finely grate over the chocolate, stir through with the beans and simmer for a minute more to heat through. Fish out the chillies, then leave everything to rest for at least 15 mins. Bring the pan to the table. Serve with bowls of accompaniments and the chilli paste (see tip below) to add heat.",
+		        "prep_time": "25 mins",
+		        "cook_time": "3 hrs",
+                "liked_user_ids": [],
+		        "disliked_user_ids": [],
+		        "reviews": [
+			        {
+				        "stars": 5,
+				        "review": "Good.",
+				        "user_id": usr1IdTest
+			        }
+		        ],
+		        "ingredients": [
+			        {
+				        "qty": "2",
+				        "unit": "no unit",
+				        "ingredient": "dried ancho chillies"
+			        },
+			        {
+				        "qty": "2",
+				        "unit": "tsp",
+				        "ingredient": "black peppercorns"
+			        },
+			        {
+				        "qty": "2",
+				        "unit": "tbsp",
+				        "ingredient": "cumin seeds"
+			        },
+			        {
+				        "qty": "2",
+				        "unit": "tbsp",
+				        "ingredient": "coriander seeds"
+			        },
+			        {
+				        "qty": "2",
+				        "unit": "tsp",
+				        "ingredient": "smoked paprika"
+			        },
+			        {
+				        "qty": "1",
+				        "unit": "tbsp",
+				        "ingredient": "dried oregano"
+			        },
+			        {
+				        "qty": "3",
+				        "unit": "tbsp",
+				        "ingredient": "vegetable oil"
+			        },
+			        {
+				        "qty": "1½",
+				        "unit": "kg",
+				        "ingredient": "braising steak, cut into 4cm cubes – meat from the brisket, short rib, blade or chuck steak are all good"
+			        },
+			        {
+				        "qty": "2",
+				        "unit": "no unit",
+				        "ingredient": "onions, finely chopped"
+			        },
+			        {
+				        "qty": "6",
+				        "unit": "no unit",
+				        "ingredient": "garlic cloves, minced"
+			        },
+			        {
+				        "qty": "2",
+				        "unit": "tbsp",
+				        "ingredient": "tomato purée"
+			        },
+			        {
+				        "qty": "1",
+				        "unit": "tbsp",
+				        "ingredient": "smooth peanut butter"
+			        },
+			        {
+				        "qty": "½",
+				        "unit": "tsp",
+				        "ingredient": "instant espresso powder"
+			        },
+			        {
+				        "qty": "2",
+				        "unit": "tbsp",
+				        "ingredient": "apple cider vinegar"
+			        },
+			        {
+				        "qty": "1",
+				        "unit": "l",
+				        "ingredient": "beef or chicken stock"
+			        },
+			        {
+				        "qty": "2",
+				        "unit": "no unit",
+				        "ingredient": "bay leaves"
+			        },
+			        {
+				        "qty": "",
+				        "unit": "no unit",
+				        "ingredient": "small piece of cinnamon stick"
+			        },
+			        {
+				        "qty": "2",
+				        "unit": "tbsp",
+				        "ingredient": "semolina, polenta or Mexican masa flour"
+			        },
+			        {
+				        "qty": "25",
+				        "unit": "g",
+				        "ingredient": "dark chocolate (70-80% cocoa solids)"
+			        }
+		        ]
+	        }
+        ]);
+    });
+
+    test("get recipe from user's favorite recipes", async () => {
+        const req = await request(app).get(`/users/${usr1IdTest}/favorite-recipes/${6}`)
+            .set("_token", `Bearer ${usr1TokenTest}`);
+        expect(req.statusCode).toBe(200);
+        expect(req.body).toEqual([
+            {
+                "id": 6,
+		        "name": "egg & avocado open sandwich",
+		        "author": "chelsie collins",
+		        "rating": 4,
+		        "vote_count": 5,
+		        "url": "https://www.bbcgoodfood.com/recipes/egg-avocado-open-sandwich",
+		        "image": "https://images.immediate.co.uk/production/volatile/sites/30/2020/08/egg-avocado-open-sandwich-3b6ef94.jpg",
+		        "description": "Give your lunch box a moreish makeover - take the ingredients separately and assemble for a fresh and healthy midday meal",
+		        "serves": 1,
+		        "level": "easy",
+		        "main_cat_name": "recipes",
+		        "sub_cat_name": "lunch recipes",
+		        "steps": "Bring a medium pan of water to the boil. Add the eggs and cook for 8-9 mins until hard-boiled. Meanwhile, halve the avocado and scoop the flesh into a bowl. Add the lime juice, season well and mash with a fork. When the eggs are cooked, run under cold water for 2 mins before removing the shells. Spread the avocado on the rye bread. Slice the eggs into thin rounds and place on top of the avocado. Drizzle some chilli sauce over the eggs, scatter the cress on top and add a good grinding of black pepper.",
+		        "prep_time": "10 mins",
+		        "cook_time": "10 mins",
+                "liked_user_ids": [],
+		        "disliked_user_ids": [],
+		        "reviews": [],
+		        "ingredients": [
+			        {
+				        "qty": "2",
+				        "unit": "no unit",
+				        "ingredient": "medium eggs"
+			        },
+			        {
+				        "qty": "1",
+				        "unit": "no unit",
+				        "ingredient": "ripe avocado"
+			        },
+			        {
+				        "qty": "",
+				        "unit": "no unit",
+				        "ingredient": "juice 1 lime"
+			        },
+			        {
+				        "qty": "2",
+				        "unit": "no unit",
+				        "ingredient": "slices rye bread"
+			        },
+			        {
+				        "qty": "2",
+				        "unit": "tsp",
+				        "ingredient": "hot chilli sauce - we used sriracha"
+			        }
+		        ]
+	        }
+        ]);
+    });
+
+    test("empty array for recipe not in favorites", async () => {
+        const req = await request(app).get(`/users/${usr1IdTest}/favorite-recipes/${76}`)
+            .set("_token", `Bearer ${usr1TokenTest}`);
+        expect(req.body).toEqual([]);
+    });
+
+    test("404 error for not found user", async () => {
+        const req = await request(app).get(`/users/${usr2IdTest + 1}/favorite-recipes/${6}`)
+            .set("_token", `Bearer ${usr1TokenTest}`);
+        expect(req.statusCode).toBe(404);
+    });
+});
+
 describe("/GET /users/:id/saved-recipes", () => {
     test("get user's saved recipes", async () => {
         const req = await request(app).get(`/users/${usr1IdTest}/saved-recipes`)
@@ -363,6 +563,75 @@ describe("/GET /users/:id/saved-recipes", () => {
     test("400 error for not logged in user", async () => {
         const req = await request(app).get(`/users/${usr1IdTest}/saved-recipes`)
         expect(req.statusCode).toBe(400);
+    });
+});
+
+describe("/GET /users/:id/saved-recipes/:recipe_id", () => {
+    test("get recipe from user's saved recipes", async () => {
+        const req = await request(app).get(`/users/${usr1IdTest}/saved-recipes/${400}`)
+            .set("_token", `Bearer ${usr1TokenTest}`);
+        expect(req.statusCode).toBe(200);
+        expect(req.body).toEqual([
+            {
+                "id": 400,
+		        "name": "nettle & blue cheese rarebit",
+		        "author": "good food team",
+		        "rating": 5,
+		        "vote_count": 3,
+		        "url": "https://www.bbcgoodfood.com/recipes/nettle-blue-cheese-rarebit",
+		        "image": "https://images.immediate.co.uk/production/volatile/sites/30/2020/08/recipe-image-legacy-id-1286499_8-0596bb1.jpg",
+		        "description": "No nettles? This simple rustic dish can also be made using spinach",
+		        "serves": 4,
+		        "level": "easy",
+		        "main_cat_name": "recipes",
+		        "sub_cat_name": "cheese recipes",
+		        "steps": "Heat the olive oil in a frying pan. Add the nettles and cook for 1 min until wilted. Allow to cool for 1 min, then roughly chop. Add to a bowl with the crème fraÎche, mustard and half the blue cheese. Stir in seasoning and set aside. Heat the grill and lightly toast the bread on both sides. Divide the nettle and cheese mix between the toasts then pile on the remaining cheese and grill until golden and bubbling. Serve immediately.",
+		        "prep_time": "5 mins",
+		        "cook_time": "15 mins",
+		        "liked_user_ids": [],
+		        "disliked_user_ids": [],
+		        "reviews": [],
+		        "ingredients": [
+			        {
+				        "qty": "1",
+				        "unit": "tbsp",
+				        "ingredient": "olive oil"
+			        },
+			        {
+				        "qty": "200",
+				        "unit": "g",
+				        "ingredient": "nettle leave"
+			        },
+			        {
+				        "qty": "200",
+				        "unit": "ml",
+				        "ingredient": "tub crème fraîche"
+			        },
+			        {
+				        "qty": "1",
+				        "unit": "tsp",
+				        "ingredient": "wholegrain mustard"
+			        },
+			        {
+				        "qty": "140",
+				        "unit": "g",
+				        "ingredient": "British blue cheese, such as Blue Vinney"
+			        }
+		        ]
+	        }
+        ]);
+    });
+
+    test("empty array for recipe not in saved recipes", async () => {
+        const req = await request(app).get(`/users/${usr1IdTest}/saved-recipes/${76}`)
+            .set("_token", `Bearer ${usr1TokenTest}`);
+        expect(req.body).toEqual([]);
+    });
+
+    test("404 error for not found user", async () => {
+        const req = await request(app).get(`/users/${usr2IdTest + 1}/saved-recipes/${6}`)
+            .set("_token", `Bearer ${usr1TokenTest}`);
+        expect(req.statusCode).toBe(404);
     });
 });
 
@@ -577,15 +846,15 @@ describe("/GET /users/:id/shoppinglists/:list_id", () => {
             {
 				"list_name": "User 1 Shoplist for Recipe 120",
 				"items": [
+                    {
+						"qty": 20,
+						"unit": "oz",
+						"ingredient": "boneless, skinless chicken breast"
+					},
 					{
 						"qty": 3,
 						"unit": "tbsp",
 						"ingredient": "garlic granules"
-					},
-					{
-						"qty": 20,
-						"unit": "oz",
-						"ingredient": "boneless, skinless chicken breast"
 					}
 				]
 			}
@@ -665,14 +934,14 @@ describe("/GET /:user_id/recipes/:id", () => {
 				"recipe_name": "User 1 Chicken Dumplings Tweak",
 				"ingredients": [
 					{
-						"qty": 4,
-						"unit": "tbsp",
-						"ingredient": "garlic granules"
-					},
-					{
 						"qty": 10,
 						"unit": "oz",
 						"ingredient": "boneless, skinless chicken breast"
+					},
+                    {
+						"qty": 4,
+						"unit": "tbsp",
+						"ingredient": "garlic granules"
 					}
 				],
 				"steps": [

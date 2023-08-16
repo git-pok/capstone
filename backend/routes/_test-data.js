@@ -178,6 +178,15 @@ async function genTestUsers () {
         ]
     );
 
+    await db.query(`
+        INSERT INTO reviews
+            (user_id, recipe_id, stars, review)
+        VALUES ($1, $2, $3, $4)`,
+        [
+            usr1Id, 100, 5, "Good."
+        ]
+    );
+
     return {
         usr1,
         usr1Token,

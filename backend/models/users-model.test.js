@@ -520,14 +520,14 @@ describe("User.shopListsItems", () => {
 				"list_name": "User 1 Shoplist for Recipe 120",
 				"items": [
 					{
-						"qty": 3,
-						"unit": "tbsp",
-						"ingredient": "garlic granules"
+						"ingredient": "boneless, skinless chicken breast",
+						"qty": 20,
+						"unit": "oz"
 					},
 					{
-						"qty": 20,
-						"unit": "oz",
-						"ingredient": "boneless, skinless chicken breast"
+						"ingredient": "garlic granules",
+						"qty": 3,
+						"unit": "tbsp"
 					}
 				]
 			}
@@ -640,14 +640,14 @@ describe("User.recipe", () => {
 				"recipe_name": "User 1 Chicken Dumplings Tweak",
 				"ingredients": [
 					{
-						"qty": 4,
-						"unit": "tbsp",
-						"ingredient": "garlic granules"
-					},
-					{
 						"qty": 10,
 						"unit": "oz",
 						"ingredient": "boneless, skinless chicken breast"
+					},
+					{
+						"qty": 4,
+						"unit": "tbsp",
+						"ingredient": "garlic granules"
 					}
 				],
 				"steps": [

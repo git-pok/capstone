@@ -19,7 +19,7 @@ const {
     } = require("../helpers/sql.js");
 
 const {
-    deleteObjProps, definePropsInObjPure,
+    deleteObjProps,
     deleteNullInArrPure,
     deletePropsNotInSetPure,
     recipesFiltersToSqlClmns
