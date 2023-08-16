@@ -25,6 +25,7 @@ const SECRET_KEY = require("../keys.js");
 const userSchema = require("../schemas/userRegister.json");
 const loginSchema = require("../schemas/userLogin.json");
 const userEditSchema = require("../schemas/userEdit.json");
+const favRecipeSchema = require("../schemas/favRecipe.json");
 const ExpressError = require("./error.js");
 
 
@@ -487,6 +488,46 @@ class User {
         const steps = await User.recipeSteps(userId, recipeId);
         const recipeRows = JSON.parse(JSON.stringify(req.rows));
         return { recipe_name, ingredients: recipeRows, steps };
+    }
+
+    /**
+     * register
+     * Registers a user.
+     * Returns the object of submitted data and a token.
+     * const data = {
+		"username": "fin",
+		"first_name": "Vin",
+		"last_name": "I",
+		"email": "bank@g.com",
+		"phone": "813 507 4490",
+		"header_img": "testHeaderImage",
+		"profile_img": "testProfileImage",
+        password: "password"
+	* }
+     * register(data) =>
+     * user: {
+        id: 1,
+		username: "fin",
+		first_name: "Vin",
+		last_name: "I",
+		email: "bank@g.com",
+		phone: "813 507 4490",
+		header_img: "testHeaderImage",
+		profile_img: "testProfileImage",
+		token: "eyJhbGciOiJIUzI1N"
+	* }
+     */
+    static async favArecipe(userId, data) {
+        const isValid = validateSchema(data, favRecipeSchema);
+        if (isValid.errors.length !== 0) {
+            const jsonErrors = isValid.errors.map(error => error.message);
+            throw new ExpressError(400, jsonErrors);
+        }
+        const { recipeId } = data;
+        const clmnValObj = { user_id: +userId, recipe_id: recipeId };
+        const insertSql = genInsertSqlObj("favorite_recipes", clmnValObj);
+
+        await db.query(`${insertSql.sql}`, insertSql.values);
     }
 }
 

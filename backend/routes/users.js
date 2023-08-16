@@ -116,6 +116,23 @@ router.get("/:id/favorite-recipes", isLoggedIn, async (req, res, next) => {
 });
 
 /**
+ * "/:id/favorite-recipes"
+ * route type: POST
+ * Authorization: logged in
+ * Returns favorited recipe.
+ */
+router.post("/:id/favorite-recipes", isLoggedIn, async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        const qry = req.body;
+        const favReq = await User.favArecipe(id, qry);
+        return res.status(200).json({message: `Favorited recipe!`});
+    } catch (err) {
+        return next(err);
+    }
+});
+
+/**
  * "/:id/favorite-recipes/:recipe_id"
  * route type: GET
  * Authorization: logged in
