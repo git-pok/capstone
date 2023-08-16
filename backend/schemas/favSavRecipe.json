@@ -4,9 +4,9 @@
     "type": "object",
     "default": {},
     "title": "Root Schema",
-    "required": ["recipeId"],
+    "required": ["recipe_id"],
     "properties": {
-        "recipeId": {
+        "recipe_id": {
             "type": "number",
             "title": "The username Schema",
             "examples": [
@@ -15,6 +15,6 @@
         }
     },
     "examples": [{
-        "recipeId": 1
+        "recipe_id": 1
     }]
 }

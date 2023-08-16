@@ -125,7 +125,8 @@ CREATE TABLE recipelists (
     id SERIAL PRIMARY KEY,
     user_id INTEGER REFERENCES users (id) ON DELETE CASCADE,
     occasion_id INTEGER REFERENCES occasions (id),
-    list_name VARCHAR (30) NOT NULL
+    list_name VARCHAR (30) NOT NULL,
+    UNIQUE (user_id, list_name)
 );
 
 
@@ -175,7 +176,8 @@ CREATE TABLE shoppinglists_items (
 CREATE TABLE user_recipes (
     id SERIAL PRIMARY KEY,
     user_id INTEGER REFERENCES users (id) ON DELETE CASCADE,
-    recipe_name VARCHAR (121) NOT NULL
+    recipe_name VARCHAR (121) NOT NULL,
+    UNIQUE (user_id, recipe_name)
 );
 
 

@@ -6,7 +6,10 @@ const Recipe = require("../models/recipes.js");
 const { validateSchema, hashPassword } = require("../helpers/users.js");
 const { rowExists } = require("../helpers/sql.js");
 const { isLoggedIn } = require("../middleware/auth.js");
-
+const favSavRecipeSchema = require("../schemas/favSavRecipe.json");
+const recipeListsSchema = require("../schemas/recipeLists.json");
+const shopListsSchema = require("../schemas/shopLists.json");
+const recipesSchema = require("../schemas/userRecipes.json");
 /**
  * "/register"
  * route type: POST
@@ -124,9 +127,11 @@ router.get("/:id/favorite-recipes", isLoggedIn, async (req, res, next) => {
 router.post("/:id/favorite-recipes", isLoggedIn, async (req, res, next) => {
     try {
         const { id } = req.params;
-        const qry = req.body;
-        const favMsg = await User.favOrSavRecipe(id, qry);
-        return res.status(200).json(favMsg);
+        const { recipe_id } = req.body;
+        const qry = {recipe_id, user_id: +id};
+        const msg = "Favorited recipe!";
+        const favMsg = await User.insertRow("favorite_recipes", qry, favSavRecipeSchema, false, msg);
+        return res.status(201).json(favMsg);
     } catch (err) {
         return next(err);
     }
@@ -191,10 +196,12 @@ router.get("/:id/saved-recipes", isLoggedIn, async (req, res, next) => {
  */
 router.post("/:id/saved-recipes", isLoggedIn, async (req, res, next) => {
     try {
-        const { id } = req.params;
-        const qry = req.body;
-        const savMsg = await User.favOrSavRecipe(id, qry, false);
-        return res.status(200).json(savMsg);
+        const { id: user_id } = req.params;
+        const { recipe_id } = req.body;
+        const qry = {recipe_id, user_id: +user_id};
+        const msg = "Saved recipe!";
+        const savMsg = await User.insertRow("saved_recipes", qry, favSavRecipeSchema, false, msg);
+        return res.status(201).json(savMsg);
     } catch (err) {
         return next(err);
     }
@@ -246,6 +253,27 @@ router.get("/:id/recipelists", isLoggedIn, async (req, res, next) => {
         const { id } = req.params;
         const recipeLists = await User.getRecipeLists(id);
         return res.status(200).json(recipeLists);
+    } catch(err) {
+        return next(err);
+    }
+});
+
+/**
+ * "/:id/recipelists"
+ * route type: POST
+ * Authorization: logged in
+ * Returns recipelist.
+ */
+router.post("/:id/recipelists", isLoggedIn, async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        const { user_id, occasion_id, list_name } = req.body;
+        const data = { user_id, occasion_id, list_name };
+        const returnClmns = ["id"];
+        const listRes = await User.insertRow("recipelists", data, recipeListsSchema, returnClmns);
+        const { id: listId } = listRes.rows[0];
+        const list = await User.getRecipeLists(user_id, listId);
+        return res.status(201).json(list[0]);
     } catch(err) {
         return next(err);
     }
@@ -305,6 +333,27 @@ router.get("/:id/shoppinglists", isLoggedIn, async (req, res, next) => {
 });
 
 /**
+ * "/:id/shoppinglists"
+ * route type: POST
+ * Authorization: logged in
+ * Returns shoppinglist.
+ */
+router.post("/:id/shoppinglists", isLoggedIn, async (req, res, next) => {
+    try {
+        const { id: user_id } = req.params;
+        const { recipe_id, list_name } = req.body;
+        const data = { user_id: +user_id, recipe_id, list_name };
+        const returnClmns = ["id"];
+        const listRes = await User.insertRow("shoppinglists", data, shopListsSchema, returnClmns);
+        const { id: listId } = listRes.rows[0];
+        const list = await User.getShopLists(+user_id, listId);
+        return res.status(201).json(list[0]);
+    } catch(err) {
+        return next(err);
+    }
+});
+
+/**
  * "/:id/shoppinglists/:list_id"
  * route type: GET
  * Authorization: logged in
@@ -331,6 +380,30 @@ router.get("/:id/recipes", isLoggedIn, async (req, res, next) => {
         const { id } = req.params;
         const lists = await User.recipes(id);
         return res.status(200).json(lists);
+    } catch(err) {
+        return next(err);
+    }
+});
+
+/**
+ * "/:id/recipes"
+ * route type: POST
+ * Authorization: logged in
+ * Returns user recipe.
+ */
+router.post("/:id/recipes", isLoggedIn, async (req, res, next) => {
+    try {
+        const { id: user_id } = req.params;
+        const { recipe_name } = req.body;
+        const data = { user_id: +user_id, recipe_name };
+        const returnClmns = ["id"];
+        const listRes = await User.insertRow("user_recipes", data, recipesSchema, returnClmns);
+        const { id: listId } = listRes.rows[0];
+        const list = await User.recipes(+user_id, listId);
+        const steps = await User.recipeSteps(+user_id, listId);
+        const listCpy = JSON.parse(JSON.stringify(list[0]))
+        listCpy.steps = steps;
+        return res.status(201).json(listCpy);
     } catch(err) {
         return next(err);
     }

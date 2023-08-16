@@ -25,7 +25,7 @@ const SECRET_KEY = require("../keys.js");
 const userSchema = require("../schemas/userRegister.json");
 const loginSchema = require("../schemas/userLogin.json");
 const userEditSchema = require("../schemas/userEdit.json");
-const favSavRecipeSchema = require("../schemas/favSavRecipe.json");
+// const favSavRecipeSchema = require("../schemas/favSavRecipe.json");
 const ExpressError = require("./error.js");
 
 
@@ -295,17 +295,18 @@ class User {
      * Returns array of recipelists.
      * getRecipeLists(id) => [{ "weekly meal prep", ...}, ...]
      */
-    static async getRecipeLists (userId) {
+    static async getRecipeLists (userId, listId = false) {
         await rowExists("user", "id", "users", [["id", userId]]);
         const selectClmns = ["rl.id", "rl.list_name", "o.occasion"];
         const recipeListsSelStr = genSelectSql(selectClmns, "recipelists", true);
         const joinArr = [["occasions", "rl.occasion_id", "o.id"]];
         const joinSql = genJoinSql(joinArr, "JOIN");
-        const abrevTable = { user_id: "rl." };
-        const whereSqlObj = genWhereSqlArr({ user_id: userId }, 1, true, false, true, abrevTable);
+        const abrevTable = { user_id: "rl.", id: "rl." };
+        const whereVals = listId === false ? { user_id: userId } : { user_id: userId, id: listId };
+        const whereSqlObj = genWhereSqlArr(whereVals, 1, true, false, true, abrevTable);
         const reqSqlArr = [recipeListsSelStr, joinSql, whereSqlObj.whereSql];
         const reqSql = reqSqlArr.join(" ");
-        // console.log("RECIPE LISTS FINAL SQL $#$#$#$#$#$#$", reqSql);
+
         const req = await db.query(`
             ${reqSql} ORDER BY rl.list_name
         `, whereSqlObj.values);
@@ -345,13 +346,14 @@ class User {
      * Returns array of shopping lists
      * getShopLists(id) => [{ name: "chicken recipe", ...}, ...]
      */
-    static async getShopLists (userId) {
+    static async getShopLists (userId, listId = false) {
         await rowExists("user", "id", "users", [["id", userId]]);
         const selectClmns = ["id", "list_name"];
         const listSelStr = genSelectSql(selectClmns, "shoppinglists");
-        const whereSqlObj = genWhereSqlArr({ user_id: userId }, 1, true);
+        const whereVals = listId === false ? { user_id: userId } : { user_id: userId, id: listId };
+        const whereSqlObj = genWhereSqlArr(whereVals, 1, true);
         const selectSql = arrayConcat([listSelStr, whereSqlObj.whereSql]);
-        // console.log("selectSql RECIPES FINAL SQL $#$#$#$#$#$#$", selectSql);
+        // console.log("selectSql RECIPES FINAL SQL $#$#$#$#$#$#$", selectSql, whereSqlObj.values);
         const req = await db.query(`
             ${selectSql}
         `, whereSqlObj.values);
@@ -403,13 +405,14 @@ class User {
      * Returns array of recipes.
      * recipes(id) => [{ id: 2, recipe_name: "dump. tweak", ...}, ...]
      */
-    static async recipes (userId) {
+    static async recipes (userId, listId = false) {
         await rowExists("user", "id", "users", [["id", userId]]);
         const selectClmns = ["id", "recipe_name"];
         const listSelStr = genSelectSql(selectClmns, "user_recipes");
-        const whereSqlObj = genWhereSqlArr({ user_id: userId }, 1, true);
+        const whereVals = listId === false ? { user_id: userId } : { user_id: userId, id: listId };
+        const whereSqlObj = genWhereSqlArr(whereVals, 1, true);
         const selectSql = arrayConcat([listSelStr, whereSqlObj.whereSql]);
-        // console.log("selectSql RECIPES FINAL SQL $#$#$#$#$#$#$", selectSql, whereSqlObj.values);
+        console.log("selectSql RECIPES FINAL SQL $#$#$#$#$#$#$", selectSql, whereSqlObj.values);
         const req = await db.query(`
             ${selectSql}
         `, whereSqlObj.values);
@@ -491,31 +494,6 @@ class User {
     }
 
     /**
-     * favOrSavRecipe
-     * Favorite or save a recipe.
-     * Returns message object.
-     * const data = {
-		"recipeId": 1
-	* }
-    * favOrSavRecipe(1, data) => {message: "Favorited recipe!"}
-    * favOrSavRecipe(1, data, false) => {message: "Saved recipe!"}
-    */
-    static async favOrSavRecipe (userId, data, fav = true) {
-        const isValid = validateSchema(data, favSavRecipeSchema);
-        if (isValid.errors.length !== 0) {
-            const jsonErrors = isValid.errors.map(error => error.message);
-            throw new ExpressError(400, jsonErrors);
-        }
-        const { recipeId } = data;
-        const clmnValObj = { user_id: +userId, recipe_id: recipeId };
-        const tableName = fav === true ? "favorite_recipes" : "saved_recipes";
-        const insertSqlObj = genInsertSqlObj(tableName, clmnValObj);
-        await db.query(`${insertSqlObj.sql}`, insertSqlObj.values);
-        const msg = fav === true ? "Favorited recipe!" : "Saved recipe!";
-        return { message: msg };
-    }
-
-    /**
      * deleteRow
      * Deletes a row.
      * Returns deleted message.
@@ -531,6 +509,33 @@ class User {
         if (rowExistsLength === 0) throw new ExpressError(404, "Row not found!");
         await db.query(`DELETE FROM ${tableName} ${whereSqlObj.whereSql}`, whereSqlObj.values);
         return { message: `${msg}` };
+    }
+
+    /**
+     * insertRow
+     * Insert a row to database.
+     * Returns message object, return values, or undefined.
+     * const data = {
+		"recipeId": 1
+	* }
+    * insertRow(1, data) =>
+    * insertRow(1, data, false) =>
+    */
+    static async insertRow (tableName, data, schema, returnArray = false, msg = false) {
+        const isValid = validateSchema(data, schema);
+        if (isValid.errors.length !== 0) {
+            const jsonErrors = isValid.errors.map(error => error.message);
+            throw new ExpressError(400, jsonErrors);
+        }
+        console.log("data", data);
+        const insertSqlObj = returnArray === false
+            ? genInsertSqlObj(tableName, data)
+            : genInsertSqlObj(tableName, data, returnArray);
+        console.log("insertSqlObj", insertSqlObj);
+        const insertData = await db.query(`${insertSqlObj.sql}`, insertSqlObj.values);
+        console.log("insertData", insertData);
+        const message = msg !== false ? msg : [];
+        return insertData.rows.length ? insertData : message;
     }
 }
 
