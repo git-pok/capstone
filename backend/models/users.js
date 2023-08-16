@@ -25,7 +25,7 @@ const SECRET_KEY = require("../keys.js");
 const userSchema = require("../schemas/userRegister.json");
 const loginSchema = require("../schemas/userLogin.json");
 const userEditSchema = require("../schemas/userEdit.json");
-const favRecipeSchema = require("../schemas/favRecipe.json");
+const favSavRecipeSchema = require("../schemas/favSavRecipe.json");
 const ExpressError = require("./error.js");
 
 
@@ -501,7 +501,7 @@ class User {
     * favOrSavRecipe(1, data, false) => {message: "Saved recipe!"}
     */
     static async favOrSavRecipe (userId, data, fav = true) {
-        const isValid = validateSchema(data, favRecipeSchema);
+        const isValid = validateSchema(data, favSavRecipeSchema);
         if (isValid.errors.length !== 0) {
             const jsonErrors = isValid.errors.map(error => error.message);
             throw new ExpressError(400, jsonErrors);
@@ -513,6 +513,24 @@ class User {
         await db.query(`${insertSqlObj.sql}`, insertSqlObj.values);
         const msg = fav === true ? "Favorited recipe!" : "Saved recipe!";
         return { message: msg };
+    }
+
+    /**
+     * deleteRow
+     * Deletes a row.
+     * Returns deleted message.
+     * deleteUser(username) => { message: deleted username! }
+     */
+    static async deleteRow(tableName, clmnNameValObj, msg) {
+        const whereSqlObj = genWhereSqlArr(clmnNameValObj, 1, true, false);
+        console.log("whereSqlObj", whereSqlObj);
+        console.log("SELECT", `SELECT * FROM ${tableName} ${whereSqlObj.whereSql}`);
+        const rowExists = await db.query(`SELECT * FROM ${tableName} ${whereSqlObj.whereSql}`, whereSqlObj.values);
+        console.log("rowExists", rowExists.rows);
+        const rowExistsLength = rowExists.rows.length;
+        if (rowExistsLength === 0) throw new ExpressError(404, "Row not found!");
+        await db.query(`DELETE FROM ${tableName} ${whereSqlObj.whereSql}`, whereSqlObj.values);
+        return { message: `${msg}` };
     }
 }
 

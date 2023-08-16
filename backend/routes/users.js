@@ -149,6 +149,25 @@ router.get("/:id/favorite-recipes/:recipe_id", isLoggedIn, async (req, res, next
 });
 
 /**
+ * "/:id/favorite-recipes/:recipe_id"
+ * Deletes favorited recipe.
+ * route type: DELETE
+ * Authorization: logged in
+ * Returns deleted message.
+ */
+router.delete("/:id/favorite-recipes/:recipe_id", isLoggedIn, async (req, res, next) => {
+    try {
+        const { id, recipe_id } = req.params;
+        const msg = "Deleted recipe from favorites!"
+        const clmnNameValObj = { user_id: +id,  recipe_id: +recipe_id };
+        const deletedMsg = await User.deleteRow("favorite_recipes", clmnNameValObj, msg);
+        return res.status(200).json(deletedMsg);
+    } catch (err) {
+        return next(err);
+    }
+});
+
+/**
  * "/:id/saved-recipes"
  * route type: GET
  * Authorization: logged in
@@ -192,6 +211,25 @@ router.get("/:id/saved-recipes/:recipe_id", isLoggedIn, async (req, res, next) =
         const { id, recipe_id } = req.params;
         const savedRecipe = await User.getSavedRecipes(id, recipe_id);
         return res.status(200).json(savedRecipe);
+    } catch (err) {
+        return next(err);
+    }
+});
+
+/**
+ * "/:id/saved-recipes/:recipe_id"
+ * Deletes saved recipe.
+ * route type: DELETE
+ * Authorization: logged in
+ * Returns deleted message.
+ */
+router.delete("/:id/saved-recipes/:recipe_id", isLoggedIn, async (req, res, next) => {
+    try {
+        const { id, recipe_id } = req.params;
+        const msg = "Deleted recipe from saved recipes!"
+        const clmnNameValObj = { user_id: +id,  recipe_id: +recipe_id };
+        const deletedMsg = await User.deleteRow("saved_recipes", clmnNameValObj, msg);
+        return res.status(200).json(deletedMsg);
     } catch (err) {
         return next(err);
     }
