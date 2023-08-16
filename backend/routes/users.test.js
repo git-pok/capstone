@@ -14,12 +14,17 @@ let usr2IdTest;
 let listId1Test;
 let listId2Test;
 let listId3Test;
+let shopList1IdTest;
+let shopList2IdTest;
+let user1RecipeIdTest;
+let user2RecipeIdTest;
 
 beforeEach(async () => {
     const { 
         usr1, usr1Token, usr2, usr2Token,
         usr1Id, usr2Id, listId1, listId2,
-        listId3
+        listId3, shopList1Id, shopList2Id,
+        user1RecipeId, user2RecipeId
     } = await genTestUsers();
     usr1Test = {...usr1};
     usr2Test = {...usr2};
@@ -30,6 +35,10 @@ beforeEach(async () => {
     listId1Test = listId1;
 	listId2Test = listId2;
 	listId3Test = listId3;
+    shopList1IdTest = shopList1Id;
+    shopList2IdTest = shopList2Id;
+    user1RecipeIdTest = user1RecipeId;
+    user2RecipeIdTest = user2RecipeId;
 });
 
 afterEach(async () => {
@@ -523,6 +532,193 @@ describe("/GET /users/:id/recipelists/:list_id/:recipe_id", () => {
     test("404 error for not found recipe", async () => {
         const req = await request(app).get(`/users/${usr1IdTest}/recipelists/${listId1Test}/${480}`)
             .set("_token", `Bearer ${usr1TokenTest}`);
+        expect(req.statusCode).toBe(404);
+    });
+});
+
+describe("/GET /users/:id/shoppinglists", () => {
+    test("get user 1 shoppinglists", async () => {
+        const req = await request(app).get(`/users/${usr1IdTest}/shoppinglists`)
+            .set("_token", `Bearer ${usr1TokenTest}`);
+        expect(req.statusCode).toBe(200);
+        expect(req.body).toEqual([
+            {
+				"id": expect.any(Number),
+				"list_name": "User 1 Shoplist for Recipe 120"
+			}
+        ]);
+    });
+
+    test("get user 2 shoppinglists", async () => {
+        const req = await request(app).get(`/users/${usr2IdTest}/shoppinglists`)
+            .set("_token", `Bearer ${usr2TokenTest}`);
+        expect(req.statusCode).toBe(200);
+        expect(req.body).toEqual([
+            {
+				"id": expect.any(Number),
+				"list_name": "User 2 Shoplist for Recipe 320"
+			}
+        ]);
+    });
+
+    test("404 error for not found user", async () => {
+        const req = await request(app).get(`/users/${usr2IdTest + 1}/shoppinglists`)
+            .set("_token", `Bearer ${usr2TokenTest}`);
+        expect(req.statusCode).toBe(404);
+    });
+});
+
+describe("/GET /users/:id/shoppinglists/:list_id", () => {
+    test("get user 1 shoppinglist", async () => {
+        const req = await request(app).get(`/users/${usr1IdTest}/shoppinglists/${shopList1IdTest}`)
+            .set("_token", `Bearer ${usr1TokenTest}`);
+        expect(req.statusCode).toBe(200);
+        expect(req.body).toEqual(
+            {
+				"list_name": "User 1 Shoplist for Recipe 120",
+				"items": [
+					{
+						"qty": 3,
+						"unit": "tbsp",
+						"ingredient": "garlic granules"
+					},
+					{
+						"qty": 20,
+						"unit": "oz",
+						"ingredient": "boneless, skinless chicken breast"
+					}
+				]
+			}
+        );
+    });
+
+    test("get user 2 shoppinglist", async () => {
+        const req = await request(app).get(`/users/${usr2IdTest}/shoppinglists/${shopList2IdTest}`)
+            .set("_token", `Bearer ${usr2TokenTest}`);
+        expect(req.statusCode).toBe(200);
+        expect(req.body).toEqual(
+            {
+				"list_name": "User 2 Shoplist for Recipe 320",
+				"items": [
+					{
+						"qty": 20,
+						"unit": "oz",
+						"ingredient": "boneless, skinless chicken breast"
+					}
+				]
+			}
+        );
+    });
+
+    test("404 error for not found user", async () => {
+        const req = await request(app).get(`/users/${usr2IdTest + 1}/shoppinglists/${shopList2IdTest}`)
+            .set("_token", `Bearer ${usr2TokenTest}`);
+        expect(req.statusCode).toBe(404);
+    });
+
+    test("404 error for not found shoppping list", async () => {
+        const req = await request(app).get(`/users/${usr2IdTest}/shoppinglists/${shopList2IdTest + 1}`)
+            .set("_token", `Bearer ${usr2TokenTest}`);
+        expect(req.statusCode).toBe(404);
+    });
+});
+
+describe("/GET /:id/recipes", () => {
+    test("get user 1 recipes", async () => {
+        const req = await request(app).get(`/users/${usr1IdTest}/recipes`)
+            .set("_token", `Bearer ${usr1TokenTest}`);
+        expect(req.statusCode).toBe(200);
+        expect(req.body).toEqual([
+            {
+				"id": expect.any(Number),
+				"recipe_name": "User 1 Chicken Dumplings Tweak"
+			}
+        ]);
+    });
+
+    test("get user 2 recipes", async () => {
+        const req = await request(app).get(`/users/${usr2IdTest}/recipes`)
+            .set("_token", `Bearer ${usr2TokenTest}`);
+        expect(req.statusCode).toBe(200);
+        expect(req.body).toEqual([
+            {
+				"id": expect.any(Number),
+				"recipe_name": "User 2 Stuffed Shells Tweak"
+			}
+        ]);
+    });
+
+    test("404 error for not found user", async () => {
+        const req = await request(app).get(`/users/${usr2IdTest + 1}/recipes`)
+            .set("_token", `Bearer ${usr2TokenTest}`);
+        expect(req.statusCode).toBe(404);
+    });
+});
+
+describe("/GET /:user_id/recipes/:id", () => {
+    test("get user 1 recipe", async () => {
+        const req = await request(app).get(`/users/${usr1IdTest}/recipes/${user1RecipeIdTest}`)
+            .set("_token", `Bearer ${usr1TokenTest}`);
+        expect(req.statusCode).toBe(200);
+        expect(req.body).toEqual(
+            {
+				"recipe_name": "User 1 Chicken Dumplings Tweak",
+				"ingredients": [
+					{
+						"qty": 4,
+						"unit": "tbsp",
+						"ingredient": "garlic granules"
+					},
+					{
+						"qty": 10,
+						"unit": "oz",
+						"ingredient": "boneless, skinless chicken breast"
+					}
+				],
+				"steps": [
+					{
+						"step": "User 1 Test Step 1",
+					},
+					{
+						"step": "User 1 Test Step 2",
+					},
+					{
+						"step": "User 1 Test Step 3",
+					}
+				]
+			}
+        );
+    });
+
+    test("get user 2 recipe", async () => {
+        const req = await request(app).get(`/users/${usr2IdTest}/recipes/${user2RecipeIdTest}`)
+            .set("_token", `Bearer ${usr2TokenTest}`);
+        expect(req.statusCode).toBe(200);
+        expect(req.body).toEqual(
+            {
+				"recipe_name": "User 2 Stuffed Shells Tweak",
+				"ingredients": [],
+				"steps": [
+					{
+						"step": "User 2 Test Step 1",
+					},
+					{
+						"step": "User 2 Test Step 2",
+					}
+				]
+			}
+        );
+    });
+
+    test("404 error for not found user", async () => {
+        const req = await request(app).get(`/users/${usr2IdTest + 1}/recipes/${user2RecipeIdTest}`)
+            .set("_token", `Bearer ${usr2TokenTest}`);
+        expect(req.statusCode).toBe(404);
+    });
+
+    test("404 error for not found user", async () => {
+        const req = await request(app).get(`/users/${usr2IdTest}/recipes/${user2RecipeIdTest + 1}`)
+            .set("_token", `Bearer ${usr2TokenTest}`);
         expect(req.statusCode).toBe(404);
     });
 });

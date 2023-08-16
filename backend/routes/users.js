@@ -115,6 +115,21 @@ router.get("/:id/favorite-recipes", isLoggedIn, async (req, res, next) => {
     }
 });
 
+/**
+ * "/:id/favorite-recipes/:recipe_id"
+ * route type: GET
+ * Authorization: logged in
+ * Returns favorited recipe.
+ */
+router.get("/:id/favorite-recipes/:recipe_id", isLoggedIn, async (req, res, next) => {
+    try {
+        const { id, recipe_id } = req.params;
+        const favRecipe = await User.getFavRecipes(id, recipe_id);
+        return res.status(200).json(favRecipe);
+    } catch (err) {
+        return next(err);
+    }
+});
 
 /**
  * "/:id/saved-recipes"
@@ -127,6 +142,22 @@ router.get("/:id/saved-recipes", isLoggedIn, async (req, res, next) => {
         const { id } = req.params;
         const savedRecipes = await User.getSavedRecipes(id);
         return res.status(200).json(savedRecipes);
+    } catch (err) {
+        return next(err);
+    }
+});
+
+/**
+ * "/:id/saved-recipes/:recipe_id"
+ * route type: GET
+ * Authorization: logged in
+ * Returns saved recipes.
+ */
+router.get("/:id/saved-recipes/:recipe_id", isLoggedIn, async (req, res, next) => {
+    try {
+        const { id, recipe_id } = req.params;
+        const savedRecipe = await User.getSavedRecipes(id, recipe_id);
+        return res.status(200).json(savedRecipe);
     } catch (err) {
         return next(err);
     }

@@ -205,7 +205,7 @@ class User {
      * Returns array of favorite recipes.
      * getFavRecipes(id) => [{ name: "chicken", ...}, ...]
      */
-    static async getFavRecipes (id) {
+    static async getFavRecipes (id, recipeId = false) {
         // Check if user exists.
         await rowExists("user", "id", "users", [["id", id]]);
         
@@ -213,13 +213,29 @@ class User {
         const joinSqlStr = genJoinSql(favRecipesjoinArr, "JOIN");
         const selectJoinSqlStr = arrayConcat([selectSqlStr, joinSqlStr]);
         // Creates object with where sql and values properties.
-        const whereObj = { user_id: id };
+        const whereObj = recipeId === false ? { user_id: id } : { user_id: id, recipe_id: recipeId };
         const sqlWhereObj = genWhereSqlArr(whereObj, 1, true, false, true, favRecpesClmnToTblAbrev);
         const sql = arrayConcat([selectJoinSqlStr, sqlWhereObj.whereSql]);
-        
+
         const favRecipes = await db.query(`
             ${sql} ORDER BY r.name, rt.rating
         `, sqlWhereObj.values);
+
+        if (recipeId !== false && favRecipes.rows.length) {
+            // Retrieves recipe likes user ids.
+            const usrsRecipeLiks = await Recipe.getRecipeLikes(recipeId);
+            // Retireves recipe dislikes user ids.
+            const usrsRecipeDislikes = await Recipe.getRecipeDisLikes(recipeId);
+            // Retrieves recipe's ingredients.
+            const recipeIngredts = await Recipe.getRecipeIngrdts(recipeId);
+            // Retrieves recipe's reviews.
+            const recipeRvws = await Recipe.getRecipeReviews(recipeId);
+            // Defines new liked/disliked recipe user ids and reviews props.
+            favRecipes.rows[0]["liked_user_ids"] = usrsRecipeLiks;
+            favRecipes.rows[0]["disliked_user_ids"] = usrsRecipeDislikes;
+            favRecipes.rows[0]["reviews"] = recipeRvws;
+            favRecipes.rows[0].ingredients = recipeIngredts;
+        }
         return favRecipes.rows;
     }
 
@@ -229,19 +245,35 @@ class User {
      * Returns array of saved recipes.
      * getSavedRecipes(id) => [{ name: "chicken", ...}, ...]
      */
-    static async getSavedRecipes (id) {
+    static async getSavedRecipes (id, recipeId = false) {
         await rowExists("user", "id", "users", [["id", id]]);
         const selectSqlStr = genSelectSql(recipesRelDataSelectColumns, "saved_recipes", true);
         const joinSqlStr = genJoinSql(savedRecipesjoinArr, "JOIN");
         const selectJoinSqlStr = arrayConcat([selectSqlStr, joinSqlStr]);
         // Creates object with where sql and values properties.
-        const whereObj = { user_id: id };
+        const whereObj = recipeId === false ? { user_id: id } : { user_id: id, recipe_id: recipeId };
         const sqlWhereObj = genWhereSqlArr(whereObj, 1, true, false, true, savedRecpesClmnToTblAbrev);
         const sql = arrayConcat([selectJoinSqlStr, sqlWhereObj.whereSql]);
 
         const savedRecipes = await db.query(`
             ${sql} ORDER BY r.name, rt.rating
         `, sqlWhereObj.values);
+
+        if (recipeId !== false && savedRecipes.rows.length) {
+            // Retrieves recipe likes user ids.
+            const usrsRecipeLiks = await Recipe.getRecipeLikes(recipeId);
+            // Retireves recipe dislikes user ids.
+            const usrsRecipeDislikes = await Recipe.getRecipeDisLikes(recipeId);
+            // Retrieves recipe's ingredients.
+            const recipeIngredts = await Recipe.getRecipeIngrdts(recipeId);
+            // Retrieves recipe's reviews.
+            const recipeRvws = await Recipe.getRecipeReviews(recipeId);
+            // Defines new liked/disliked recipe user ids and reviews props.
+            savedRecipes.rows[0]["liked_user_ids"] = usrsRecipeLiks;
+            savedRecipes.rows[0]["disliked_user_ids"] = usrsRecipeDislikes;
+            savedRecipes.rows[0]["reviews"] = recipeRvws;
+            savedRecipes.rows[0].ingredients = recipeIngredts;
+        }
         return savedRecipes.rows;
     }
 
