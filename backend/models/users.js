@@ -385,7 +385,7 @@ class User {
 
         const recipeRows = req.rows;
         if (recipeRows.length) return recipeRows;
-        // else if (!recipeRows.length) return recipeRows;
+        else return [];
     }
 
     /**
