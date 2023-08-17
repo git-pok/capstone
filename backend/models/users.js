@@ -25,7 +25,6 @@ const SECRET_KEY = require("../keys.js");
 const userSchema = require("../schemas/userRegister.json");
 const loginSchema = require("../schemas/userLogin.json");
 const userEditSchema = require("../schemas/userEdit.json");
-// const favSavRecipeSchema = require("../schemas/favSavRecipe.json");
 const ExpressError = require("./error.js");
 
 
@@ -192,8 +191,8 @@ class User {
 
     /**
      * getFavRecipes
-     * Retrives user's favorite recipes.
-     * Returns array of favorite recipes.
+     * Retrives user's favorite recipes or favorite recipe.
+     * Returns array of favorite recipes/recipe.
      * getFavRecipes(id) => [{ name: "chicken", ...}, ...]
      */
     static async getFavRecipes (userId, recipeId = false) {
@@ -236,8 +235,8 @@ class User {
 
     /**
      * getSavedRecipes
-     * Retrives user's saved recipes.
-     * Returns array of saved recipes.
+     * Retrives user's saved recipes or saved recipe.
+     * Returns array of saved recipes/recipe.
      * getSavedRecipes(id) => [{ name: "chicken", ...}, ...]
      */
     static async getSavedRecipes (userId, recipeId = false) {
@@ -278,8 +277,8 @@ class User {
 
     /**
      * getRecipeLists
-     * Retrives user's recipelists.
-     * Returns array of recipelists.
+     * Retrives user's recipelists or recipelist.
+     * Returns array of recipelists/recipelist.
      * getRecipeLists(id) => [{ "weekly meal prep", ...}, ...]
      */
     static async getRecipeLists (userId, listId = false) {
@@ -302,12 +301,15 @@ class User {
 
     /**
      * getListRecipes
-     * Retrives a recipelists recipes.
-     * Returns array of recipes
+     * Retrives a recipelist's recipes or a recipelist's recipe.
+     * Returns array of recipes/recipe,
+     * or a message if list doesn't have recipes.
      * getListRecipes(id) => [{ name: "chicken", ...}, ...]
      */
-    static async getListRecipes (userId, listId) {
+    static async getListRecipes (userId, listId, recipeId = false) {
+        // Check if user exists.
         await rowExists("user", "id", "users", [["id", userId]]);
+        // Check if list exists.
         await rowExists("list", "id", "recipelists", [["id", listId]]);
         // Define select sql for recipelist recipes.
         const recipeListSelStr = genSelectSql(recipesRelDataSelectColumns, "recipelists", true);
@@ -322,8 +324,9 @@ class User {
         // Define join sql for recipelist recipes.
         const joinSql2 = genJoinSql(recipesOnData, "JOIN");
         const joinSql = [joinSql1, joinSql2].join(" ");
-        const abrevTable = { list_id: "rlr.", user_id: "rl." };
-        const listNameClmnVals = { user_id: userId, list_id: listId };
+        const abrevTable = recipeId === false ? { list_id: "rlr.", user_id: "rl." } : { list_id: "rlr.", user_id: "rl.", recipe_id: "rlr." };
+        // const listNameClmnVals = { user_id: userId, list_id: listId };
+        const listNameClmnVals = recipeId === false ? { user_id: userId, list_id: listId } : { user_id: userId, list_id: listId, recipe_id: recipeId };
         // Define where sql.
         const whereSqlObj = genWhereSqlArr(listNameClmnVals, 1, true, false, true, abrevTable);
         const reqSqlArr = [recipeListSelStr, joinSql, whereSqlObj.whereSql];
@@ -341,13 +344,14 @@ class User {
 
         const list_name = listNameReq.rows[0] ? listNameReq.rows[0].list_name : "";
         const recipeRows = req.rows;
-        return { list_name, recipes: recipeRows };
+        const finalReturn = recipeRows.length ? { list_name, recipes: recipeRows } : { message: "List does not have any recipes!" };
+        return finalReturn;
     }
 
     /**
      * getShopLists
-     * Retrives shopping lists.
-     * Returns array of shopping lists
+     * Retrives shopping lists or shopping list.
+     * Returns array of shopping lists/list
      * getShopLists(id) => [{ name: "chicken recipe", ...}, ...]
      */
     static async getShopLists (userId, listId = false) {
@@ -369,7 +373,7 @@ class User {
     /**
      * shopListsItems
      * Retrives shopping list items.
-     * Returns array of shopping lists
+     * Returns array of shopping list items.
      * getShopLists(id) => [{ id: 1, qty: 2, unit: "g", ...}, ...]
      */
     static async shopListsItems (userId, listId) {
@@ -405,11 +409,11 @@ class User {
 
     /**
      * recipes
-     * Retrives user recipes.
-     * Returns array of recipes.
+     * Retrives user's recipelists or recipelist with recipes.
+     * Returns array of recipelists/recipelist.
      * recipes(id) => [{ id: 2, recipe_name: "dump. tweak", ...}, ...]
      */
-    static async recipes (userId, listId = false) {
+    static async userRecipes (userId, listId = false) {
         await rowExists("user", "id", "users", [["id", userId]]);
         const selectClmns = ["id", "recipe_name"];
         const listSelStr = genSelectSql(selectClmns, "user_recipes");
@@ -445,6 +449,7 @@ class User {
         const req = await db.query(`
             ${selectSql}
         `, whereSqlObj.values);
+        console.log("Recipe Steps req.rows", req.rows);
         return req.rows;
     }
 

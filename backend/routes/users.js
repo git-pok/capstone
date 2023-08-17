@@ -17,7 +17,7 @@ const recipeIngrdtsSchema = require("../schemas/userRecipeIngrd.json");
  * "/register"
  * route type: POST
  * Authorization: none
- * Returns object of submitted data,
+ * Returns inserted register data.
  * and token
  */
 router.post("/register", async (req, res, next) => {
@@ -123,6 +123,7 @@ router.get("/:id/favorite-recipes", isLoggedIn, async (req, res, next) => {
 
 /**
  * "/:id/favorite-recipes"
+ * Favorites a recipe.
  * route type: POST
  * Authorization: logged in
  * Returns message.
@@ -158,9 +159,9 @@ router.get("/:id/favorite-recipes/:recipe_id", isLoggedIn, async (req, res, next
 
 /**
  * "/:id/favorite-recipes/:recipe_id"
- * Deletes favorited recipe.
  * route type: DELETE
  * Authorization: logged in
+ * Deletes favorited recipe.
  * Returns deleted message.
  */
 router.delete("/:id/favorite-recipes/:recipe_id", isLoggedIn, async (req, res, next) => {
@@ -195,6 +196,7 @@ router.get("/:id/saved-recipes", isLoggedIn, async (req, res, next) => {
  * "/:id/saved-recipes"
  * route type: POST
  * Authorization: logged in
+ * Saves a recipe.
  * Returns message.
  */
 router.post("/:id/saved-recipes", isLoggedIn, async (req, res, next) => {
@@ -214,7 +216,7 @@ router.post("/:id/saved-recipes", isLoggedIn, async (req, res, next) => {
  * "/:id/saved-recipes/:recipe_id"
  * route type: GET
  * Authorization: logged in
- * Returns saved recipes.
+ * Returns saved recipe.
  */
 router.get("/:id/saved-recipes/:recipe_id", isLoggedIn, async (req, res, next) => {
     try {
@@ -228,9 +230,9 @@ router.get("/:id/saved-recipes/:recipe_id", isLoggedIn, async (req, res, next) =
 
 /**
  * "/:id/saved-recipes/:recipe_id"
- * Deletes saved recipe.
  * route type: DELETE
  * Authorization: logged in
+ * Deletes saved recipe.
  * Returns deleted message.
  */
 router.delete("/:id/saved-recipes/:recipe_id", isLoggedIn, async (req, res, next) => {
@@ -265,6 +267,7 @@ router.get("/:id/recipelists", isLoggedIn, async (req, res, next) => {
  * "/:id/recipelists"
  * route type: POST
  * Authorization: logged in
+ * Creates recipelist.
  * Returns recipelist.
  */
 router.post("/:id/recipelists", isLoggedIn, async (req, res, next) => {
@@ -308,7 +311,7 @@ router.get("/:id/recipelists/:list_id", isLoggedIn, async (req, res, next) => {
 router.delete("/:id/recipelists/:list_id", isLoggedIn, async (req, res, next) => {
     try {
         const { id, list_id } = req.params;
-        const msg = "Deleted recipelist from user's recipelists!"
+        const msg = "Deleted recipelist!"
         const clmnNameValObj = { user_id: +id,  id: +list_id };
         const deletedMsg = await User.deleteRow("recipelists", clmnNameValObj, msg);
         return res.status(200).json(deletedMsg);
@@ -326,12 +329,9 @@ router.delete("/:id/recipelists/:list_id", isLoggedIn, async (req, res, next) =>
 router.get("/:id/recipelists/:list_id/:recipe_id", isLoggedIn, async (req, res, next) => {
     try {
         const { id, list_id, recipe_id } = req.params;
-        await rowExists("user", "id", "users", [["id", +id]]);
-        await rowExists("list", "id", "recipelists", [["id", +list_id]]);
         const clmnsNvals = [["list_id", +list_id], ["recipe_id", +recipe_id]];
         const tableName = "recipelists_recipes";
-        await rowExists("recipe", "id", tableName, clmnsNvals);
-        const recipe = await Recipe.getRecipe(recipe_id);
+        const recipe = await User.getListRecipes(+id, +list_id, +recipe_id);
         return res.status(200).json([recipe]);
     } catch(err) {
         return next(err);
@@ -343,11 +343,12 @@ router.get("/:id/recipelists/:list_id/:recipe_id", isLoggedIn, async (req, res, 
  * Adds recipe to recipelist.
  * route type: POST
  * Authorization: logged in
- * Returns inserted recipelist data.
+ * Returns recipelist recipes.
  */
 router.post("/:id/recipelists/:list_id", isLoggedIn, async (req, res, next) => {
     try {
         const { id: user_id, list_id } = req.params;
+        await rowExists("list", "id", "recipelists_recipes", [["list_id", +list_id]]);
         const { recipe_id } = req.body;
         const data = { recipe_id: +recipe_id, list_id: +list_id };
         const returnClmns = ["list_id"];
@@ -362,15 +363,15 @@ router.post("/:id/recipelists/:list_id", isLoggedIn, async (req, res, next) => {
 
 /**
  * "/:id/recipelists/:list_id/:recipe_id"
- * Deletes recipelist recipe.
  * route type: DELETE
  * Authorization: logged in
+ * Deletes recipelist recipe.
  * Returns deleted message.
  */
 router.delete("/:id/recipelists/:list_id/:recipe_id", isLoggedIn, async (req, res, next) => {
     try {
         const { list_id, recipe_id } = req.params;
-        const msg = "Deleted recipelist from user's recipelists!"
+        const msg = "Deleted recipe from recipelists!"
         const clmnNameValObj = { list_id: +list_id,  recipe_id: +recipe_id };
         const deletedMsg = await User.deleteRow("recipelists_recipes", clmnNameValObj, msg);
         return res.status(200).json(deletedMsg);
@@ -399,6 +400,7 @@ router.get("/:id/shoppinglists", isLoggedIn, async (req, res, next) => {
  * "/:id/shoppinglists"
  * route type: POST
  * Authorization: logged in
+ * Creates shoppinglist.
  * Returns shoppinglist.
  */
 router.post("/:id/shoppinglists", isLoggedIn, async (req, res, next) => {
@@ -420,6 +422,7 @@ router.post("/:id/shoppinglists", isLoggedIn, async (req, res, next) => {
  * "/:id/shoppinglists/:list_id/items"
  * route type: POST
  * Authorization: logged in
+ * Add items to shoppinglist.
  * Returns shoppinglist.
  */
 router.post("/:id/shoppinglists/:list_id/items", isLoggedIn, async (req, res, next) => {
@@ -439,15 +442,15 @@ router.post("/:id/shoppinglists/:list_id/items", isLoggedIn, async (req, res, ne
 
 /**
  * "/:id/shoppinglists/:list_id/items"
- * Deletes shoppinglist item.
  * route type: DELETE
  * Authorization: logged in
+ * Deletes shoppinglist item.
  * Returns deleted message.
  */
 router.delete("/:id/shoppinglists/:list_id/items", isLoggedIn, async (req, res, next) => {
     try {
         const { item_id } = req.body;
-        const msg = "Deleted item from user's shoppinglist!"
+        const msg = "Deleted item from shoppinglist!"
         const clmnNameValObj = { id: +item_id };
         const deletedMsg = await User.deleteRow("shoppinglists_items", clmnNameValObj, msg);
         return res.status(200).json(deletedMsg);
@@ -474,15 +477,15 @@ router.get("/:id/shoppinglists/:list_id", isLoggedIn, async (req, res, next) => 
 
 /**
  * "/:id/shoppinglists/:list_id"
- * Deletes shoppinglist.
  * route type: DELETE
  * Authorization: logged in
+ * Deletes shoppinglist.
  * Returns deleted message.
  */
 router.delete("/:id/shoppinglists/:list_id", isLoggedIn, async (req, res, next) => {
     try {
         const { id: user_id, list_id } = req.params;
-        const msg = "Deleted shoppinglist from user's shoppinglists!"
+        const msg = "Deleted shoppinglist!"
         const clmnNameValObj = { user_id: +user_id, id: +list_id };
         const deletedMsg = await User.deleteRow("shoppinglists", clmnNameValObj, msg);
         return res.status(200).json(deletedMsg);
@@ -495,12 +498,12 @@ router.delete("/:id/shoppinglists/:list_id", isLoggedIn, async (req, res, next) 
  * "/:id/recipes"
  * route type: GET
  * Authorization: logged in
- * Returns users recipes.
+ * Returns user's recipes.
  */
 router.get("/:id/recipes", isLoggedIn, async (req, res, next) => {
     try {
         const { id } = req.params;
-        const lists = await User.recipes(id);
+        const lists = await User.userRecipes(id);
         return res.status(200).json(lists);
     } catch(err) {
         return next(err);
