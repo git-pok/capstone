@@ -360,7 +360,8 @@ class User {
         const { occasion } = occsnReq.rows[0];
         const { list_name } = listNameReq.rows[0];
         const recipeRows = req.rows;
-        return { list_name, occasion, recipes: recipeRows };
+        const recipe = recipeId === false ? "recipes" : "recipe";
+        return { list_name, occasion, [recipe]: recipeRows };
     }
 
     /**
@@ -374,7 +375,7 @@ class User {
         await rowExists("user", "id", "users", [["id", userId]]);
         const selectClmns = ["id", "list_name"];
         const listSelStr = genSelectSql(selectClmns, "shoppinglists");
-        const whereVals = listId === false ? { user_id: userId } : { user_id: userId, id: listId };
+        const whereVals = listId === false ? { user_id: +userId } : { user_id: +userId, id: +listId };
         const whereSqlObj = genWhereSqlArr(whereVals, 1, true);
         const selectSql = arrayConcat([listSelStr, whereSqlObj.whereSql]);
         // console.log("selectSql RECIPES FINAL SQL $#$#$#$#$#$#$", selectSql, whereSqlObj.values);
@@ -383,7 +384,8 @@ class User {
         `, whereSqlObj.values);
 
         const recipeRows = req.rows;
-        return recipeRows;
+        if (recipeRows.length) return recipeRows;
+        // else if (!recipeRows.length) return recipeRows;
     }
 
     /**
@@ -423,7 +425,24 @@ class User {
 
         const { list_name } = lstNameReq.rows[0];
         const recipeRows = req.rows;
-        return { list_name, items: recipeRows };
+
+        // Make recipe id request.
+        const recipeIdReq = await db.query(`SELECT recipe_id FROM shoppinglists WHERE id = $1`, [+listId]);
+        const { recipe_id } = recipeIdReq.rows[0];
+        // Make recipe table sql.
+        const recipeSelStr = genSelectSql(["r.name", "a.full_name AS author"], "recipes", true);
+        const recipeJoinArr = [["authors", "r.author_id", "a.id"]];
+        const recipeJoinSql = genJoinSql(recipeJoinArr, "JOIN");
+        const recipeWhereSqlObj = genWhereSqlArr({ id: recipe_id }, 1, true, false, true, {id: "r."});
+        const recipeSql = arrayConcat([recipeSelStr, recipeJoinSql, recipeWhereSqlObj.whereSql]);
+        // Make recipe table request.
+        const recipeReq = await db.query(
+            `${recipeSql}`,
+            recipeWhereSqlObj.values
+        );
+
+        const { name: recipe_name, author: recipe_author } = recipeReq.rows[0];
+        return { list_name, recipe_name, recipe_author, items: recipeRows };
     }
 
     /**

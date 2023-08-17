@@ -407,12 +407,12 @@ router.post("/:id/shoppinglists", isLoggedIn, async (req, res, next) => {
     try {
         const { id: user_id } = req.params;
         const { recipe_id, list_name } = req.body;
-        const data = { user_id: +user_id, recipe_id, list_name };
+        const data = { user_id: +user_id, recipe_id: +recipe_id, list_name };
         const returnClmns = ["id"];
         const listRes = await User.insertRow("shoppinglists", data, shopListsSchema, returnClmns);
         const { id: listId } = listRes.rows[0];
-        const list = await User.getShopLists(+user_id, listId);
-        return res.status(201).json(list[0]);
+        const list = await User.getShopLists(+user_id);
+        return res.status(201).json(list);
     } catch(err) {
         return next(err);
     }
