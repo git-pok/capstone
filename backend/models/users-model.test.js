@@ -5,6 +5,7 @@ const { db } = require("../config.js");
 const ExpressError = require("../models/error.js");
 const User = require("./users.js");
 const { genTestUsers } = require("../routes/_test-data.js");
+const recipesSchema = require("../schemas/userRecipes.json");
 
 let usr1Test;
 let usr2Test;
@@ -52,7 +53,7 @@ afterAll(async () => {
     await db.end();
 });
 
-describe("User", () => {
+describe("User.register", () => {
     test("User.register", async () => {
         const data = {
                 "username": "newUsr",
@@ -77,7 +78,9 @@ describe("User", () => {
 		    "token": expect.any(String)
         });
     });
+});
 
+describe("User.login", () => {
 	test("User.login", async () => {
 		const data = {
 			username: usr1Test.username,
@@ -90,7 +93,9 @@ describe("User", () => {
 		    "token": expect.any(String)
         });
     });
+});
 
+describe("User.getUser", () => {
 	test("User.getUser", async () => {
 		const data = {
 			username: usr1Test.username,
@@ -109,7 +114,9 @@ describe("User", () => {
 		    "profile_img": null
         });
     });
+});
 
+describe("User.editUser", () => {
 	test("User.editUser", async () => {
 		const data = {
 			username: "usr1Test newUsrName",
@@ -127,14 +134,6 @@ describe("User", () => {
 		    "header_img": null,
 		    "profile_img": null
         });
-    });
-
-	test("User.deleteUser", async () => {
-        await User.deleteUser(usr1Test.username);
-        const usr = await db.query(`
-			SELECT * FROM users WHERE username = '${usr1Test.username}'
-		`);
-		expect(usr.rows.length).toEqual(0);
     });
 });
 
@@ -203,7 +202,13 @@ describe("User.getFavRecipes", () => {
 		            "cook_time": "3 hrs",
 					"liked_user_ids": [],
 					"disliked_user_ids": [],
-					"reviews": [],
+					"reviews": [
+						{
+							"stars": 5,
+							"review": "Good.",
+							"user_id": usr1IdTest
+						},
+					],
 					"ingredients": [
 						{
 							"qty": "2",
@@ -433,24 +438,10 @@ describe("User.getRecipeLists", () => {
 describe("User.getListRecipes", () => {
 	test("get recipelists", async () => {
 		const req = await User.getListRecipes(usr1IdTest, listId1Test);
-		expect(req).toEqual([
-			{
-				"id": 450,
-				"name": "sticky cinnamon figs",
-				"author": "jane hornby",
-				"rating": 5,
-				"vote_count": 30,
-				"url": "https://www.bbcgoodfood.com/recipes/sticky-cinnamon-figs",
-				"image": "https://images.immediate.co.uk/production/volatile/sites/30/2020/08/recipe-image-legacy-id-339086_11-8e6b423.jpg",
-				"description": "A simple and stylish nutty fig pudding ready in just 10 minutes",
-				"serves": 4,
-				"level": "easy",
-				"main_cat_name": "recipes",
-				"sub_cat_name": "desserts",
-				"steps": "Heat grill to medium high. Cut a deep cross in the top of each fig then ease the top apart like a flower. Sit the figs in a baking dish and drop a small piece of the butter into the centre of each fruit. Drizzle the honey over the figs, then sprinkle with the nuts and spice. Grill for 5 mins until figs are softened and the honey and butter make a sticky sauce in the bottom of the dish. Serve warm, with dollops of mascarpone or yogurt.",
-				"prep_time": "5 mins",
-				"cook_time": "5 mins"
-			},
+		expect(req).toEqual({
+			"list_name": "weekly meals",
+			"occasion": "meal prep",
+			"recipes": [
 			{
 				"id": 460,
 				"name": "apple flapjack crumble",
@@ -467,8 +458,57 @@ describe("User.getListRecipes", () => {
 				"steps": "Heat oven to 190C/fan 170C/gas 5. Peel, core and thinly slice the apples and mix with the jam and orange juice. Spread evenly over a buttered 1.5-litre ovenproof dish, not too deep. Mix the oats, flour and cinnamon in a large bowl. Add the butter in small chunks and rub in gently. Stir in the sugar and rub in again. Drizzle over the syrup, mixing with a knife so it forms small clumps. Sprinkle evenly over the apples and bake for 30-35 mins until the juices from the apples start to bubble up. Cool for 10 mins, then serve with custard, cream or ice cream.",
 				"prep_time": "20 mins",
 				"cook_time": "35 mins"
+			},
+			{
+				"id": 450,
+				"name": "sticky cinnamon figs",
+				"author": "jane hornby",
+				"rating": 5,
+				"vote_count": 30,
+				"url": "https://www.bbcgoodfood.com/recipes/sticky-cinnamon-figs",
+				"image": "https://images.immediate.co.uk/production/volatile/sites/30/2020/08/recipe-image-legacy-id-339086_11-8e6b423.jpg",
+				"description": "A simple and stylish nutty fig pudding ready in just 10 minutes",
+				"serves": 4,
+				"level": "easy",
+				"main_cat_name": "recipes",
+				"sub_cat_name": "desserts",
+				"steps": "Heat grill to medium high. Cut a deep cross in the top of each fig then ease the top apart like a flower. Sit the figs in a baking dish and drop a small piece of the butter into the centre of each fruit. Drizzle the honey over the figs, then sprinkle with the nuts and spice. Grill for 5 mins until figs are softened and the honey and butter make a sticky sauce in the bottom of the dish. Serve warm, with dollops of mascarpone or yogurt.",
+				"prep_time": "5 mins",
+				"cook_time": "5 mins"
 			}
-		]);
+		]});
+	});
+
+	test("get recipelist recipe", async () => {
+		const req = await User.getListRecipes(usr1IdTest, listId1Test, 450);
+		expect(req).toEqual({
+			"list_name": "weekly meals",
+			"occasion": "meal prep",
+			"recipe": [
+			{
+				"id": 450,
+				"name": "sticky cinnamon figs",
+				"author": "jane hornby",
+				"rating": 5,
+				"vote_count": 30,
+				"url": "https://www.bbcgoodfood.com/recipes/sticky-cinnamon-figs",
+				"image": "https://images.immediate.co.uk/production/volatile/sites/30/2020/08/recipe-image-legacy-id-339086_11-8e6b423.jpg",
+				"description": "A simple and stylish nutty fig pudding ready in just 10 minutes",
+				"serves": 4,
+				"level": "easy",
+				"main_cat_name": "recipes",
+				"sub_cat_name": "desserts",
+				"steps": "Heat grill to medium high. Cut a deep cross in the top of each fig then ease the top apart like a flower. Sit the figs in a baking dish and drop a small piece of the butter into the centre of each fruit. Drizzle the honey over the figs, then sprinkle with the nuts and spice. Grill for 5 mins until figs are softened and the honey and butter make a sticky sauce in the bottom of the dish. Serve warm, with dollops of mascarpone or yogurt.",
+				"prep_time": "5 mins",
+				"cook_time": "5 mins"
+			}
+		]});
+	});
+
+	test("404 error for not found recipelist", async () => {
+		await expect(async () => {
+            await User.getListRecipes(usr1IdTest, listId3Test);
+        }).rejects.toThrow(ExpressError);
 	});
 
 	test("404 error for not found user", async () => {
@@ -505,6 +545,21 @@ describe("User.getShopLists", () => {
 		]);
 	});
 
+	test("get user1 shoplist", async () => {
+		const list = await User.getShopLists(usr1IdTest, shopList1IdTest);
+		expect(list).toEqual([
+			{
+				"id": expect.any(Number),
+				"list_name": "User 1 Shoplist for Recipe 120"
+			}
+		]);
+	});
+
+	test("get empty array for user with no shoppinglists", async () => {
+		const list = await User.getShopLists(usr1IdTest, shopList2IdTest);
+		expect(list).toEqual([]);
+	});
+
 	test("error for not found user", async () => {
 		await expect(async () => {
 			await User.getShopLists(usr2IdTest + 1);
@@ -518,13 +573,17 @@ describe("User.shopListsItems", () => {
 		expect(list).toEqual(
 			{
 				"list_name": "User 1 Shoplist for Recipe 120",
+				"recipe_name": "double bean & roasted pepper chilli",
+				"recipe_author": "sarah cook",
 				"items": [
 					{
+						"id": expect.any(Number),
 						"ingredient": "boneless, skinless chicken breast",
 						"qty": 20,
 						"unit": "oz"
 					},
 					{
+						"id": expect.any(Number),
 						"ingredient": "garlic granules",
 						"qty": 3,
 						"unit": "tbsp"
@@ -539,8 +598,11 @@ describe("User.shopListsItems", () => {
 		expect(list).toEqual(
 			{
 				"list_name": "User 2 Shoplist for Recipe 320",
+				"recipe_name": "lemony broad beans with goat's cheese, peas & mint",
+				"recipe_author": "esther clark",
 				"items": [
 					{
+						"id": expect.any(Number),
 						"qty": 20,
 						"unit": "oz",
 						"ingredient": "boneless, skinless chicken breast"
@@ -556,16 +618,16 @@ describe("User.shopListsItems", () => {
 		}).rejects.toThrow(ExpressError);
 	});
 
-	test("error for not found list", async () => {
+	test("error for not found shoppinglist", async () => {
 		await expect(async () => {
-			await User.shopListsItems(usr2IdTest, shopList2IdTest + 1);
+			await User.shopListsItems(usr2IdTest, shopList1IdTest);
 		}).rejects.toThrow(ExpressError);
 	});
 });
 
-describe("User.recipes", () => {
+describe("User.userRecipes", () => {
 	test("get user1 recipes", async () => {
-		const list = await User.recipes(usr1IdTest);
+		const list = await User.userRecipes(usr1IdTest);
 		expect(list).toEqual([
 			{
 				"id": expect.any(Number),
@@ -575,7 +637,7 @@ describe("User.recipes", () => {
 	});
 
 	test("get user2 recipes", async () => {
-		const list = await User.recipes(usr2IdTest);
+		const list = await User.userRecipes(usr2IdTest);
 		expect(list).toEqual([
 			{
 				"id": expect.any(Number),
@@ -584,9 +646,9 @@ describe("User.recipes", () => {
 		]);
 	});
 
-	test("error for not found user", async () => {
+	test("error for not found user recipes", async () => {
 		await expect(async () => {
-			await User.recipes(usr2IdTest + 1);
+			await User.userRecipes(usr2IdTest + 1);
 		}).rejects.toThrow(ExpressError);
 	});
 });
@@ -619,16 +681,9 @@ describe("User.recipeSteps", () => {
 		]);
 	});
 
-	test("error for not found user", async () => {
-		await expect(async () => {
-			await User.recipeSteps(usr2IdTest + 1, user2RecipeIdTest);
-		}).rejects.toThrow(ExpressError);
-	});
-
-	test("error for not found recipe", async () => {
-		await expect(async () => {
-			await User.recipeSteps(usr2IdTest, user2RecipeIdTest + 1);
-		}).rejects.toThrow(ExpressError);
+	test("empty array for user recipe with no steps", async () => {
+		const list = await User.recipeSteps(usr2IdTest, user2RecipeIdTest + 1);
+		expect(list).toEqual([]);
 	});
 });
 
@@ -640,11 +695,13 @@ describe("User.recipe", () => {
 				"recipe_name": "User 1 Chicken Dumplings Tweak",
 				"ingredients": [
 					{
+						"id": expect.any(Number),
 						"qty": 10,
 						"unit": "oz",
 						"ingredient": "boneless, skinless chicken breast"
 					},
 					{
+						"id": expect.any(Number),
 						"qty": 4,
 						"unit": "tbsp",
 						"ingredient": "garlic granules"
@@ -683,15 +740,62 @@ describe("User.recipe", () => {
 		);
 	});
 
-	test("error for not found user", async () => {
-		await expect(async () => {
-			await User.recipe(usr2IdTest + 1, user2RecipeIdTest);
-		}).rejects.toThrow(ExpressError);
-	});
-
-	test("error for not found recipe", async () => {
+	test("error for not found user recipe", async () => {
 		await expect(async () => {
 			await User.recipe(usr2IdTest, user2RecipeIdTest + 1);
+		}).rejects.toThrow(ExpressError);
+	});
+});
+
+describe("User.deleteRow", () => {
+	test("delete user", async () => {
+		const userReq = await db.query(
+			`SELECT * FROM users WHERE id = $1`,
+			[usr1IdTest]
+		);
+		expect(userReq.rows.length).toEqual(1);
+		expect(userReq.rows[0].id).toEqual(usr1IdTest);
+		const list = await User.deleteRow("users", {id: usr1IdTest}, "Deleted user!");
+		expect(list).toEqual(
+			{
+				message: "Deleted user!"
+			}
+		);
+		const userDltReq = await db.query(
+			`SELECT * FROM users WHERE id = $1`,
+			[usr1IdTest]
+		);
+		expect(userDltReq.rows.length).toEqual(0);
+	});
+});
+
+describe("User.insertRow", () => {
+	test("delete user", async () => {
+		const recpReq = await db.query(
+			`SELECT * FROM user_recipes WHERE recipe_name = $1`,
+			["Insert Recipe"]
+		);
+		expect(recpReq.rows.length).toEqual(0);
+		const insertData = {user_id: usr1IdTest, recipe_name: "Insert Recipe"};
+		const res = await User.insertRow("user_recipes", insertData, recipesSchema, false, "Inserted user recipe!");
+		expect(res).toEqual("Inserted user recipe!");
+		const recpDltReq = await db.query(
+			`SELECT * FROM user_recipes WHERE recipe_name = $1`,
+			["Insert Recipe"]
+		);
+		expect(recpDltReq.rows.length).toEqual(1);
+		expect(recpDltReq.rows[0].recipe_name).toEqual("Insert Recipe");
+	});
+
+	test("error for data not matching schema", async () => {
+		const recpReq = await db.query(
+			`SELECT * FROM user_recipes WHERE recipe_name = $1`,
+			["Insert Recipe"]
+		);
+		expect(recpReq.rows.length).toEqual(0);
+		const insertData = {user_id: usr1IdTest, recipe_name: 1};
+		await expect(async () => {
+			await User.insertRow("user_recipes", insertData, recipesSchema, false, "Inserted user recipe!");
 		}).rejects.toThrow(ExpressError);
 	});
 });

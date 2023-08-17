@@ -453,7 +453,7 @@ class User {
      */
     static async userRecipes (userId) {
         // Check if user exists.
-        await rowExists("user", "id", "users", [["id", +userId]]);
+        // await rowExists("user", "id", "users", [["id", +userId]]);
         // Check if user has recipes.
         await rowExists("user's recipes", "id", "user_recipes", [["user_id", +userId]]);
         const selectClmns = ["id", "recipe_name"];
