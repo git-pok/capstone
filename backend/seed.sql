@@ -26640,7 +26640,8 @@ CREATE TABLE recipelists_recipes (
     -- user_id INTEGER REFERENCES users (id) ON DELETE CASCADE,
     id SERIAL,
     list_id INTEGER REFERENCES recipelists (id) ON DELETE CASCADE,
-    recipe_id INTEGER REFERENCES recipes (id)
+    recipe_id INTEGER REFERENCES recipes (id),
+    UNIQUE (list_id, recipe_id)
 );
 
 INSERT INTO recipelists_recipes

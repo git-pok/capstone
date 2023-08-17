@@ -133,7 +133,8 @@ CREATE TABLE recipelists (
 CREATE TABLE recipelists_recipes (
     user_id INTEGER REFERENCES users (id) ON DELETE CASCADE,
     recipe_id INTEGER REFERENCES recipes (id),
-    list_id INTEGER REFERENCES recipelists (id) ON DELETE CASCADE
+    list_id INTEGER REFERENCES recipelists (id) ON DELETE CASCADE,
+    UNIQUE (list_id, recipe_id)
 );
 
 
