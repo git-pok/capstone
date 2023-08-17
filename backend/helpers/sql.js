@@ -371,7 +371,6 @@ async function rowExists (searchFor, columnSelStr, tableName, clmnsNvalsArr) {
         const finalsql = [selectSql.join(" "), whereSql.join(" ")];
         // Define final sql string.
         const finalSqlStr = finalsql.join(" ");
-        console.log("ROW EXISTS finalSqlStr", finalSqlStr, values);
         // Make request to database.
         const pgReq = await db.query(
             `${finalSqlStr}`, values

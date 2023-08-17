@@ -520,6 +520,7 @@ router.get("/:id/recipes", isLoggedIn, async (req, res, next) => {
 router.post("/:id/recipes", isLoggedIn, async (req, res, next) => {
     try {
         const { id: user_id } = req.params;
+        await rowExists("user", "id", "users", [["id", +user_id]]);
         const { recipe_name } = req.body;
         const data = { user_id: +user_id, recipe_name };
         const returnClmns = ["id"];
@@ -553,17 +554,16 @@ router.get("/:user_id/recipes/:id", isLoggedIn, async (req, res, next) => {
  * route type: POST
  * Authorization: logged in
  * Adds ingredient to user's recipe.
- * Returns user recipe.
+ * Returns user recipe with ingredients.
  */
 router.post("/:user_id/recipes/:id", isLoggedIn, async (req, res, next) => {
     try {
         const { user_id, id: user_recipe_id } = req.params;
+        await rowExists("user recipe", "id", "user_recipes", [["user_id", +user_id], ["id", +user_recipe_id]]);
         const { qty, unit_id, ingredient_id } = req.body;
         const data = { user_recipe_id: +user_recipe_id, qty, unit_id, ingredient_id };
         const returnClmns = ["id"];
-        console.log("+user_recipe_id", +user_recipe_id);
         const listRes = await User.insertRow("user_recipes_ingredients", data, recipeIngrdtsSchema, returnClmns);
-        // console.log("listRes", listRes);
         const { id: listId } = listRes.rows[0];
         const list = await User.recipe(+user_id, +user_recipe_id);
         return res.status(201).json(list);
@@ -574,9 +574,9 @@ router.post("/:user_id/recipes/:id", isLoggedIn, async (req, res, next) => {
 
 /**
  * "/:user_id/recipes/:id"
- * Deletes user recipe ingredient.
  * route type: DELETE
  * Authorization: logged in
+ * Deletes user recipe ingredient.
  * Returns deleted message.
  */
 router.delete("/:user_id/recipes/:id/:item_id", isLoggedIn, async (req, res, next) => {
@@ -593,15 +593,15 @@ router.delete("/:user_id/recipes/:id/:item_id", isLoggedIn, async (req, res, nex
 
 /**
  * "/:user_id/recipes/:id"
- * Deletes user recipe.
  * route type: DELETE
  * Authorization: logged in
+ * Deletes user recipe.
  * Returns deleted message.
  */
 router.delete("/:user_id/recipes/:id", isLoggedIn, async (req, res, next) => {
     try {
         const { user_id, id } = req.params;
-        const msg = "Deleted recipe from user's recipes!"
+        const msg = "Deleted user's recipe!"
         const clmnNameValObj = { user_id: +user_id, id: +id };
         const deletedMsg = await User.deleteRow("user_recipes", clmnNameValObj, msg);
         return res.status(200).json(deletedMsg);

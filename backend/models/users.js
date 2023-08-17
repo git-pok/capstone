@@ -409,18 +409,18 @@ class User {
 
     /**
      * recipes
-     * Retrives user's recipelists or recipelist with recipes.
-     * Returns array of recipelists/recipelist.
+     * Retrives user's recipes.
+     * Returns array of user's recipes.
      * recipes(id) => [{ id: 2, recipe_name: "dump. tweak", ...}, ...]
      */
-    static async userRecipes (userId, listId = false) {
-        await rowExists("user", "id", "users", [["id", userId]]);
+    static async userRecipes (userId) {
+        await rowExists("user", "id", "users", [["id", +userId]]);
         const selectClmns = ["id", "recipe_name"];
         const listSelStr = genSelectSql(selectClmns, "user_recipes");
-        const whereVals = listId === false ? { user_id: userId } : { user_id: userId, id: listId };
+        const whereVals = { user_id: userId };
         const whereSqlObj = genWhereSqlArr(whereVals, 1, true);
         const selectSql = arrayConcat([listSelStr, whereSqlObj.whereSql]);
-        console.log("selectSql RECIPES FINAL SQL $#$#$#$#$#$#$", selectSql, whereSqlObj.values);
+        // console.log("selectSql RECIPES FINAL SQL $#$#$#$#$#$#$", selectSql, whereSqlObj.values);
         const req = await db.query(`
             ${selectSql}
         `, whereSqlObj.values);
@@ -460,8 +460,8 @@ class User {
      * recipes(id) => [{ id: 2, recipe_name: "dump. tweak", ...}, ...]
      */
     static async recipe (userId, recipeId) {
-        await rowExists("user", "id", "users", [["id", +userId]]);
-        await rowExists("recipe", "id", "user_recipes", [["id", +recipeId]]);
+        // Check if user recipe exists.
+        await rowExists("user recipe", "id", "user_recipes", [["user_id", +userId], ["id", +recipeId]]);
         // Generate recipe name select sql.
         const recpNameSelStr = "SELECT DISTINCT ur.recipe_name FROM user_recipes ur";
         // Generate select columns from recipe ingredients.
@@ -492,12 +492,14 @@ class User {
         const req = await db.query(`
             ${selectSql} ORDER BY ing.ingredient
         `, whereSqlObj.values);
+        console.log("RECIPE req", req.rows);
         // Request recipe name.
         const recpNameReq = await db.query(`
             ${recpNameSelectSql}
         `, rcpNameWhereSqlObj.values);
-        // Destructure recipe_name if exists and empty array if not.
-        const { recipe_name = "" } = recpNameReq.rows[0] || recpNameReq.rows;
+        // Destructure recipe_name.
+        const { recipe_name } = recpNameReq.rows[0];
+        // Retrieve recipe steps.
         const steps = await User.recipeSteps(userId, recipeId);
         const recipeRows = JSON.parse(JSON.stringify(req.rows));
         return { recipe_name, ingredients: recipeRows, steps };
@@ -537,15 +539,13 @@ class User {
             const jsonErrors = isValid.errors.map(error => error.message);
             throw new ExpressError(400, jsonErrors);
         }
-        console.log("data", data);
         const insertSqlObj = returnArray === false
             ? genInsertSqlObj(tableName, data)
             : genInsertSqlObj(tableName, data, returnArray);
         console.log("insertSqlObj", insertSqlObj);
         const insertData = await db.query(`${insertSqlObj.sql}`, insertSqlObj.values);
-        console.log("insertData", insertData);
         const message = msg !== false ? msg : [];
-        return insertData.rows.length ? insertData : message;
+        return msg === false ? insertData : message;
     }
 }
 
