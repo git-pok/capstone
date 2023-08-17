@@ -303,9 +303,32 @@ router.get("/:id/recipelists/:list_id", isLoggedIn, async (req, res, next) => {
 
 /**
  * "/:id/recipelists/:list_id"
- * Deletes recipelist.
+ * Adds recipe to recipelist.
+ * route type: POST
+ * Authorization: logged in
+ * Returns recipelist recipes.
+ */
+router.post("/:id/recipelists/:list_id", isLoggedIn, async (req, res, next) => {
+    try {
+        const { id: user_id, list_id } = req.params;
+        await rowExists("list", "id", "recipelists_recipes", [["list_id", +list_id]]);
+        const { recipe_id } = req.body;
+        const data = { recipe_id: +recipe_id, list_id: +list_id };
+        const returnClmns = ["list_id"];
+        const listRes = await User.insertRow("recipelists_recipes", data, recipeListsRecipesSchema, returnClmns);
+        const { list_id: listId } = listRes.rows[0];
+        const list = await User.getListRecipes(+user_id, +listId);
+        return res.status(201).json(list);
+    } catch (err) {
+        return next(err);
+    }
+});
+
+/**
+ * "/:id/recipelists/:list_id"
  * route type: DELETE
  * Authorization: logged in
+ * Deletes recipelist.
  * Returns deleted message.
  */
 router.delete("/:id/recipelists/:list_id", isLoggedIn, async (req, res, next) => {
@@ -334,29 +357,6 @@ router.get("/:id/recipelists/:list_id/:recipe_id", isLoggedIn, async (req, res, 
         const recipe = await User.getListRecipes(+id, +list_id, +recipe_id);
         return res.status(200).json([recipe]);
     } catch(err) {
-        return next(err);
-    }
-});
-
-/**
- * "/:id/recipelists/:list_id"
- * Adds recipe to recipelist.
- * route type: POST
- * Authorization: logged in
- * Returns recipelist recipes.
- */
-router.post("/:id/recipelists/:list_id", isLoggedIn, async (req, res, next) => {
-    try {
-        const { id: user_id, list_id } = req.params;
-        await rowExists("list", "id", "recipelists_recipes", [["list_id", +list_id]]);
-        const { recipe_id } = req.body;
-        const data = { recipe_id: +recipe_id, list_id: +list_id };
-        const returnClmns = ["list_id"];
-        const listRes = await User.insertRow("recipelists_recipes", data, recipeListsRecipesSchema, returnClmns);
-        const { list_id: listId } = listRes.rows[0];
-        const list = await User.getListRecipes(+user_id, +listId);
-        return res.status(201).json(list);
-    } catch (err) {
         return next(err);
     }
 });
@@ -419,10 +419,45 @@ router.post("/:id/shoppinglists", isLoggedIn, async (req, res, next) => {
 });
 
 /**
+ * "/:id/shoppinglists/:list_id"
+ * route type: GET
+ * Authorization: logged in
+ * Returns shoppinglist items.
+ */
+router.get("/:id/shoppinglists/:list_id", isLoggedIn, async (req, res, next) => {
+    try {
+        const { id, list_id } = req.params;
+        const lists = await User.shopListsItems(id, list_id);
+        return res.status(200).json(lists);
+    } catch(err) {
+        return next(err);
+    }
+});
+
+/**
+ * "/:id/shoppinglists/:list_id"
+ * route type: DELETE
+ * Authorization: logged in
+ * Deletes shoppinglist.
+ * Returns deleted message.
+ */
+router.delete("/:id/shoppinglists/:list_id", isLoggedIn, async (req, res, next) => {
+    try {
+        const { id: user_id, list_id } = req.params;
+        const msg = "Deleted shoppinglist!"
+        const clmnNameValObj = { user_id: +user_id, id: +list_id };
+        const deletedMsg = await User.deleteRow("shoppinglists", clmnNameValObj, msg);
+        return res.status(200).json(deletedMsg);
+    } catch (err) {
+        return next(err);
+    }
+});
+
+/**
  * "/:id/shoppinglists/:list_id/items"
  * route type: POST
  * Authorization: logged in
- * Add items to shoppinglist.
+ * Adds items to shoppinglist.
  * Returns shoppinglist.
  */
 router.post("/:id/shoppinglists/:list_id/items", isLoggedIn, async (req, res, next) => {
@@ -453,41 +488,6 @@ router.delete("/:id/shoppinglists/:list_id/items", isLoggedIn, async (req, res, 
         const msg = "Deleted item from shoppinglist!"
         const clmnNameValObj = { id: +item_id };
         const deletedMsg = await User.deleteRow("shoppinglists_items", clmnNameValObj, msg);
-        return res.status(200).json(deletedMsg);
-    } catch (err) {
-        return next(err);
-    }
-});
-
-/**
- * "/:id/shoppinglists/:list_id"
- * route type: GET
- * Authorization: logged in
- * Returns shoppinglist items.
- */
-router.get("/:id/shoppinglists/:list_id", isLoggedIn, async (req, res, next) => {
-    try {
-        const { id, list_id } = req.params;
-        const lists = await User.shopListsItems(id, list_id);
-        return res.status(200).json(lists);
-    } catch(err) {
-        return next(err);
-    }
-});
-
-/**
- * "/:id/shoppinglists/:list_id"
- * route type: DELETE
- * Authorization: logged in
- * Deletes shoppinglist.
- * Returns deleted message.
- */
-router.delete("/:id/shoppinglists/:list_id", isLoggedIn, async (req, res, next) => {
-    try {
-        const { id: user_id, list_id } = req.params;
-        const msg = "Deleted shoppinglist!"
-        const clmnNameValObj = { user_id: +user_id, id: +list_id };
-        const deletedMsg = await User.deleteRow("shoppinglists", clmnNameValObj, msg);
         return res.status(200).json(deletedMsg);
     } catch (err) {
         return next(err);
@@ -576,15 +576,15 @@ router.post("/:user_id/recipes/:id", isLoggedIn, async (req, res, next) => {
  * "/:user_id/recipes/:id"
  * route type: DELETE
  * Authorization: logged in
- * Deletes user recipe ingredient.
+ * Deletes user recipe.
  * Returns deleted message.
  */
-router.delete("/:user_id/recipes/:id/:item_id", isLoggedIn, async (req, res, next) => {
+router.delete("/:user_id/recipes/:id", isLoggedIn, async (req, res, next) => {
     try {
-        const { item_id } = req.params;
-        const msg = "Deleted ingredient from user's recipe!"
-        const clmnNameValObj = { id: +item_id };
-        const deletedMsg = await User.deleteRow("user_recipes_ingredients", clmnNameValObj, msg);
+        const { user_id, id } = req.params;
+        const msg = "Deleted user's recipe!"
+        const clmnNameValObj = { user_id: +user_id, id: +id };
+        const deletedMsg = await User.deleteRow("user_recipes", clmnNameValObj, msg);
         return res.status(200).json(deletedMsg);
     } catch (err) {
         return next(err);
@@ -595,15 +595,15 @@ router.delete("/:user_id/recipes/:id/:item_id", isLoggedIn, async (req, res, nex
  * "/:user_id/recipes/:id"
  * route type: DELETE
  * Authorization: logged in
- * Deletes user recipe.
+ * Deletes user recipe ingredient.
  * Returns deleted message.
  */
-router.delete("/:user_id/recipes/:id", isLoggedIn, async (req, res, next) => {
+router.delete("/:user_id/recipes/:id/:item_id", isLoggedIn, async (req, res, next) => {
     try {
-        const { user_id, id } = req.params;
-        const msg = "Deleted user's recipe!"
-        const clmnNameValObj = { user_id: +user_id, id: +id };
-        const deletedMsg = await User.deleteRow("user_recipes", clmnNameValObj, msg);
+        const { item_id } = req.params;
+        const msg = "Deleted ingredient from user's recipe!"
+        const clmnNameValObj = { id: +item_id };
+        const deletedMsg = await User.deleteRow("user_recipes_ingredients", clmnNameValObj, msg);
         return res.status(200).json(deletedMsg);
     } catch (err) {
         return next(err);
