@@ -1,9 +1,6 @@
 DROP DATABASE IF EXISTS savour;
 CREATE DATABASE savour;
 \c savour
--- DROP DATABASE IF EXISTS savour_test;
--- CREATE DATABASE savour_test;
--- \c savour_test
 
 
 

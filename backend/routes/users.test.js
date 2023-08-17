@@ -109,12 +109,6 @@ describe("/POST /users/register", () => {
             });
         expect(req.statusCode).toBe(400);
     });
-
-    // test("error for is_admin", async () => {
-    //     const req = await request(app).get(`/recipes/${5}`)
-    //         .set("_token", `Bearer`);
-    //     expect(req.statusCode).toBe(400);
-    // });
 });
 
 describe("/POST /users/login", () => {
@@ -307,6 +301,60 @@ describe("/GET /users/:id/favorite-recipes", () => {
 
     test("400 error for not logged in user", async () => {
         const req = await request(app).get(`/users/${usr2IdTest + 1}/favorite-recipes`)
+        expect(req.statusCode).toBe(400);
+    });
+});
+
+describe("/POST /users/:id/favorite-recipes", () => {
+    test("favorite a recipe", async () => {
+		const favReq = await db.query(`
+			SELECT * FROM favorite_recipes WHERE user_id = $1
+			AND recipe_id = $2`,
+			[usr1IdTest, 1000]
+		);
+		expect(favReq.rows.length).toEqual(0);
+        const req = await request(app).post(`/users/${usr1IdTest}/favorite-recipes`)
+            .send({
+                "recipe_id": 1000
+            })
+			.set("_token", `Bearer ${usr1TokenTest}`);
+        expect(req.statusCode).toBe(201);
+        expect(req.body).toEqual("Favorited recipe!");
+		const postFavReq = await db.query(`
+			SELECT * FROM favorite_recipes WHERE user_id = $1
+			AND recipe_id = $2`,
+			[usr1IdTest, 1000]
+		);
+		expect(postFavReq.rows.length).toEqual(1);
+    });
+
+	test("400 error for invalid schema", async () => {
+		const favReq = await db.query(`
+			SELECT * FROM favorite_recipes WHERE user_id = $1
+			AND recipe_id = $2`,
+			[usr1IdTest, 1000]
+		);
+		expect(favReq.rows.length).toEqual(0);
+        const req = await request(app).post(`/users/${usr1IdTest}/favorite-recipes`)
+            .send({
+                "recipe_id": "1000"
+            })
+			.set("_token", `Bearer ${usr1TokenTest}`);
+        expect(req.statusCode).toBe(400);
+    });
+
+	test("400 error for logged out user", async () => {
+		const favReq = await db.query(`
+			SELECT * FROM favorite_recipes WHERE user_id = $1
+			AND recipe_id = $2`,
+			[usr1IdTest, 1000]
+		);
+		expect(favReq.rows.length).toEqual(0);
+        const req = await request(app).post(`/users/${usr1IdTest}/favorite-recipes`)
+            .send({
+                "recipe_id": 1000
+            })
+			.set("_token", `Bearer `);
         expect(req.statusCode).toBe(400);
     });
 });
@@ -511,6 +559,38 @@ describe("/GET /users/:id/favorite-recipes/:recipe_id", () => {
     });
 });
 
+describe("/DELETE /users/:id/favorite-recipes/:recipe_id", () => {
+    test("delete recipe from user's favorite recipes", async () => {
+        const favReq = await db.query(`
+			SELECT * FROM favorite_recipes WHERE user_id = $1
+			AND recipe_id = $2`,
+			[usr1IdTest, 6]
+		);
+		expect(favReq.rows.length).toEqual(1);
+		const req = await request(app).delete(`/users/${usr1IdTest}/favorite-recipes/${6}`)
+            .set("_token", `Bearer ${usr1TokenTest}`);
+        expect(req.statusCode).toBe(200);
+		const postFavReq = await db.query(`
+			SELECT * FROM favorite_recipes WHERE user_id = $1
+			AND recipe_id = $2`,
+			[usr1IdTest, 6]
+		);
+		expect(postFavReq.rows.length).toEqual(0);
+	});
+
+	test("404 error for delete recipe that doesn't exist", async () => {
+        const favReq = await db.query(`
+			SELECT * FROM favorite_recipes WHERE user_id = $1
+			AND recipe_id = $2`,
+			[usr1IdTest, 200]
+		);
+		expect(favReq.rows.length).toEqual(0);
+		const req = await request(app).delete(`/users/${usr1IdTest}/favorite-recipes/${200}`)
+            .set("_token", `Bearer ${usr1TokenTest}`);
+        expect(req.statusCode).toBe(404);
+	});
+});
+
 describe("/GET /users/:id/saved-recipes", () => {
     test("get user's saved recipes", async () => {
         const req = await request(app).get(`/users/${usr1IdTest}/saved-recipes`)
@@ -562,6 +642,61 @@ describe("/GET /users/:id/saved-recipes", () => {
 
     test("400 error for not logged in user", async () => {
         const req = await request(app).get(`/users/${usr1IdTest}/saved-recipes`)
+        expect(req.statusCode).toBe(400);
+    });
+});
+
+
+describe("/POST /users/:id/saved-recipes", () => {
+    test("save a recipe", async () => {
+		const savReq = await db.query(`
+			SELECT * FROM saved_recipes WHERE user_id = $1
+			AND recipe_id = $2`,
+			[usr1IdTest, 1000]
+		);
+		expect(savReq.rows.length).toEqual(0);
+        const req = await request(app).post(`/users/${usr1IdTest}/saved-recipes`)
+            .send({
+                "recipe_id": 1000
+            })
+			.set("_token", `Bearer ${usr1TokenTest}`);
+        expect(req.statusCode).toBe(201);
+        expect(req.body).toEqual("Saved recipe!");
+		const postSavReq = await db.query(`
+			SELECT * FROM saved_recipes WHERE user_id = $1
+			AND recipe_id = $2`,
+			[usr1IdTest, 1000]
+		);
+		expect(postSavReq.rows.length).toEqual(1);
+    });
+
+	test("400 error for invalid schema", async () => {
+		const savReq = await db.query(`
+			SELECT * FROM saved_recipes WHERE user_id = $1
+			AND recipe_id = $2`,
+			[usr1IdTest, 1000]
+		);
+		expect(savReq.rows.length).toEqual(0);
+        const req = await request(app).post(`/users/${usr1IdTest}/saved-recipes`)
+            .send({
+                "recipe_id": "1000"
+            })
+			.set("_token", `Bearer ${usr1TokenTest}`);
+        expect(req.statusCode).toBe(400);
+    });
+
+	test("400 error for logged out user", async () => {
+		const savReq = await db.query(`
+			SELECT * FROM saved_recipes WHERE user_id = $1
+			AND recipe_id = $2`,
+			[usr1IdTest, 1000]
+		);
+		expect(savReq.rows.length).toEqual(0);
+        const req = await request(app).post(`/users/${usr1IdTest}/saved-recipes`)
+            .send({
+                "recipe_id": 1000
+            })
+			.set("_token", `Bearer `);
         expect(req.statusCode).toBe(400);
     });
 });
@@ -634,6 +769,45 @@ describe("/GET /users/:id/saved-recipes/:recipe_id", () => {
         expect(req.statusCode).toBe(404);
     });
 });
+
+describe("/DELETE /:id/saved-recipes/:recipe_id", () => {
+    test("delete recipe from user's saved recipes", async () => {
+        const savReq = await db.query(`
+			SELECT * FROM saved_recipes WHERE user_id = $1
+			AND recipe_id = $2`,
+			[usr1IdTest, 300]
+		);
+		expect(savReq.rows.length).toEqual(1);
+		const req = await request(app).delete(`/users/${usr1IdTest}/saved-recipes/${300}`)
+            .set("_token", `Bearer ${usr1TokenTest}`);
+        expect(req.statusCode).toBe(200);
+		const postSavReq = await db.query(`
+			SELECT * FROM saved_recipes WHERE user_id = $1
+			AND recipe_id = $2`,
+			[usr1IdTest, 300]
+		);
+		expect(postSavReq.rows.length).toEqual(0);
+	});
+
+	test("404 error for delete recipe that doesn't exist", async () => {
+        const savReq = await db.query(`
+			SELECT * FROM saved_recipes WHERE user_id = $1
+			AND recipe_id = $2`,
+			[usr1IdTest, 500]
+		);
+		expect(savReq.rows.length).toEqual(0);
+		const req = await request(app).delete(`/users/${usr1IdTest}/saved-recipes/${500}`)
+            .set("_token", `Bearer ${usr1TokenTest}`);
+        expect(req.statusCode).toBe(404);
+	});
+
+	test("400 error for logged out user", async () => {
+		const req = await request(app).delete(`/users/${usr1IdTest}/saved-recipes/${500}`)
+            .set("_token", `Bearer`);
+        expect(req.statusCode).toBe(400);
+	});
+});
+
 
 describe("/GET /users/:id/recipelists", () => {
     test("get user's recipelists", async () => {

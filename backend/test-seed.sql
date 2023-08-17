@@ -26538,6 +26538,13 @@ VALUES
 
 
 
+
+
+
+
+
+
+
 CREATE TABLE users (
     id SERIAL PRIMARY KEY,
     username VARCHAR (30) UNIQUE NOT NULL,
@@ -26551,6 +26558,20 @@ CREATE TABLE users (
     password TEXT NOT NULL
 );
 
+INSERT INTO users
+    (username, first_name, last_name, email, header_img, profile_img, password)
+VALUES
+    ('fv', 'fvin', 'trill', 'trill@gmail.com', 'headerImage', 'profileImg', 'password1'),
+    ('kz', 'knex', 'oz', 'nx@gmail.com', 'headerImage', 'profileImg', 'password2'),
+    ('nyx', 'onyx', 'oz', 'noz@gmail.com', 'headerImage', 'profileImg', 'password3'),
+    ('kal', 'kali', 'oz', 'koz@gmail.com', 'headerImage', 'profileImg', 'password4'),
+    ('dre', 'dremon', 'green', 'dre@gmail.com', 'headerImage', 'profileImg', 'password5'),
+    ('kd', 'koy', 'dred', 'kd@gmail.com', 'headerImage', 'profileImg', 'password6'),
+    ('rasta', 'rasto', 'loc', 'rasta@gmail.com', 'headerImage', 'profileImg', 'password7'),
+    ('rell', 'latrell', 'green', 'lg@gmail.com', 'headerImage', 'profileImg', 'password8'),
+    ('sky', 'sky', 'fila', 'skyfila@gmail.com', 'headerImage', 'profileImg', 'password9'),
+    ('bz', 'biz', 'droso', 'bz@gmail.com', 'headerImage', 'profileImg', 'password10'),
+    ('lex', 'xel', 'lucas', 'lex@gmail.com', 'headerImage', 'profileImg', 'password11');
 
 CREATE TABLE disliked_recipes (
     user_id INTEGER REFERENCES users (id) ON DELETE CASCADE,
@@ -26564,12 +26585,21 @@ CREATE TABLE liked_recipes (
     PRIMARY KEY (user_id, recipe_id)
 );
 
+INSERT INTO liked_recipes
+  (user_id, recipe_id)
+VALUES
+  (1, 1684), (2, 1684), (3, 1684);
 
 CREATE TABLE favorite_recipes (
     user_id INTEGER REFERENCES users (id) ON DELETE CASCADE,
     recipe_id INTEGER REFERENCES recipes (id) ON DELETE CASCADE,
     PRIMARY KEY (user_id, recipe_id)
 );
+
+INSERT INTO favorite_recipes 
+  (user_id, recipe_id)
+VALUES
+  (11, 5), (11, 13), (11, 57), (11, 53);
 
 
 CREATE TABLE saved_recipes (
@@ -26578,6 +26608,10 @@ CREATE TABLE saved_recipes (
     PRIMARY KEY (user_id, recipe_id)
 );
 
+INSERT INTO saved_recipes 
+  (user_id, recipe_id)
+VALUES
+  (6, 100), (6, 120), (6, 14), (6, 63);
 
 CREATE TABLE occasions (
     id SERIAL PRIMARY KEY,
@@ -26591,12 +26625,12 @@ VALUES
   ('get together'), ('birthday'),
   ('date'), ('meal prep');
 
-
 CREATE TABLE recipelists (
     id SERIAL PRIMARY KEY,
     user_id INTEGER REFERENCES users (id) ON DELETE CASCADE,
     occasion_id INTEGER REFERENCES occasions (id),
-    list_name VARCHAR (30) NOT NULL
+    list_name VARCHAR (30) NOT NULL,
+    UNIQUE (user_id, list_name)
 );
 
 
@@ -26604,7 +26638,8 @@ CREATE TABLE recipelists_recipes (
     -- user_id INTEGER REFERENCES users (id) ON DELETE CASCADE,
     id SERIAL,
     list_id INTEGER REFERENCES recipelists (id) ON DELETE CASCADE,
-    recipe_id INTEGER REFERENCES recipes (id)
+    recipe_id INTEGER REFERENCES recipes (id),
+    UNIQUE (list_id, recipe_id)
 );
 
 
@@ -26642,13 +26677,12 @@ CREATE TABLE shoppinglists_items (
     ingredient_id INTEGER REFERENCES ingredients (id)
 );
 
-
 CREATE TABLE user_recipes (
     id SERIAL PRIMARY KEY,
     user_id INTEGER REFERENCES users (id) ON DELETE CASCADE,
-    recipe_name VARCHAR (121) NOT NULL
+    recipe_name VARCHAR (121) NOT NULL,
+    UNIQUE (user_id, recipe_name)
 );
-
 
 CREATE TABLE user_recipes_ingredients (
     id SERIAL PRIMARY KEY,
@@ -26657,7 +26691,6 @@ CREATE TABLE user_recipes_ingredients (
     unit_id INTEGER REFERENCES units (id),
     ingredient_id INTEGER REFERENCES ingredients (id)
 );
-
 
 CREATE TABLE user_recipes_steps (
     id SERIAL PRIMARY KEY,

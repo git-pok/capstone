@@ -578,15 +578,15 @@ describe("User.shopListsItems", () => {
 				"items": [
 					{
 						"id": expect.any(Number),
-						"ingredient": "boneless, skinless chicken breast",
 						"qty": 20,
-						"unit": "oz"
+						"unit": "oz",
+						"ingredient": "boneless, skinless chicken breast"
 					},
 					{
 						"id": expect.any(Number),
-						"ingredient": "garlic granules",
 						"qty": 3,
-						"unit": "tbsp"
+						"unit": "tbsp",
+						"ingredient": "garlic granules"
 					}
 				]
 			}
