@@ -3,7 +3,7 @@ const request = require("supertest");
 const app = require("../app.js");
 const { db } = require("../config.js");
 const ExpressError = require("../models/error.js");
-const { genTestUsers } = require("./_test-data.js");
+const { genTestUsers } = require("../test-data/_test-data.js");
 
 let usr1Test;
 let usr2Test;
@@ -121,7 +121,7 @@ describe("/GET /recipes/:id", () => {
         }]);
     });
 
-    test("400 error for non logged in user", async () => {
+    test("400 error for logged out user", async () => {
         const req = await request(app).get(`/recipes/${5}`)
             .set("_token", `Bearer`);
         expect(req.statusCode).toBe(400);
@@ -181,7 +181,7 @@ describe("/GET /recipes", () => {
         expect(req.body[0]["disliked_user_ids"]).toEqual(expect.any(Array));
     });
 
-    test("400 error for non logged in user", async () => {
+    test("400 error for logged out user", async () => {
         const req = await request(app).get("/recipes")
             .set("_token", `Bearer`)
             .query({ orderBy: "rating", chronOrder: "desc" });

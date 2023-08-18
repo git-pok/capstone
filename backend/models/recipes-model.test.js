@@ -4,7 +4,7 @@ const app = require("../app.js");
 const { db } = require("../config.js");
 const ExpressError = require("./error.js");
 const Recipe = require("./recipes.js");
-const { genTestUsers } = require("../routes/_test-data.js");
+const { genTestUsers } = require("../test-data/_test-data.js");
 
 
 let usr1Test;

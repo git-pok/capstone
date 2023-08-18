@@ -3,7 +3,7 @@ const request = require("supertest");
 const app = require("../app.js");
 const { db } = require("../config.js");
 const ExpressError = require("../models/error.js");
-const { genTestUsers } = require("./_test-data.js");
+const { genTestUsers } = require("../test-data/_test-data.js");
 
 let usr1Test;
 let usr2Test;
