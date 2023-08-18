@@ -379,6 +379,7 @@ async function rowExists (searchFor, columnSelStr, tableName, clmnsNvalsArr) {
         const isExist = pgReq.rows.length;
         // If not throw error.
         if (!isExist) throw new ExpressError(404, `${searchFor} not found!`);
+        else return pgReq.rows;
     } catch(err) {
         const errMsg = err.msg ? err.msg : "Error!";
         const statusCode = err.status ? err.status : 400;

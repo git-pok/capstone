@@ -2,6 +2,7 @@ const express = require("express");
 const ExpressError = require("./models/error.js");
 const userRoutes = require("./routes/users.js");
 const recipeRoutes = require("./routes/recipes.js");
+const ingrdtRoutes = require("./routes/ingredients.js");
 const { authenticateToken } = require("./middleware/auth.js");
 
 const app = express();
@@ -10,6 +11,7 @@ app.use(express.json());
 app.use(authenticateToken);
 app.use("/users", userRoutes);
 app.use("/recipes", recipeRoutes);
+app.use("/ingredients", ingrdtRoutes);
 
 /**
  * "/"

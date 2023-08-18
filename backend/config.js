@@ -194,7 +194,8 @@ const sqlOperator = {
     user_recipe_id: "=",
     ingredient_id: "=",
     unit_id: "=",
-    occasion_id: "="
+    occasion_id: "=",
+    ingredient: "ILIKE"
 };
 
 
@@ -225,7 +226,8 @@ const sqlOperatorStrict = {
     user_recipe_id: "=",
     ingredient_id: "=",
     unit_id: "=",
-    occasion_id: "="
+    occasion_id: "=",
+    ingredient: "="
 };
 
 
