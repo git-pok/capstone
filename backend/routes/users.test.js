@@ -16,15 +16,21 @@ let listId2Test;
 let listId3Test;
 let shopList1IdTest;
 let shopList2IdTest;
+let list1ItemIdTest;
+let list1Item2IdTest;
 let user1RecipeIdTest;
 let user2RecipeIdTest;
+let user1RecipeIngrdIdTest;
+let user1RecipeIngrd2IdTest;
 
 beforeEach(async () => {
     const { 
         usr1, usr1Token, usr2, usr2Token,
         usr1Id, usr2Id, listId1, listId2,
         listId3, shopList1Id, shopList2Id,
-        user1RecipeId, user2RecipeId
+        list1ItemId, list1Item2Id, user1RecipeId,
+		user2RecipeId, user1RecipeIngrdId,
+		user1RecipeIngrd2Id
     } = await genTestUsers();
     usr1Test = {...usr1};
     usr2Test = {...usr2};
@@ -39,6 +45,10 @@ beforeEach(async () => {
     shopList2IdTest = shopList2Id;
     user1RecipeIdTest = user1RecipeId;
     user2RecipeIdTest = user2RecipeId;
+	list1ItemIdTest = list1ItemId;
+	list1Item2IdTest = list1Item2Id;
+	user1RecipeIngrdIdTest = user1RecipeIngrdId;
+	user1RecipeIngrd2IdTest = user1RecipeIngrd2Id;
 });
 
 afterEach(async () => {
@@ -1212,7 +1222,57 @@ describe("/GET /users/:id/shoppinglists", () => {
     });
 });
 
-// Write tests for POST /:id/shoppinglists
+
+describe("/POST /users/:id/shoppinglists", () => {
+    test("create a shoppinglist", async () => {
+        const req = await request(app).post(`/users/${usr1IdTest}/shoppinglists`)
+            .send({
+                "recipe_id": 5,
+				"list_name": "Test Shoppinglist"
+            })
+			.set("_token", `Bearer ${usr1TokenTest}`);
+        expect(req.statusCode).toBe(201);
+        expect(req.body).toEqual([
+			{
+				"id": expect.any(Number),
+				"list_name": "Test Shoppinglist"
+			},
+			{
+				"id": expect.any(Number),
+				"list_name": "User 1 Shoplist for Recipe 120"
+			}
+		]);
+    });
+
+	test("400 error for invalid schema", async () => {
+        const req = await request(app).post(`/users/${usr1IdTest}/shoppinglists`)
+            .send({
+				"recipe_id": "5",
+            })
+			.set("_token", `Bearer ${usr1TokenTest}`);
+        expect(req.statusCode).toBe(400);
+    });
+
+	test("404 error for not found user", async () => {
+        const req = await request(app).post(`/users/${usr2IdTest + 1}/shoppinglists`)
+            .send({
+				"recipe_id": 5,
+				"list_name": "Test Shoppinglist"
+            })
+			.set("_token", `Bearer ${usr1TokenTest}`);
+        expect(req.statusCode).toBe(404);
+    });
+
+	test("400 error for logged out user", async () => {
+        const req = await request(app).post(`/users/${usr1IdTest}/shoppinglists`)
+            .send({
+				"recipe_id": 5,
+				"list_name": "Test Shoppinglist"
+            })
+			.set("_token", `Bearer`);
+        expect(req.statusCode).toBe(400);
+    });
+});
 
 describe("/GET /users/:id/shoppinglists/:list_id", () => {
     test("get user 1 shoppinglist", async () => {
@@ -1276,10 +1336,162 @@ describe("/GET /users/:id/shoppinglists/:list_id", () => {
     });
 });
 
-// Write tests for DELETE /:id/shoppinglists/:list_id
-// Write tests for POST /:id/shoppinglists/:list_id/items
-// Write tests for DELETE /:id/shoppinglists/:list_id/items
 
+describe("/DELETE /:id/shoppinglists/:list_id", () => {
+    test("delete shoppinglist", async () => {
+		const req = await request(app).delete(`/users/${usr1IdTest}/shoppinglists/${shopList1IdTest}`)
+            .set("_token", `Bearer ${usr1TokenTest}`);
+        expect(req.statusCode).toBe(200);
+		expect(req.body).toEqual({
+			message: "Deleted shoppinglist!"
+		});
+	});
+
+	test("404 error for not found list", async () => {
+		const req = await request(app).delete(`/users/${usr1IdTest}/shoppinglists/${shopList2IdTest}`)
+            .set("_token", `Bearer ${usr1TokenTest}`);
+        expect(req.statusCode).toBe(404);
+	});
+
+	test("400 error for logged out user", async () => {
+		const req = await request(app).delete(`/users/${usr1IdTest}/shoppinglists/${shopList2IdTest}`)
+            .set("_token", `Bearer`);
+        expect(req.statusCode).toBe(400);
+	});
+});
+
+
+describe("/POST /:id/shoppinglists/:list_id/items", () => {
+    test("create a shoppinglist", async () => {
+        const req = await request(app).post(`/users/${usr1IdTest}/shoppinglists/${shopList1IdTest}/items`)
+            .send({
+				"qty": 1,
+                "unit_id": 6,
+				"ingredient_id": 135
+            })
+			.set("_token", `Bearer ${usr1TokenTest}`);
+        expect(req.statusCode).toBe(201);
+        expect(req.body).toEqual({
+			"list_name": "User 1 Shoplist for Recipe 120",
+			"recipe_name": "double bean & roasted pepper chilli",
+			"recipe_author": "sarah cook",
+			"items": [
+				{
+					"id": expect.any(Number),
+					"qty": 20,
+					"unit": "oz",
+					"ingredient": "boneless, skinless chicken breast"
+				},
+				{
+					"id": expect.any(Number),
+					"qty": 3,
+					"unit": "tbsp",
+					"ingredient": "garlic granules"
+				},
+				{
+					"id": expect.any(Number),
+					"qty": 1,
+					"unit": "kg",
+					"ingredient": "clear honey"
+				}
+			]
+		});
+    });
+
+	test("400 error for invalid schema", async () => {
+        const req = await request(app).post(`/users/${usr1IdTest}/shoppinglists/${shopList1IdTest}/items`)
+            .send({
+                "unit_id": 6,
+				"ingredient_id": 135
+            })
+			.set("_token", `Bearer ${usr1TokenTest}`);
+        expect(req.statusCode).toBe(400);
+    });
+
+	test("404 error for not found user", async () => {
+        const req = await request(app).post(`/users/${usr2IdTest + 1}/shoppinglists/${shopList1IdTest}/items`)
+            .send({
+				"qty": 1,
+                "unit_id": 6,
+				"ingredient_id": 135
+            })
+			.set("_token", `Bearer ${usr1TokenTest}`);
+        expect(req.statusCode).toBe(404);
+    });
+
+	test("404 error for not found shoppinglist", async () => {
+        const req = await request(app).post(`/users/${usr2IdTest}/shoppinglists/${shopList2IdTest + 1}/items`)
+            .send({
+				"qty": 1,
+                "unit_id": 6,
+				"ingredient_id": 135
+            })
+			.set("_token", `Bearer ${usr1TokenTest}`);
+        expect(req.statusCode).toBe(404);
+    });
+
+	test("400 error for logged out user", async () => {
+        const req = await request(app).post(`/users/${usr2IdTest}/shoppinglists/${shopList2IdTest + 1}/items`)
+            .send({
+				"qty": 1,
+                "unit_id": 6,
+				"ingredient_id": 135
+            })
+			.set("_token", `Bearer`);
+        expect(req.statusCode).toBe(400);
+    });
+});
+
+
+describe("/DELETE /:id/shoppinglists/:list_id/items", () => {
+    test("delete shoppinglist item", async () => {
+		const req = await request(app).delete(`/users/${usr1IdTest}/shoppinglists/${shopList1IdTest}/items`)
+			.send({
+				"item_id": list1ItemIdTest
+			})
+            .set("_token", `Bearer ${usr1TokenTest}`);
+        expect(req.statusCode).toBe(200);
+		expect(req.body).toEqual({
+			message: "Deleted item from shoppinglist!"
+		});
+	});
+
+	test("404 error for not found list", async () => {
+		const req = await request(app).delete(`/users/${usr1IdTest}/shoppinglists/${shopList2IdTest}/items`)
+        .send({
+			"item_id": list1ItemIdTest
+		})    
+		.set("_token", `Bearer ${usr1TokenTest}`);
+        expect(req.statusCode).toBe(404);
+	});
+
+	test("404 error for not found list item", async () => {
+		const req = await request(app).delete(`/users/${usr1IdTest}/shoppinglists/${shopList1IdTest}/items`)
+        .send({
+			"item_id": list1ItemIdTest + list1Item2IdTest
+		})    
+		.set("_token", `Bearer ${usr1TokenTest}`);
+        expect(req.statusCode).toBe(404);
+	});
+
+	test("404 error for not found user", async () => {
+		const req = await request(app).delete(`/users/${usr2IdTest + 1}/shoppinglists/${shopList1IdTest}/items`)
+        .send({
+			"item_id": list1ItemIdTest
+		})
+		.set("_token", `Bearer ${usr1TokenTest}`);
+        expect(req.statusCode).toBe(404);
+	});
+
+	test("400 error for invalid schema", async () => {
+		const req = await request(app).delete(`/users/${usr1IdTest}/shoppinglists/${shopList1IdTest}/items`)
+        .send({
+			"itemId": list1ItemIdTest
+		})
+		.set("_token", `Bearer ${usr1TokenTest}`);
+        expect(req.statusCode).toBe(400);
+	});
+});
 
 describe("/GET /:id/recipes", () => {
     test("get user 1 recipes", async () => {
@@ -1313,7 +1525,50 @@ describe("/GET /:id/recipes", () => {
     });
 });
 
-// Write tests for POST /:id/recipes
+
+describe("/POST /:id/recipes", () => {
+    test("create a user recipe", async () => {
+        const req = await request(app).post(`/users/${usr1IdTest}/recipes`)
+            .send({
+				"recipe_name": "My Twist for Dumplings By Sarah Cook",
+            })
+			.set("_token", `Bearer ${usr1TokenTest}`);
+        expect(req.statusCode).toBe(201);
+        expect(req.body).toEqual({
+			"recipe_name": "My Twist for Dumplings By Sarah Cook",
+			"ingredients": [],
+			"steps": []
+		});
+    });
+
+	test("400 error for invalid schema", async () => {
+        const req = await request(app).post(`/users/${usr1IdTest}/recipes`)
+            .send({
+				"recipeName": "My Twist for Dumplings By Sarah Cook",
+            })
+			.set("_token", `Bearer ${usr1TokenTest}`);
+        expect(req.statusCode).toBe(400);
+    });
+
+	test("404 error for not found user", async () => {
+        const req = await request(app).post(`/users/${usr2IdTest + 1}/recipes`)
+            .send({
+				"recipe_name": "My Twist for Dumplings By Sarah Cook",
+            })
+			.set("_token", `Bearer ${usr1TokenTest}`);
+        expect(req.statusCode).toBe(404);
+    });
+
+	test("400 error for logged out user", async () => {
+        const req = await request(app).post(`/users/${usr1IdTest}/recipes`)
+            .send({
+				"recipe_name": "My Twist for Dumplings By Sarah Cook",
+            })
+			.set("_token", `Bearer`);
+        expect(req.statusCode).toBe(400);
+    });
+});
+
 
 describe("/GET /:user_id/recipes/:id", () => {
     test("get user 1 recipe", async () => {
@@ -1385,7 +1640,137 @@ describe("/GET /:user_id/recipes/:id", () => {
     });
 });
 
-// Write tests for POST /:user_id/recipes/:id
-// Write tests for DELETE /:user_id/recipes/:id
-// Write tests for DELETE /:user_id/recipes/:id/:item_id
-// Write tests for DELETE
+
+describe("/POST /:user_id/recipes/:id", () => {
+    test("add ingredient to user recipe", async () => {
+        const req = await request(app).post(`/users/${usr1IdTest}/recipes/${user1RecipeIdTest}`)
+            .send({
+				"qty": 6,
+  				"unit_id": 12,
+  				"ingredient_id": 300
+            })
+			.set("_token", `Bearer ${usr1TokenTest}`);
+        expect(req.statusCode).toBe(201);
+        expect(req.body).toEqual({
+			"recipe_name": "User 1 Chicken Dumplings Tweak",
+			"ingredients": [
+				{
+					"id": expect.any(Number),
+					"qty": 10,
+					"unit": "oz",
+					"ingredient": "boneless, skinless chicken breast"
+				},
+				{
+					"id": expect.any(Number),
+					"qty": 6,
+					"unit": "c",
+					"ingredient": "brown basmati rice"
+				},
+				{
+					"id": expect.any(Number),
+					"qty": 4,
+					"unit": "tbsp",
+					"ingredient": "garlic granules"
+				}
+			],
+			"steps": [
+				{
+					"step": "User 1 Test Step 1"
+				},
+				{
+					"step": "User 1 Test Step 2"
+				},
+				{
+					"step": "User 1 Test Step 3"
+				}
+			]
+		});
+    });
+
+	test("400 error for invalid schema", async () => {
+        const req = await request(app).post(`/users/${usr1IdTest}/recipes/${user1RecipeIdTest}`)
+            .send({
+				"qty": 6,
+  				"unitId": 12,
+  				"ingredientId": 300
+            })
+			.set("_token", `Bearer ${usr1TokenTest}`);
+        expect(req.statusCode).toBe(400);
+    });
+
+	test("404 error for not found user recipe", async () => {
+        const req = await request(app).post(`/users/${usr1IdTest}/recipes/${user2RecipeIdTest}`)
+            .send({
+				"qty": 6,
+  				"unit_id": 12,
+  				"ingredient_id": 300
+            })
+			.set("_token", `Bearer ${usr1TokenTest}`);
+        expect(req.statusCode).toBe(404);
+    });
+
+	test("400 error for logged out user", async () => {
+        const req = await request(app).post(`/users/${usr1IdTest}/recipes/${user1RecipeIdTest}`)
+            .send({
+				"qty": 6,
+  				"unit_id": 12,
+  				"ingredient_id": 300
+            })
+			.set("_token", `Bearer`);
+        expect(req.statusCode).toBe(400);
+    });
+});
+
+
+describe("/DELETE /:user_id/recipes/:id", () => {
+    test("delete user recipe", async () => {
+		const req = await request(app).delete(`/users/${usr1IdTest}/recipes/${user1RecipeIdTest}`)
+            .set("_token", `Bearer ${usr1TokenTest}`);
+        expect(req.statusCode).toBe(200);
+		expect(req.body).toEqual({
+			message: "Deleted user's recipe!"
+		});
+	});
+
+	test("404 error for not found list", async () => {
+		const req = await request(app).delete(`/users/${usr1IdTest}/recipes/${user2RecipeIdTest + 1}`)
+            .set("_token", `Bearer ${usr1TokenTest}`);
+        expect(req.statusCode).toBe(404);
+	});
+
+	test("404 error for not found user", async () => {
+		const req = await request(app).delete(`/users/${usr2IdTest + 1}/recipes/${user2RecipeIdTest}`)
+            .set("_token", `Bearer ${usr1TokenTest}`);
+        expect(req.statusCode).toBe(404);
+	});
+});
+
+
+describe("/DELETE /:user_id/recipes/:id/:item_id", () => {
+    test("delete user recipe ingredient", async () => {
+		const req = await request(app).delete(`/users/${usr1IdTest}/recipes/${user1RecipeIdTest}/${user1RecipeIngrdIdTest}`)
+            .set("_token", `Bearer ${usr1TokenTest}`);
+        expect(req.statusCode).toBe(200);
+		expect(req.body).toEqual({
+			message: "Deleted ingredient from user's recipe!"
+		});
+	});
+
+	test("404 error for not found recipe, wrong user", async () => {
+		const req = await request(app).delete(`/users/${usr2IdTest}/recipes/${user1RecipeIdTest}/${user1RecipeIngrdIdTest}`)
+            .set("_token", `Bearer ${usr1TokenTest}`);
+        expect(req.statusCode).toBe(404);
+	});
+
+	test("404 error for not found recipe, wrong recipe", async () => {
+		const req = await request(app).delete(`/users/${usr1IdTest}/recipes/${user2RecipeIdTest}/${user1RecipeIngrdIdTest}`)
+            .set("_token", `Bearer ${usr1TokenTest}`);
+        expect(req.statusCode).toBe(404);
+	});
+
+	test("404 error for not found recipe, wrong ingredient", async () => {
+		const req = await request(app).delete(`/users/${usr1IdTest}/recipes/${user1RecipeIdTest}/${user1RecipeIngrdIdTest + user1RecipeIngrd2IdTest}`)
+            .set("_token", `Bearer ${usr1TokenTest}`);
+        expect(req.statusCode).toBe(404);
+	});
+});

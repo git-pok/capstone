@@ -383,9 +383,9 @@ class User {
         const whereVals = listId === false ? { user_id: +userId } : { user_id: +userId, id: +listId };
         const whereSqlObj = genWhereSqlArr(whereVals, 1, true);
         const selectSql = arrayConcat([listSelStr, whereSqlObj.whereSql]);
-        // console.log("selectSql RECIPES FINAL SQL $#$#$#$#$#$#$", selectSql, whereSqlObj.values);
+        // console.log("selectSql RECIPES FINAL SQL $#$#$#$#$#$#$", selectSql, "ORDER BY list_name", whereSqlObj.values);
         const req = await db.query(`
-            ${selectSql}
+            ${selectSql} ORDER BY list_name
         `, whereSqlObj.values);
 
         const recipeRows = req.rows;

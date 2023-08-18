@@ -408,6 +408,7 @@ router.get("/:id/shoppinglists", isLoggedIn, async (req, res, next) => {
 router.post("/:id/shoppinglists", isLoggedIn, async (req, res, next) => {
     try {
         const { id: user_id } = req.params;
+        await rowExists("user", "id", "users", [["id", +user_id]]);
         const { recipe_id, list_name } = req.body;
         const data = { user_id: +user_id, recipe_id: +recipe_id, list_name };
         const returnClmns = ["id"];
@@ -465,6 +466,7 @@ router.delete("/:id/shoppinglists/:list_id", isLoggedIn, async (req, res, next) 
 router.post("/:id/shoppinglists/:list_id/items", isLoggedIn, async (req, res, next) => {
     try {
         const { id: user_id, list_id } = req.params;
+        await rowExists("shoppinglist", "id", "shoppinglists", [["user_id", +user_id], ["id", +list_id]]);
         const { qty, unit_id, ingredient_id } = req.body;
         const data = { list_id: +list_id, qty: qty, unit_id: unit_id, ingredient_id: ingredient_id };
         const returnClmns = ["list_id"];
@@ -486,6 +488,8 @@ router.post("/:id/shoppinglists/:list_id/items", isLoggedIn, async (req, res, ne
  */
 router.delete("/:id/shoppinglists/:list_id/items", isLoggedIn, async (req, res, next) => {
     try {
+        const { id: user_id, list_id } = req.params;
+        await rowExists("shoppinglist", "id", "shoppinglists", [["user_id", +user_id], ["id", +list_id]]);
         const { item_id } = req.body;
         const msg = "Deleted item from shoppinglist!"
         const clmnNameValObj = { id: +item_id };
@@ -602,7 +606,8 @@ router.delete("/:user_id/recipes/:id", isLoggedIn, async (req, res, next) => {
  */
 router.delete("/:user_id/recipes/:id/:item_id", isLoggedIn, async (req, res, next) => {
     try {
-        const { item_id } = req.params;
+        const { user_id, id: list_id, item_id } = req.params;
+        await rowExists("user recipe", "id", "user_recipes", [["user_id", +user_id], ["id", +list_id]]);
         const msg = "Deleted ingredient from user's recipe!"
         const clmnNameValObj = { id: +item_id };
         const deletedMsg = await User.deleteRow("user_recipes_ingredients", clmnNameValObj, msg);

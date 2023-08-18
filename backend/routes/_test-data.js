@@ -132,6 +132,20 @@ async function genTestUsers () {
         ]
     );
 
+    const listItemReq = await db.query(
+        `SELECT id FROM shoppinglists_items
+        WHERE list_id = $1 AND ingredient_id = $2 LIMIT 1`,
+        [shopList1Id, 506]
+    );
+    const { id: list1ItemId } = listItemReq.rows[0];
+
+    const listItem2Req = await db.query(
+        `SELECT id FROM shoppinglists_items
+        WHERE list_id = $1 AND ingredient_id = $2 LIMIT 1`,
+        [shopList1Id, 10]
+    );
+    const { id: list1Item2Id } = listItem2Req.rows[0];
+
     const user1Recipe = await db.query(`
         INSERT INTO user_recipes (user_id, recipe_name)
         VALUES ($1, $2) RETURNING id`,
@@ -178,6 +192,21 @@ async function genTestUsers () {
         ]
     );
 
+    const user1RecipeIngrdIdReq = await db.query(
+        `SELECT id FROM user_recipes_ingredients
+        WHERE user_recipe_id = $1 AND ingredient_id = $2`,
+        [user1RecipeId, 506]
+    );
+    
+    const { id: user1RecipeIngrdId } = user1RecipeIngrdIdReq.rows[0];
+    
+    const user1RecipeIngrd2IdReq = await db.query(
+        `SELECT id FROM user_recipes_ingredients
+        WHERE user_recipe_id = $1 AND ingredient_id = $2`,
+        [user1RecipeId, 10]
+    );
+    const { id: user1RecipeIngrd2Id } = user1RecipeIngrd2IdReq.rows[0];
+
     await db.query(`
         INSERT INTO reviews
             (user_id, recipe_id, stars, review)
@@ -199,8 +228,12 @@ async function genTestUsers () {
         listId3,
         shopList1Id,
         shopList2Id,
+        list1ItemId,
+        list1Item2Id,
         user1RecipeId,
-        user2RecipeId
+        user2RecipeId,
+        user1RecipeIngrdId,
+        user1RecipeIngrd2Id
     };
 }
 
