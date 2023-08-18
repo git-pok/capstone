@@ -10,7 +10,7 @@ const {
     genSelectSql, genUpdateSqlObj,
     genInsertSqlObj, rowExists
 } = require("./sql.js");
-const { genTestUsers } = require("../routes/_test-data.js");
+const { genTestUsers } = require("../test-data/_test-data.js");
 
 
 let usr1Test;
