@@ -835,54 +835,103 @@ describe("/GET /users/:id/recipelists", () => {
     });
 });
 
+
+describe("/POST /users/:id/recipelists", () => {
+    test("create a recipelist", async () => {
+        const req = await request(app).post(`/users/${usr1IdTest}/recipelists`)
+            .send({
+				"user_id": usr1IdTest,
+                "occasion_id": 5,
+				"list_name": "Test Recipelist"
+            })
+			.set("_token", `Bearer ${usr1TokenTest}`);
+        expect(req.statusCode).toBe(201);
+        expect(req.body).toEqual({
+			"id": expect.any(Number),
+			"list_name": "Test Recipelist",
+			"occasion": "birthday"
+		});
+    });
+
+	test("400 error for invalid schema", async () => {
+        const req = await request(app).post(`/users/${usr1IdTest}/recipelists`)
+            .send({
+				"user_id": usr1IdTest,
+                "occasion_id": "5",
+				"list_name": "Test Recipelist"
+            })
+			.set("_token", `Bearer ${usr1TokenTest}`);
+        expect(req.statusCode).toBe(400);
+    });
+
+	test("404 error for not found user", async () => {
+        const req = await request(app).post(`/users/${usr1IdTest}/recipelists`)
+            .send({
+				"user_id": usr2IdTest + 1,
+                "occasion_id": "5",
+				"list_name": "Test Recipelist"
+            })
+			.set("_token", `Bearer ${usr1TokenTest}`);
+        expect(req.statusCode).toBe(404);
+    });
+
+	test("400 error for logged out user", async () => {
+        const req = await request(app).post(`/users/${usr1IdTest}/recipelists`)
+            .send({
+				"user_id": usr1IdTest,
+                "occasion_id": "5",
+				"list_name": "Test Recipelist"
+            })
+			.set("_token", `Bearer`);
+        expect(req.statusCode).toBe(400);
+    });
+});
+
 describe("/GET /users/:id/recipelists/:list_id", () => {
     test("get recipelist recipes", async () => {
         const req = await request(app).get(`/users/${usr1IdTest}/recipelists/${listId1Test}`)
             .set("_token", `Bearer ${usr1TokenTest}`);
         expect(req.statusCode).toBe(200);
-        expect(req.body).toEqual([
-            {
-				"id": 450,
-				"name": "sticky cinnamon figs",
-				"author": "jane hornby",
-				"rating": 5,
-				"vote_count": 30,
-				"url": "https://www.bbcgoodfood.com/recipes/sticky-cinnamon-figs",
-				"image": "https://images.immediate.co.uk/production/volatile/sites/30/2020/08/recipe-image-legacy-id-339086_11-8e6b423.jpg",
-				"description": "A simple and stylish nutty fig pudding ready in just 10 minutes",
-				"serves": 4,
-				"level": "easy",
-				"main_cat_name": "recipes",
-				"sub_cat_name": "desserts",
-				"steps": "Heat grill to medium high. Cut a deep cross in the top of each fig then ease the top apart like a flower. Sit the figs in a baking dish and drop a small piece of the butter into the centre of each fruit. Drizzle the honey over the figs, then sprinkle with the nuts and spice. Grill for 5 mins until figs are softened and the honey and butter make a sticky sauce in the bottom of the dish. Serve warm, with dollops of mascarpone or yogurt.",
-				"prep_time": "5 mins",
-				"cook_time": "5 mins"
-			},
-			{
-				"id": 460,
-				"name": "apple flapjack crumble",
-				"author": "mary cadogan",
-				"rating": 5,
-				"vote_count": 154,
-				"url": "https://www.bbcgoodfood.com/recipes/apple-flapjack-crumble",
-				"image": "https://images.immediate.co.uk/production/volatile/sites/30/2020/08/recipe-image-legacy-id-1069547_10-f1dcd02.jpg",
-				"description": "Sweetening the apples with apricot jam and orange juice makes it twice as fruity and adding a little syrup to the oaty crumble makes great little chewy clusters",
-				"serves": 6,
-				"level": "easy",
-				"main_cat_name": "recipes",
-				"sub_cat_name": "desserts",
-				"steps": "Heat oven to 190C/fan 170C/gas 5. Peel, core and thinly slice the apples and mix with the jam and orange juice. Spread evenly over a buttered 1.5-litre ovenproof dish, not too deep. Mix the oats, flour and cinnamon in a large bowl. Add the butter in small chunks and rub in gently. Stir in the sugar and rub in again. Drizzle over the syrup, mixing with a knife so it forms small clumps. Sprinkle evenly over the apples and bake for 30-35 mins until the juices from the apples start to bubble up. Cool for 10 mins, then serve with custard, cream or ice cream.",
-				"prep_time": "20 mins",
-				"cook_time": "35 mins"
-			}
-        ]);
-    });
-
-    test("empty array for no recipes", async () => {
-        const req = await request(app).get(`/users/${usr1IdTest}/recipelists/${listId2Test}`)
-            .set("_token", `Bearer ${usr1TokenTest}`);
-        expect(req.statusCode).toBe(200);
-        expect(req.body).toEqual([]);
+        expect(req.body).toEqual({
+			"list_name": "weekly meals",
+			"occasion": "meal prep",
+            "recipes": [
+				{
+					"id": 460,
+					"name": "apple flapjack crumble",
+					"author": "mary cadogan",
+					"rating": 5,
+					"vote_count": 154,
+					"url": "https://www.bbcgoodfood.com/recipes/apple-flapjack-crumble",
+					"image": "https://images.immediate.co.uk/production/volatile/sites/30/2020/08/recipe-image-legacy-id-1069547_10-f1dcd02.jpg",
+					"description": "Sweetening the apples with apricot jam and orange juice makes it twice as fruity and adding a little syrup to the oaty crumble makes great little chewy clusters",
+					"serves": 6,
+					"level": "easy",
+					"main_cat_name": "recipes",
+					"sub_cat_name": "desserts",
+					"steps": "Heat oven to 190C/fan 170C/gas 5. Peel, core and thinly slice the apples and mix with the jam and orange juice. Spread evenly over a buttered 1.5-litre ovenproof dish, not too deep. Mix the oats, flour and cinnamon in a large bowl. Add the butter in small chunks and rub in gently. Stir in the sugar and rub in again. Drizzle over the syrup, mixing with a knife so it forms small clumps. Sprinkle evenly over the apples and bake for 30-35 mins until the juices from the apples start to bubble up. Cool for 10 mins, then serve with custard, cream or ice cream.",
+					"prep_time": "20 mins",
+					"cook_time": "35 mins"
+				},
+				{
+					"id": 450,
+					"name": "sticky cinnamon figs",
+					"author": "jane hornby",
+					"rating": 5,
+					"vote_count": 30,
+					"url": "https://www.bbcgoodfood.com/recipes/sticky-cinnamon-figs",
+					"image": "https://images.immediate.co.uk/production/volatile/sites/30/2020/08/recipe-image-legacy-id-339086_11-8e6b423.jpg",
+					"description": "A simple and stylish nutty fig pudding ready in just 10 minutes",
+					"serves": 4,
+					"level": "easy",
+					"main_cat_name": "recipes",
+					"sub_cat_name": "desserts",
+					"steps": "Heat grill to medium high. Cut a deep cross in the top of each fig then ease the top apart like a flower. Sit the figs in a baking dish and drop a small piece of the butter into the centre of each fruit. Drizzle the honey over the figs, then sprinkle with the nuts and spice. Grill for 5 mins until figs are softened and the honey and butter make a sticky sauce in the bottom of the dish. Serve warm, with dollops of mascarpone or yogurt.",
+					"prep_time": "5 mins",
+					"cook_time": "5 mins"
+				}
+			]
+        });
     });
 
     test("404 error for not found user", async () => {
@@ -904,60 +953,176 @@ describe("/GET /users/:id/recipelists/:list_id", () => {
     });
 });
 
+describe("/POST /users/:id/recipelists/:list_id", () => {
+    test("add a recipe to a recipelist", async () => {
+        const req = await request(app).post(`/users/${usr1IdTest}/recipelists/${listId1Test}`)
+            .send({
+                "recipe_id": 5
+            })
+			.set("_token", `Bearer ${usr1TokenTest}`);
+        expect(req.statusCode).toBe(201);
+        expect(req.body).toEqual({
+			"list_name": "weekly meals",
+			"occasion": "meal prep",
+            "recipes": [
+				{
+					"id": 460,
+					"name": "apple flapjack crumble",
+					"author": "mary cadogan",
+					"rating": 5,
+					"vote_count": 154,
+					"url": "https://www.bbcgoodfood.com/recipes/apple-flapjack-crumble",
+					"image": "https://images.immediate.co.uk/production/volatile/sites/30/2020/08/recipe-image-legacy-id-1069547_10-f1dcd02.jpg",
+					"description": "Sweetening the apples with apricot jam and orange juice makes it twice as fruity and adding a little syrup to the oaty crumble makes great little chewy clusters",
+					"serves": 6,
+					"level": "easy",
+					"main_cat_name": "recipes",
+					"sub_cat_name": "desserts",
+					"steps": "Heat oven to 190C/fan 170C/gas 5. Peel, core and thinly slice the apples and mix with the jam and orange juice. Spread evenly over a buttered 1.5-litre ovenproof dish, not too deep. Mix the oats, flour and cinnamon in a large bowl. Add the butter in small chunks and rub in gently. Stir in the sugar and rub in again. Drizzle over the syrup, mixing with a knife so it forms small clumps. Sprinkle evenly over the apples and bake for 30-35 mins until the juices from the apples start to bubble up. Cool for 10 mins, then serve with custard, cream or ice cream.",
+					"prep_time": "20 mins",
+					"cook_time": "35 mins"
+				},
+				{
+					"id": 5,
+					"name": "falafel burgers",
+					"author": "good food team",
+					"rating": 4,
+					"vote_count": 710,
+					"url": "https://www.bbcgoodfood.com/recipes/falafel-burgers-0",
+					"image": "https://images.immediate.co.uk/production/volatile/sites/30/2020/08/recipe-image-legacy-id-326597_11-b7385b9.jpg",
+					"description": "A healthy burger that's filling too. These are great for anyone after a satisfying bite low in calories.",
+					"serves": 4,
+					"level": "easy",
+					"main_cat_name": "recipes",
+					"sub_cat_name": "lunch recipes",
+					"steps": "Drain the chickpeas and pat dry with kitchen paper. Tip into a food processor along with the onion, garlic, parsley, cumin, coriander, harissa paste, flour and a little salt. Blend until fairly smooth, then shape into four patties with your hands. Heat the sunflower oil in a non-stick frying pan, and fry the burgers for 3 mins on each side until lightly golden. Serve with the toasted pitta bread, tomato salsa and green salad.",
+					"prep_time": "10 mins",
+					"cook_time": "6 mins",
+				},
+				{
+					"id": 450,
+					"name": "sticky cinnamon figs",
+					"author": "jane hornby",
+					"rating": 5,
+					"vote_count": 30,
+					"url": "https://www.bbcgoodfood.com/recipes/sticky-cinnamon-figs",
+					"image": "https://images.immediate.co.uk/production/volatile/sites/30/2020/08/recipe-image-legacy-id-339086_11-8e6b423.jpg",
+					"description": "A simple and stylish nutty fig pudding ready in just 10 minutes",
+					"serves": 4,
+					"level": "easy",
+					"main_cat_name": "recipes",
+					"sub_cat_name": "desserts",
+					"steps": "Heat grill to medium high. Cut a deep cross in the top of each fig then ease the top apart like a flower. Sit the figs in a baking dish and drop a small piece of the butter into the centre of each fruit. Drizzle the honey over the figs, then sprinkle with the nuts and spice. Grill for 5 mins until figs are softened and the honey and butter make a sticky sauce in the bottom of the dish. Serve warm, with dollops of mascarpone or yogurt.",
+					"prep_time": "5 mins",
+					"cook_time": "5 mins"
+				}
+			]
+		});
+    });
+
+	test("400 error for invalid schema", async () => {
+        const req = await request(app).post(`/users/${usr1IdTest}/recipelists/${listId1Test}`)
+            .send({
+				"recipe_id": "5"
+            })
+			.set("_token", `Bearer ${usr1TokenTest}`);
+        expect(req.statusCode).toBe(400);
+    });
+
+	test("404 error for not found list", async () => {
+        const req = await request(app).post(`/users/${usr1IdTest}/recipelists/${listId2Test}`)
+            .send({
+				"recipe_id": 5
+            })
+			.set("_token", `Bearer ${usr1TokenTest}`);
+        expect(req.statusCode).toBe(404);
+    });
+});
+
+describe("/DELETE /users/:id/recipelists/:list_id", () => {
+    test("delete recipe recipelist", async () => {
+		const req = await request(app).delete(`/users/${usr1IdTest}/recipelists/${listId1Test}`)
+            .set("_token", `Bearer ${usr1TokenTest}`);
+        expect(req.statusCode).toBe(200);
+		expect(req.body).toEqual({
+			message: "Deleted recipelist!"
+		});
+	});
+
+	test("404 error for not found recipelist", async () => {
+		const req = await request(app).delete(`/users/${usr1IdTest}/recipelists/${listId3Test}`)
+            .set("_token", `Bearer ${usr1TokenTest}`);
+        expect(req.statusCode).toBe(404);
+	});
+
+	test("400 error for logged out user", async () => {
+		const req = await request(app).delete(`/users/${usr1IdTest}/recipelists/${listId1Test}`)
+            .set("_token", `Bearer`);
+        expect(req.statusCode).toBe(400);
+	});
+
+});
+
 describe("/GET /users/:id/recipelists/:list_id/:recipe_id", () => {
     test("get recipelist recipe", async () => {
         const req = await request(app).get(`/users/${usr1IdTest}/recipelists/${listId1Test}/${450}`)
             .set("_token", `Bearer ${usr1TokenTest}`);
+
         expect(req.statusCode).toBe(200);
         expect(req.body).toEqual([
             {
-				"id": 450,
-				"name": "sticky cinnamon figs",
-				"author": "jane hornby",
-				"rating": 5,
-				"vote_count": 30,
-				"url": "https://www.bbcgoodfood.com/recipes/sticky-cinnamon-figs",
-				"image": "https://images.immediate.co.uk/production/volatile/sites/30/2020/08/recipe-image-legacy-id-339086_11-8e6b423.jpg",
-				"description": "A simple and stylish nutty fig pudding ready in just 10 minutes",
-				"serves": 4,
-				"level": "easy",
-				"main_cat_name": "recipes",
-				"sub_cat_name": "desserts",
-				"steps": "Heat grill to medium high. Cut a deep cross in the top of each fig then ease the top apart like a flower. Sit the figs in a baking dish and drop a small piece of the butter into the centre of each fruit. Drizzle the honey over the figs, then sprinkle with the nuts and spice. Grill for 5 mins until figs are softened and the honey and butter make a sticky sauce in the bottom of the dish. Serve warm, with dollops of mascarpone or yogurt.",
-				"prep_time": "5 mins",
-				"cook_time": "5 mins",
-                "liked_user_ids": [],
-	            "disliked_user_ids": [],
-	            "reviews": [],
-	            "ingredients": [
-		            {
-			            "qty": "8",
-			            "unit": "no unit",
-			            "ingredient": "ripe figs"
-		            },
-		            {
-			            "qty": "",
-			            "unit": "no unit",
-			            "ingredient": "large  knob of butter"
-		            },
-		            {
-			            "qty": "4",
-			            "unit": "tbsp",
-			            "ingredient": "clear honey"
-		            },
-		            {
-			            "qty": "",
-			            "unit": "no unit",
-			            "ingredient": "handful  shelled pistachio  nuts or almonds"
-		            },
-		            {
-			            "qty": "1",
-			            "unit": "tsp",
-			            "ingredient": "ground cinnamon  or mixed spice"
-		            }
-	            ]
-			}
-        ]);
+				"list_name": "weekly meals",
+				"occasion": "meal prep",
+            	"recipe": [
+					{
+						"id": 450,
+						"name": "sticky cinnamon figs",
+						"author": "jane hornby",
+						"rating": 5,
+						"vote_count": 30,
+						"url": "https://www.bbcgoodfood.com/recipes/sticky-cinnamon-figs",
+						"image": "https://images.immediate.co.uk/production/volatile/sites/30/2020/08/recipe-image-legacy-id-339086_11-8e6b423.jpg",
+						"description": "A simple and stylish nutty fig pudding ready in just 10 minutes",
+						"serves": 4,
+						"level": "easy",
+						"main_cat_name": "recipes",
+						"sub_cat_name": "desserts",
+						"steps": "Heat grill to medium high. Cut a deep cross in the top of each fig then ease the top apart like a flower. Sit the figs in a baking dish and drop a small piece of the butter into the centre of each fruit. Drizzle the honey over the figs, then sprinkle with the nuts and spice. Grill for 5 mins until figs are softened and the honey and butter make a sticky sauce in the bottom of the dish. Serve warm, with dollops of mascarpone or yogurt.",
+						"prep_time": "5 mins",
+						"cook_time": "5 mins",
+                		// "liked_user_ids": [],
+	            		// "disliked_user_ids": [],
+	            		// "reviews": [],
+	            		"ingredients": [
+		            		{
+			            		"qty": "8",
+			            		"unit": "no unit",
+			            		"ingredient": "ripe figs"
+		            		},
+		            		{
+			            		"qty": "",
+			            		"unit": "no unit",
+			            		"ingredient": "large  knob of butter"
+		            		},
+		            		{
+			            		"qty": "4",
+			            		"unit": "tbsp",
+			            		"ingredient": "clear honey"
+		            		},
+		            		{
+			            		"qty": "",
+			            		"unit": "no unit",
+			            		"ingredient": "handful  shelled pistachio  nuts or almonds"
+		            		},
+		            		{
+			            		"qty": "1",
+			            		"unit": "tsp",
+			            		"ingredient": "ground cinnamon  or mixed spice"
+		            		}
+						]
+					}
+				]
+			}]);
     });
 
     test("404 error for not found user", async () => {
@@ -966,17 +1131,53 @@ describe("/GET /users/:id/recipelists/:list_id/:recipe_id", () => {
         expect(req.statusCode).toBe(404);
     });
 
-    test("404 error for not found list", async () => {
-        const req = await request(app).get(`/users/${usr1IdTest}/recipelists/${listId2Test}/${450}`)
+    test("404 error for not found recipelist", async () => {
+        const req = await request(app).get(`/users/${usr1IdTest}/recipelists/${listId3Test}/${450}`)
             .set("_token", `Bearer ${usr1TokenTest}`);
         expect(req.statusCode).toBe(404);
     });
 
-    test("404 error for not found recipe", async () => {
-        const req = await request(app).get(`/users/${usr1IdTest}/recipelists/${listId1Test}/${480}`)
+    test("404 error for logged out user", async () => {
+        const req = await request(app).get(`/users/${usr1IdTest}/recipelists/${listId1Test}/${450}`)
+            .set("_token", `Bearer`);
+        expect(req.statusCode).toBe(400);
+    });
+});
+
+describe("/DELETE /users/:id/recipelists/:list_id/:recipe_id", () => {
+    test("delete recipe from recipelist", async () => {
+		const req = await request(app).delete(`/users/${usr1IdTest}/recipelists/${listId1Test}/${450}`)
+            .set("_token", `Bearer ${usr1TokenTest}`);
+        expect(req.statusCode).toBe(200);
+		expect(req.body).toEqual({
+			message: "Deleted recipe from recipelist!"
+		});
+	});
+
+	test("404 error for not found user", async () => {
+		const req = await request(app).delete(`/users/${usr2IdTest + 1}/recipelists/${listId1Test}/${450}`)
             .set("_token", `Bearer ${usr1TokenTest}`);
         expect(req.statusCode).toBe(404);
-    });
+	});
+
+	test("404 error for not found recipelist", async () => {
+		const req = await request(app).delete(`/users/${usr1IdTest}/recipelists/${listId3Test}/${450}`)
+            .set("_token", `Bearer ${usr1TokenTest}`);
+        expect(req.statusCode).toBe(404);
+	});
+
+	test("404 error for not found recipe", async () => {
+		const req = await request(app).delete(`/users/${usr1IdTest}/recipelists/${listId3Test}/${4500}`)
+            .set("_token", `Bearer ${usr1TokenTest}`);
+        expect(req.statusCode).toBe(404);
+	});
+
+	test("400 error for logged out user", async () => {
+		const req = await request(app).delete(`/users/${usr1IdTest}/recipelists/${listId1Test}/${450}`)
+            .set("_token", `Bearer`);
+        expect(req.statusCode).toBe(400);
+	});
+
 });
 
 describe("/GET /users/:id/shoppinglists", () => {
@@ -1011,6 +1212,8 @@ describe("/GET /users/:id/shoppinglists", () => {
     });
 });
 
+// Write tests for POST /:id/shoppinglists
+
 describe("/GET /users/:id/shoppinglists/:list_id", () => {
     test("get user 1 shoppinglist", async () => {
         const req = await request(app).get(`/users/${usr1IdTest}/shoppinglists/${shopList1IdTest}`)
@@ -1019,13 +1222,17 @@ describe("/GET /users/:id/shoppinglists/:list_id", () => {
         expect(req.body).toEqual(
             {
 				"list_name": "User 1 Shoplist for Recipe 120",
+				"recipe_name": "double bean & roasted pepper chilli",
+				"recipe_author": "sarah cook",
 				"items": [
                     {
+						"id": expect.any(Number),
 						"qty": 20,
 						"unit": "oz",
 						"ingredient": "boneless, skinless chicken breast"
 					},
 					{
+						"id": expect.any(Number),
 						"qty": 3,
 						"unit": "tbsp",
 						"ingredient": "garlic granules"
@@ -1042,8 +1249,11 @@ describe("/GET /users/:id/shoppinglists/:list_id", () => {
         expect(req.body).toEqual(
             {
 				"list_name": "User 2 Shoplist for Recipe 320",
+				"recipe_name": "lemony broad beans with goat's cheese, peas & mint",
+				"recipe_author": "esther clark",
 				"items": [
 					{
+						"id": expect.any(Number),
 						"qty": 20,
 						"unit": "oz",
 						"ingredient": "boneless, skinless chicken breast"
@@ -1065,6 +1275,11 @@ describe("/GET /users/:id/shoppinglists/:list_id", () => {
         expect(req.statusCode).toBe(404);
     });
 });
+
+// Write tests for DELETE /:id/shoppinglists/:list_id
+// Write tests for POST /:id/shoppinglists/:list_id/items
+// Write tests for DELETE /:id/shoppinglists/:list_id/items
+
 
 describe("/GET /:id/recipes", () => {
     test("get user 1 recipes", async () => {
@@ -1098,6 +1313,8 @@ describe("/GET /:id/recipes", () => {
     });
 });
 
+// Write tests for POST /:id/recipes
+
 describe("/GET /:user_id/recipes/:id", () => {
     test("get user 1 recipe", async () => {
         const req = await request(app).get(`/users/${usr1IdTest}/recipes/${user1RecipeIdTest}`)
@@ -1108,11 +1325,13 @@ describe("/GET /:user_id/recipes/:id", () => {
 				"recipe_name": "User 1 Chicken Dumplings Tweak",
 				"ingredients": [
 					{
+						"id": expect.any(Number),
 						"qty": 10,
 						"unit": "oz",
 						"ingredient": "boneless, skinless chicken breast"
 					},
                     {
+						"id": expect.any(Number),
 						"qty": 4,
 						"unit": "tbsp",
 						"ingredient": "garlic granules"
@@ -1153,15 +1372,20 @@ describe("/GET /:user_id/recipes/:id", () => {
         );
     });
 
-    test("404 error for not found user", async () => {
-        const req = await request(app).get(`/users/${usr2IdTest + 1}/recipes/${user2RecipeIdTest}`)
+    test("404 error for not found user recipe", async () => {
+        const req = await request(app).get(`/users/${usr1IdTest}/recipes/${user2RecipeIdTest}`)
             .set("_token", `Bearer ${usr2TokenTest}`);
         expect(req.statusCode).toBe(404);
     });
 
-    test("404 error for not found user", async () => {
-        const req = await request(app).get(`/users/${usr2IdTest}/recipes/${user2RecipeIdTest + 1}`)
+    test("404 error for not found user recipe", async () => {
+        const req = await request(app).get(`/users/${usr2IdTest + 1}/recipes/${user2RecipeIdTest + 1}`)
             .set("_token", `Bearer ${usr2TokenTest}`);
         expect(req.statusCode).toBe(404);
     });
 });
+
+// Write tests for POST /:user_id/recipes/:id
+// Write tests for DELETE /:user_id/recipes/:id
+// Write tests for DELETE /:user_id/recipes/:id/:item_id
+// Write tests for DELETE

@@ -500,7 +500,34 @@ describe("User.getListRecipes", () => {
 				"sub_cat_name": "desserts",
 				"steps": "Heat grill to medium high. Cut a deep cross in the top of each fig then ease the top apart like a flower. Sit the figs in a baking dish and drop a small piece of the butter into the centre of each fruit. Drizzle the honey over the figs, then sprinkle with the nuts and spice. Grill for 5 mins until figs are softened and the honey and butter make a sticky sauce in the bottom of the dish. Serve warm, with dollops of mascarpone or yogurt.",
 				"prep_time": "5 mins",
-				"cook_time": "5 mins"
+				"cook_time": "5 mins",
+				"ingredients": [
+					{
+						"ingredient": "ripe figs",
+						"qty": "8",
+						"unit": "no unit"
+					},
+					{
+						"ingredient": "large  knob of butter",
+						"qty": "",
+						"unit": "no unit"
+					},
+					{
+						"ingredient": "clear honey",
+						"qty": "4",
+						"unit": "tbsp"
+					},
+					{
+						"ingredient": "handful  shelled pistachio  nuts or almonds",
+						"qty": "",
+						"unit": "no unit"
+					},
+					{
+						"ingredient": "ground cinnamon  or mixed spice",
+						"qty": "1",
+						"unit": "tsp"
+					}
+				]
 			}
 		]});
 	});

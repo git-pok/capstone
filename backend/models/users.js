@@ -361,7 +361,12 @@ class User {
         const { list_name } = listNameReq.rows[0];
         const recipeRows = req.rows;
         const recipe = recipeId === false ? "recipes" : "recipe";
-        return { list_name, occasion, [recipe]: recipeRows };
+        if (recipeId !== false && recipeRows.length) {
+            const recpIngrdts = await Recipe.getRecipeIngrdts(+recipeId);
+            recipeRows[0].ingredients = recpIngrdts;
+        }
+        // console.log("$#$#$#$#$#$#$#$#$#$#$#$ recipeRows", recipeRows);
+        return { list_name, occasion, [recipe]: recipeRows};
     }
 
     /**

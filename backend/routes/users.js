@@ -274,6 +274,7 @@ router.post("/:id/recipelists", isLoggedIn, async (req, res, next) => {
     try {
         const { id } = req.params;
         const { user_id, occasion_id, list_name } = req.body;
+        await rowExists("user", "id", "users", [["id", user_id]]);
         const data = { user_id, occasion_id, list_name };
         const returnClmns = ["id"];
         const listRes = await User.insertRow("recipelists", data, recipeListsSchema, returnClmns);
@@ -303,9 +304,9 @@ router.get("/:id/recipelists/:list_id", isLoggedIn, async (req, res, next) => {
 
 /**
  * "/:id/recipelists/:list_id"
- * Adds recipe to recipelist.
  * route type: POST
  * Authorization: logged in
+ * Adds a recipe to recipelist.
  * Returns recipelist recipes.
  */
 router.post("/:id/recipelists/:list_id", isLoggedIn, async (req, res, next) => {
@@ -313,7 +314,7 @@ router.post("/:id/recipelists/:list_id", isLoggedIn, async (req, res, next) => {
         const { id: user_id, list_id } = req.params;
         await rowExists("list", "id", "recipelists_recipes", [["list_id", +list_id]]);
         const { recipe_id } = req.body;
-        const data = { recipe_id: +recipe_id, list_id: +list_id };
+        const data = { recipe_id: recipe_id, list_id: +list_id };
         const returnClmns = ["list_id"];
         const listRes = await User.insertRow("recipelists_recipes", data, recipeListsRecipesSchema, returnClmns);
         const { list_id: listId } = listRes.rows[0];
@@ -370,8 +371,9 @@ router.get("/:id/recipelists/:list_id/:recipe_id", isLoggedIn, async (req, res, 
  */
 router.delete("/:id/recipelists/:list_id/:recipe_id", isLoggedIn, async (req, res, next) => {
     try {
-        const { list_id, recipe_id } = req.params;
-        const msg = "Deleted recipe from recipelists!"
+        const { id, list_id, recipe_id } = req.params;
+        await rowExists("user", "id", "users", [["id", +id]]);
+        const msg = "Deleted recipe from recipelist!"
         const clmnNameValObj = { list_id: +list_id,  recipe_id: +recipe_id };
         const deletedMsg = await User.deleteRow("recipelists_recipes", clmnNameValObj, msg);
         return res.status(200).json(deletedMsg);
