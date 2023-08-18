@@ -14,10 +14,9 @@ const { isFilter } = require("../helpers/recipes.js");
 router.get("/:id", isLoggedIn, async (req, res, next) => {
     try {
         const { id } = req.params;
-        const recipe = await Recipe.getRecipe(id);
-        return res.status(200).json([
-            recipe
-        ]);
+        const recipe = await Recipe.recipeOrRecipes(+id);
+        // const recipe = await Recipe.getRecipe(id);
+        return res.status(200).json(recipe);
     } catch (err) {
         return next(err);
     }
@@ -33,7 +32,8 @@ router.get("/", isLoggedIn, async (req, res, next) => {
     try {
         const qry = req.query;
         const filterExists = isFilter(qry);
-        const recipes = filterExists ? await Recipe.recipesFilter(qry) : await Recipe.getRecipes();
+        const recipes = filterExists ? await Recipe.recipesFilter(qry) : await Recipe.recipeOrRecipes();
+        // const recipes = filterExists ? await Recipe.recipesFilter(qry) : await Recipe.getRecipes();
         return res.status(200).json(
             recipes
         );

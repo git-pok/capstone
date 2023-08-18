@@ -1,4 +1,3 @@
-// const {} = require("../config.js");
 const { db } = require("../config.js");
 const {
         genWhereSqlArr,

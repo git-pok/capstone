@@ -3,7 +3,6 @@ const ExpressError = require("../models/error.js");
 const router = new express.Router();
 const Ingredient = require("../models/ingredients.js");
 const { isLoggedIn } = require("../middleware/auth.js");
-const { isFilter } = require("../helpers/recipes.js");
 
 /**
  * "/"
