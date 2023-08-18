@@ -445,9 +445,11 @@ class User {
             `${recipeSql}`,
             recipeWhereSqlObj.values
         );
+        // NEWLY ADDED LINE FOR RECIPE INGREDIENTS.
+        const recipes_ingredients = await Recipe.getRecipeIngrdts(+recipe_id);
 
         const { name: recipe_name, author: recipe_author } = recipeReq.rows[0];
-        return { list_name, recipe_name, recipe_author, items: recipeRows };
+        return { list_name, recipe_name, recipe_author, recipes_ingredients, list_items: recipeRows };
     }
 
     /**

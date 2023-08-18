@@ -65,57 +65,68 @@ describe("/GET /recipes/:id", () => {
                 {
                     "qty": "400",
                     "unit": "g",
-                    "ingredient": "can  chickpeas, rinsed and drained"
+                    "ingredient": "can  chickpeas, rinsed and drained",
+                    "ingredient_id": 39
                 },
                 {
                     "qty": "1",
                     "unit": "no unit",
-                    "ingredient": "small red onion, roughly chopped"
+                    "ingredient": "small red onion, roughly chopped",
+                    "ingredient_id": 40
                 },
                 {
                     "qty": "1",
                     "unit": "no unit",
-                    "ingredient": "garlic clove, chopped"
+                    "ingredient": "garlic clove, chopped",
+                    "ingredient_id": 41
                 },
                 {
                     "qty": "",
                     "unit": "no unit",
-                    "ingredient": "handful of flat-leaf parsley  or curly parsley"
+                    "ingredient": "handful of flat-leaf parsley  or curly parsley",
+                    "ingredient_id": 42
                 },
                 {
                     "qty": "1",
                     "unit": "tsp",
-                    "ingredient": "ground cumin"
+                    "ingredient": "ground cumin",
+                    "ingredient_id": 43
                 },
                 {
                     "qty": "1",
                     "unit": "tsp",
-                    "ingredient": "ground coriander"
+                    "ingredient": "ground coriander",
+                    "ingredient_id": 44
                 },
                 {
                     "qty": "½",
                     "unit": "tsp",
-                    "ingredient": "harissa paste  or chilli powder"
+                    "ingredient": "harissa paste  or chilli powder",
+                    "ingredient_id": 45
                 },
                 {
                     "qty": "2",
                     "unit": "tbsp",
-                    "ingredient": "plain flour"
+                    "ingredient": "plain flour",
+                    "ingredient_id": 46
                 },
                 {
                     "qty": "2",
                     "unit": "tbsp",
-                    "ingredient": "sunflower oil"
+                    "ingredient": "sunflower oil",
+                    "ingredient_id": 47
                 },
                 {
                     "qty": "",
                     "unit": "no unit",
-                    "ingredient": "toasted pitta bread, to serve"
+                    "ingredient": "toasted pitta bread, to serve",
+                    "ingredient_id": 48
                 },
                 {
                     "qty": "200",
                     "unit": "g",
-                    "ingredient": "tub tomato salsa, to serve"
+                    "ingredient": "tub tomato salsa, to serve",
+                    "ingredient_id": 49
                 }
             ]
         }]);

@@ -275,7 +275,8 @@ const recipesRelDataSelectColumns = [
  * recipes_ingredients table.
  */
 const ingrdsRelDataSelectColumns = [
-    "ri.qty", "u.unit", "ing.ingredient"
+    "ri.qty", "u.unit", "ing.ingredient",
+    "ing.id AS ingredient_id"
 ];
 
 

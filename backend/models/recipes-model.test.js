@@ -59,17 +59,20 @@ describe("Recipe.getRecipeIngrdts", () => {
                 {
                     "qty": "410",
                     "unit": "g",
-                    "ingredient": "can  peach halves"
+                    "ingredient": "can  peach halves",
+                    "ingredient_id": 7316
                 },
                 {
                     "qty": "100",
                     "unit": "g",
-                    "ingredient": "frozen raspberry, plus a few for garnish"
+                    "ingredient": "frozen raspberry, plus a few for garnish",
+                    "ingredient_id": 7317
                 },
                 {
                     "qty": "100",
                     "unit": "ml",
-                    "ingredient": "orange juice"
+                    "ingredient": "orange juice",
+                    "ingredient_id": 143
                 }
             ]
         )
@@ -157,32 +160,38 @@ describe("Recipe.recipeOrRecipes", () => {
                 {
                     "qty": "40",
                     "unit": "g",
-                    "ingredient": "grated carrot"
+                    "ingredient": "grated carrot",
+                    "ingredient_id": 1361
                 },
                 {
                     "qty": "",
                     "unit": "no unit",
-                    "ingredient": "a big pinch of mixed spice"
+                    "ingredient": "a big pinch of mixed spice",
+                    "ingredient_id": 1362
                 },
                 {
                     "qty": "¼",
                     "unit": "tsp",
-                    "ingredient": "cinnamon"
+                    "ingredient": "cinnamon",
+                    "ingredient_id": 698
                 },
                 {
                     "qty": "50",
                     "unit": "g",
-                    "ingredient": "rolled porridge oats"
+                    "ingredient": "rolled porridge oats",
+                    "ingredient_id": 1363
                 },
                 {
                     "qty": "1",
                     "unit": "tsp",
-                    "ingredient": "honey"
+                    "ingredient": "honey",
+                    "ingredient_id": 337
                 },
                 {
                     "qty": "1",
                     "unit": "tsp",
-                    "ingredient": "sultanas"
+                    "ingredient": "sultanas",
+                    "ingredient_id": 1364
                 }
             ]
         }]);

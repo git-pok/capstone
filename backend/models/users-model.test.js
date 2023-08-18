@@ -233,97 +233,116 @@ describe("User.getFavRecipes", () => {
 						{
 							"qty": "2",
 							"unit": "no unit",
-							"ingredient": "dried ancho chillies"
+							"ingredient": "dried ancho chillies",
+							"ingredient_id": 732
 						},
 						{
 							"qty": "2",
 							"unit": "tsp",
-							"ingredient": "black peppercorns"
+							"ingredient": "black peppercorns",
+							"ingredient_id": 733
 						},
 						{
 							"qty": "2",
 							"unit": "tbsp",
-							"ingredient": "cumin seeds"
+							"ingredient": "cumin seeds",
+							"ingredient_id": 36
 						},
 						{
 							"qty": "2",
 							"unit": "tbsp",
-							"ingredient": "coriander seeds"
+							"ingredient": "coriander seeds",
+							"ingredient_id": 734
 						},
 						{
 							"qty": "2",
 							"unit": "tsp",
-							"ingredient": "smoked paprika"
+							"ingredient": "smoked paprika",
+							"ingredient_id": 267
 						},
 						{
 							"qty": "1",
 							"unit": "tbsp",
-							"ingredient": "dried oregano"
+							"ingredient": "dried oregano",
+							"ingredient_id": 322
 						},
 						{
 							"qty": "3",
 							"unit": "tbsp",
-							"ingredient": "vegetable oil"
+							"ingredient": "vegetable oil",
+							"ingredient_id": 642
 						},
 						{
 							"qty": "1½",
 							"unit": "kg",
-							"ingredient": "braising steak, cut into 4cm cubes – meat from the brisket, short rib, blade or chuck steak are all good"
+							"ingredient": "braising steak, cut into 4cm cubes – meat from the brisket, short rib, blade or chuck steak are all good",
+							"ingredient_id": 735
 						},
 						{
 							"qty": "2",
 							"unit": "no unit",
-							"ingredient": "onions, finely chopped"
+							"ingredient": "onions, finely chopped",
+							"ingredient_id": 736
 						},
 						{
 							"qty": "6",
 							"unit": "no unit",
-							"ingredient": "garlic cloves, minced"
+							"ingredient": "garlic cloves, minced",
+							"ingredient_id": 737
 						},
 						{
 							"qty": "2",
 							"unit": "tbsp",
-							"ingredient": "tomato purée"
+							"ingredient": "tomato purée",
+							"ingredient_id": 87
 						},
 						{
 							"qty": "1",
 							"unit": "tbsp",
-							"ingredient": "smooth peanut butter"
+							"ingredient": "smooth peanut butter",
+							"ingredient_id": 738
 						},
 						{
 							"qty": "½",
 							"unit": "tsp",
-							"ingredient": "instant espresso powder"
+							"ingredient": "instant espresso powder",
+							"ingredient_id": 739
 						},
 						{
 							"qty": "2",
 							"unit": "tbsp",
-							"ingredient": "apple cider vinegar"
+							"ingredient": "apple cider vinegar",
+							"ingredient_id": 459
 						},
 						{
 							"qty": "1",
 							"unit": "l",
-							"ingredient": "beef or chicken stock"
+							"ingredient": "beef or chicken stock",
+							"ingredient_id": 740
 						},
 						{
 							"qty": "2",
 							"unit": "no unit",
-							"ingredient": "bay leaves"
+							"ingredient": "bay leaves",
+							"ingredient_id": 429
 						},
 						{
 							"qty": "",
 							"unit": "no unit",
-							"ingredient": "small piece of cinnamon stick"
+							"ingredient": "small piece of cinnamon stick",
+							"ingredient_id": 741
 						},
 						{
 							"qty": "2",
-								"unit": "tbsp",
-							"ingredient": "semolina, polenta or Mexican masa flour"
+							"unit": "tbsp",
+							"ingredient": "semolina, polenta or Mexican masa flour",
+							"ingredient_id": 742
 						},
 						{
 							"qty": "25",
 							"unit": "g",
-							"ingredient": "dark chocolate (70-80% cocoa solids)"
+							"ingredient": "dark chocolate (70-80% cocoa solids)",
+							"ingredient_id": 743
 						}
 					]
                 }
@@ -402,27 +421,32 @@ describe("User.getSavedRecipes", () => {
 						{
 							"qty": "1",
 							"unit": "tbsp",
-							"ingredient": "olive oil"
+							"ingredient": "olive oil",
+							"ingredient_id": 16
 						},
 						{
 							"qty": "200",
 							"unit": "g",
-							"ingredient": "nettle leave"
+							"ingredient": "nettle leave",
+							"ingredient_id": 2269
 						},
 						{
 							"qty": "200",
 							"unit": "ml",
-							"ingredient": "tub crème fraîche"
+							"ingredient": "tub crème fraîche",
+							"ingredient_id": 2270
 						},
 						{
 							"qty": "1",
 							"unit": "tsp",
-							"ingredient": "wholegrain mustard"
+							"ingredient": "wholegrain mustard",
+							"ingredient_id": 1107
 						},
 						{
 							"qty": "140",
 							"unit": "g",
-							"ingredient": "British blue cheese, such as Blue Vinney"
+							"ingredient": "British blue cheese, such as Blue Vinney",
+							"ingredient_id": 2271
 						}
 					]
                 }
@@ -523,29 +547,34 @@ describe("User.getListRecipes", () => {
 				"cook_time": "5 mins",
 				"ingredients": [
 					{
-						"ingredient": "ripe figs",
 						"qty": "8",
-						"unit": "no unit"
+						"unit": "no unit",
+						"ingredient": "ripe figs",
+						"ingredient_id": 2289
 					},
 					{
+						"qty": "",
+						"unit": "no unit",
 						"ingredient": "large  knob of butter",
-						"qty": "",
-						"unit": "no unit"
+						"ingredient_id": 2422
 					},
 					{
-						"ingredient": "clear honey",
 						"qty": "4",
-						"unit": "tbsp"
+						"unit": "tbsp",
+						"ingredient": "clear honey",
+						"ingredient_id": 135
 					},
 					{
-						"ingredient": "handful  shelled pistachio  nuts or almonds",
 						"qty": "",
-						"unit": "no unit"
+						"unit": "no unit",
+						"ingredient": "handful  shelled pistachio  nuts or almonds",
+						"ingredient_id": 2423
 					},
 					{
-						"ingredient": "ground cinnamon  or mixed spice",
 						"qty": "1",
-						"unit": "tsp"
+						"unit": "tsp",
+						"ingredient": "ground cinnamon  or mixed spice",
+						"ingredient_id": 2424
 					}
 				]
 			}
@@ -622,7 +651,99 @@ describe("User.shopListsItems", () => {
 				"list_name": "User 1 Shoplist for Recipe 120",
 				"recipe_name": "double bean & roasted pepper chilli",
 				"recipe_author": "sarah cook",
-				"items": [
+				"recipes_ingredients": [
+					{
+						"qty": "2",
+						"unit": "no unit",
+						"ingredient": "onions, chopped",
+						"ingredient_id": 316
+					},
+					{
+						"qty": "2",
+						"unit": "no unit",
+						"ingredient": "celery sticks, finely chopped",
+						"ingredient_id": 783
+					},
+					{
+						"qty": "2",
+						"unit": "no unit",
+						"ingredient": "yellow or orange peppers, finely chopped",
+						"ingredient_id": 891
+					},
+					{
+						"qty": "2",
+						"unit": "tbsp",
+						"ingredient": "sunflower oil or rapeseed oil",
+						"ingredient_id": 892
+					},
+					{
+						"qty": "2x460",
+						"unit": "g",
+						"ingredient": "jars roasted red peppers",
+						"ingredient_id": 893
+					},
+					{
+						"qty": "2",
+						"unit": "tsp",
+						"ingredient": "chipotle paste",
+						"ingredient_id": 338
+					},
+					{
+						"qty": "2",
+						"unit": "tbsp",
+						"ingredient": "red wine vinegar",
+						"ingredient_id": 260
+					},
+					{
+						"qty": "1",
+						"unit": "tbsp",
+						"ingredient": "cocoa powder",
+						"ingredient_id": 894
+					},
+					{
+						"qty": "1",
+						"unit": "tbsp",
+						"ingredient": "dried oregano",
+						"ingredient_id": 322
+					},
+					{
+						"qty": "1",
+						"unit": "tbsp",
+						"ingredient": "sweet smoked paprika",
+						"ingredient_id": 815
+					},
+					{
+						"qty": "2",
+						"unit": "tbsp",
+						"ingredient": "ground cumin",
+						"ingredient_id": 43
+					},
+					{
+						"qty": "1",
+						"unit": "tsp",
+						"ingredient": "ground cinnamon",
+						"ingredient_id": 523
+					},
+					{
+						"qty": "2x400",
+						"unit": "g",
+						"ingredient": "cans chopped tomatoes",
+						"ingredient_id": 664
+					},
+					{
+						"qty": "400",
+						"unit": "g",
+						"ingredient": "can refried beans",
+						"ingredient_id": 895
+					},
+					{
+						"qty": "3x400",
+						"unit": "g",
+						"ingredient": "cans kidney beans, drained and rinsed",
+						"ingredient_id": 896
+					}
+				],
+				"list_items": [
 					{
 						"id": expect.any(Number),
 						"qty": 20,
@@ -647,7 +768,63 @@ describe("User.shopListsItems", () => {
 				"list_name": "User 2 Shoplist for Recipe 320",
 				"recipe_name": "lemony broad beans with goat's cheese, peas & mint",
 				"recipe_author": "esther clark",
-				"items": [
+				"recipes_ingredients": [
+					{
+						"qty": "40",
+						"unit": "g",
+						"ingredient": "blanched hazelnuts",
+						"ingredient_id": 1853
+					},
+					{
+						"qty": "250",
+						"unit": "g",
+						"ingredient": "broad beans, podded and skins removed from the beans",
+						"ingredient_id": 1854
+					},
+					{
+						"qty": "200",
+						"unit": "g",
+						"ingredient": "fresh peas",
+						"ingredient_id": 1855
+					},
+					{
+						"qty": "4",
+						"unit": "tbsp",
+						"ingredient": "extra virgin olive oil, plus a drizzle to serve",
+						"ingredient_id": 1856
+					},
+					{
+						"qty": "2",
+						"unit": "no unit",
+						"ingredient": "banana shallots, peeled and thinly sliced",
+						"ingredient_id": 1857
+					},
+					{
+						"qty": "1⁄2",
+						"unit": "no unit",
+						"ingredient": "small bunch of mint, finely chopped, plus extra leaves to serve",
+						"ingredient_id": 1858
+					},
+					{
+						"qty": "½",
+						"unit": "no unit",
+						"ingredient": "small bunch of flat-leaf parsley, finely chopped",
+						"ingredient_id": 1859
+					},
+					{
+						"qty": "1",
+						"unit": "no unit",
+						"ingredient": "lemon, zested and juiced",
+						"ingredient_id": 97
+					},
+					{
+						"qty": "150",
+						"unit": "g",
+						"ingredient": "log goat's cheese  with rind, sliced into 5mm rounds",
+						"ingredient_id": 1860
+					}
+				],
+				"list_items": [
 					{
 						"id": expect.any(Number),
 						"qty": 20,
