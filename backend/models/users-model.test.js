@@ -54,7 +54,7 @@ afterAll(async () => {
 });
 
 describe("User.register", () => {
-    test("User.register", async () => {
+    test("register user", async () => {
         const data = {
                 "username": "newUsr",
 		        "first_name": "newUsr",
@@ -81,7 +81,7 @@ describe("User.register", () => {
 });
 
 describe("User.login", () => {
-	test("User.login", async () => {
+	test("login", async () => {
 		const data = {
 			username: usr1Test.username,
 			password: "password1"
@@ -93,10 +93,30 @@ describe("User.login", () => {
 		    "token": expect.any(String)
         });
     });
+
+	test("login with invalid password", async () => {
+		const data = {
+			username: usr1Test.username,
+			password: "WrongPassword"
+		}
+        await expect(async () => {
+			await User.login(data);
+		}).rejects.toThrow(ExpressError);
+    });
+
+	test("login with invalid username", async () => {
+		const data = {
+			username: "WrongUsername",
+			password: "password1"
+		}
+        await expect(async () => {
+			await User.login(data);
+		}).rejects.toThrow(ExpressError);
+    });
 });
 
 describe("User.getUser", () => {
-	test("User.getUser", async () => {
+	test("get user", async () => {
 		const data = {
 			username: usr1Test.username,
 			password: "password1"
@@ -117,7 +137,7 @@ describe("User.getUser", () => {
 });
 
 describe("User.editUser", () => {
-	test("User.editUser", async () => {
+	test("edit user", async () => {
 		const data = {
 			username: "usr1Test newUsrName",
 			first_name: "usr1Test newFname"
@@ -436,7 +456,7 @@ describe("User.getRecipeLists", () => {
 });
 
 describe("User.getListRecipes", () => {
-	test("get recipelists", async () => {
+	test("get recipelist recipes", async () => {
 		const req = await User.getListRecipes(usr1IdTest, listId1Test);
 		expect(req).toEqual({
 			"list_name": "weekly meals",
@@ -797,7 +817,7 @@ describe("User.deleteRow", () => {
 });
 
 describe("User.insertRow", () => {
-	test("delete user", async () => {
+	test("insert user recipe with schema parameter", async () => {
 		const recpReq = await db.query(
 			`SELECT * FROM user_recipes WHERE recipe_name = $1`,
 			["Insert Recipe"]
@@ -805,7 +825,7 @@ describe("User.insertRow", () => {
 		expect(recpReq.rows.length).toEqual(0);
 		const insertData = {user_id: usr1IdTest, recipe_name: "Insert Recipe"};
 		const res = await User.insertRow("user_recipes", insertData, recipesSchema, false, "Inserted user recipe!");
-		expect(res).toEqual("Inserted user recipe!");
+		expect(res).toEqual({ message: "Inserted user recipe!" });
 		const recpDltReq = await db.query(
 			`SELECT * FROM user_recipes WHERE recipe_name = $1`,
 			["Insert Recipe"]
@@ -814,7 +834,24 @@ describe("User.insertRow", () => {
 		expect(recpDltReq.rows[0].recipe_name).toEqual("Insert Recipe");
 	});
 
-	test("error for data not matching schema", async () => {
+	test("insert user recipe without schema parameter", async () => {
+		const recpReq = await db.query(
+			`SELECT * FROM user_recipes WHERE recipe_name = $1`,
+			["Insert Recipe"]
+		);
+		expect(recpReq.rows.length).toEqual(0);
+		const insertData = {user_id: usr1IdTest, recipe_name: "Insert Recipe"};
+		const res = await User.insertRow("user_recipes", insertData, false, false, "Inserted user recipe!");
+		expect(res).toEqual({ message: "Inserted user recipe!" });
+		const recpDltReq = await db.query(
+			`SELECT * FROM user_recipes WHERE recipe_name = $1`,
+			["Insert Recipe"]
+		);
+		expect(recpDltReq.rows.length).toEqual(1);
+		expect(recpDltReq.rows[0].recipe_name).toEqual("Insert Recipe");
+	});
+
+	test("error for data not matching schema parameter schema", async () => {
 		const recpReq = await db.query(
 			`SELECT * FROM user_recipes WHERE recipe_name = $1`,
 			["Insert Recipe"]

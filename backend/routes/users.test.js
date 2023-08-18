@@ -329,7 +329,7 @@ describe("/POST /users/:id/favorite-recipes", () => {
             })
 			.set("_token", `Bearer ${usr1TokenTest}`);
         expect(req.statusCode).toBe(201);
-        expect(req.body).toEqual("Favorited recipe!");
+        expect(req.body).toEqual({ message: "Favorited recipe!" });
 		const postFavReq = await db.query(`
 			SELECT * FROM favorite_recipes WHERE user_id = $1
 			AND recipe_id = $2`,
@@ -671,7 +671,7 @@ describe("/POST /users/:id/saved-recipes", () => {
             })
 			.set("_token", `Bearer ${usr1TokenTest}`);
         expect(req.statusCode).toBe(201);
-        expect(req.body).toEqual("Saved recipe!");
+        expect(req.body).toEqual( { message: "Saved recipe!" } );
 		const postSavReq = await db.query(`
 			SELECT * FROM saved_recipes WHERE user_id = $1
 			AND recipe_id = $2`,
@@ -1050,7 +1050,7 @@ describe("/POST /users/:id/recipelists/:list_id", () => {
 });
 
 describe("/DELETE /users/:id/recipelists/:list_id", () => {
-    test("delete recipe recipelist", async () => {
+    test("delete recipelist", async () => {
 		const req = await request(app).delete(`/users/${usr1IdTest}/recipelists/${listId1Test}`)
             .set("_token", `Bearer ${usr1TokenTest}`);
         expect(req.statusCode).toBe(200);
@@ -1362,7 +1362,7 @@ describe("/DELETE /:id/shoppinglists/:list_id", () => {
 
 
 describe("/POST /:id/shoppinglists/:list_id/items", () => {
-    test("create a shoppinglist", async () => {
+    test("add an item to a shoppinglist", async () => {
         const req = await request(app).post(`/users/${usr1IdTest}/shoppinglists/${shopList1IdTest}/items`)
             .send({
 				"qty": 1,

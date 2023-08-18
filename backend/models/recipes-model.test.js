@@ -208,7 +208,7 @@ describe("Recipe.recipeOrRecipes, no id parameter", () => {
 });
 
 describe("Recipe.recipesFilter", () => {
-	test("name filter", async () => {
+	test("get recipe with name filter", async () => {
 		const qry = { name: "chicken" };
         const recipes = await Recipe.recipesFilter(qry);
         expect(recipes[0].name).toContain("chicken");
@@ -218,7 +218,7 @@ describe("Recipe.recipesFilter", () => {
         expect(recipes[recipes.length - 1].name).toContain("chicken");
     });
 
-	test("orderBy/chronOrder filter", async () => {
+	test("get recipe with orderBy/chronOrder filter", async () => {
 		const qry = { orderBy: "rating", chronOrder: "desc" };
         const recipes = await Recipe.recipesFilter(qry);
         expect(recipes[0].rating).toEqual(5);
@@ -227,7 +227,7 @@ describe("Recipe.recipesFilter", () => {
         expect(recipes[recipes.length - 1].rating).toEqual(1);
     });
 
-	test("rating filter", async () => {
+	test("get recipe with rating filter", async () => {
 		const qry = { rating: 5 };
         const recipes = await Recipe.recipesFilter(qry);
         expect(recipes[0].rating).toEqual(5);

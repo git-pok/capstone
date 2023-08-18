@@ -576,18 +576,20 @@ class User {
     * insertRow(1, data, false) =>
     */
     static async insertRow (tableName, data, schema, returnArray = false, msg = false) {
-        const isValid = validateSchema(data, schema);
-        if (isValid.errors.length !== 0) {
-            const jsonErrors = isValid.errors.map(error => error.message);
-            throw new ExpressError(400, jsonErrors);
-        }
+        if (schema) {
+            const isValid = validateSchema(data, schema);
+            if (isValid.errors.length !== 0) {
+                const jsonErrors = isValid.errors.map(error => error.message);
+                throw new ExpressError(400, jsonErrors);
+            };
+        };
         const insertSqlObj = returnArray === false
             ? genInsertSqlObj(tableName, data)
             : genInsertSqlObj(tableName, data, returnArray);
         // console.log("insertSqlObj", insertSqlObj);
         const insertData = await db.query(`${insertSqlObj.sql}`, insertSqlObj.values);
         const message = msg !== false ? msg : [];
-        return msg === false ? insertData : message;
+        return msg === false ? insertData : { message };
     }
 }
 
