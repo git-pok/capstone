@@ -145,6 +145,8 @@ describe("/GET /recipes", () => {
         expect(req.body[0].description).toEqual(expect.any(String));
         expect(req.body[0].author).toEqual(expect.any(String));
         expect(req.body[0].steps).toEqual(expect.any(String));
+        expect(req.body[0]["liked_user_ids"]).toEqual(expect.any(Array));
+        expect(req.body[0]["disliked_user_ids"]).toEqual(expect.any(Array));
     });
 
     test("get recipes with name filter", async () => {
@@ -154,6 +156,8 @@ describe("/GET /recipes", () => {
         expect(req.statusCode).toBe(200);
         expect(req.body[0].name).toContain("chicken");
         expect(req.body[1].name).toContain("chicken");
+        expect(req.body[0]["liked_user_ids"]).toEqual(expect.any(Array));
+        expect(req.body[0]["disliked_user_ids"]).toEqual(expect.any(Array));
         expect(req.body[req.body.length - 1].name).toContain("chicken");
     });
 
@@ -163,6 +167,8 @@ describe("/GET /recipes", () => {
             .query({ orderBy: "rating" });
         expect(req.statusCode).toBe(200);
         expect(req.body[0].rating).toEqual(1);
+        expect(req.body[0]["liked_user_ids"]).toEqual(expect.any(Array));
+        expect(req.body[0]["disliked_user_ids"]).toEqual(expect.any(Array));
     });
 
     test("get recipes with orderBy/chronOrder filter", async () => {
@@ -171,6 +177,8 @@ describe("/GET /recipes", () => {
             .query({ orderBy: "rating", chronOrder: "desc" });
         expect(req.statusCode).toBe(200);
         expect(req.body[0].rating).toEqual(5);
+        expect(req.body[0]["liked_user_ids"]).toEqual(expect.any(Array));
+        expect(req.body[0]["disliked_user_ids"]).toEqual(expect.any(Array));
     });
 
     test("400 error for non logged in user", async () => {
