@@ -37,20 +37,6 @@ afterAll(async () => {
     await db.end();
 });
 
-describe("Recipe.getRecipeLikes", () => {
-    test("get user ids for recipe likes", async () => {
-        const recipeLiks = await Recipe.getRecipeLikes(1684);
-        expect(recipeLiks).toEqual([]);
-    });
-});
-
-describe("Recipe.getRecipeDisLikes", () => {
-    test("get user ids for recipe dislikes", async () => {
-        const recipeDisliks = await Recipe.getRecipeDisLikes(1684);
-        expect(recipeDisliks).toEqual([]);
-    });
-});
-
 describe("Recipe.getLikesOrDis", () => {
     test("get user ids for recipe likes", async () => {
         const recipeliks = await Recipe.getLikesOrDis(1684);
