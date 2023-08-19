@@ -5,7 +5,7 @@ const User = require("../models/users.js");
 const Recipe = require("../models/recipes.js");
 const { validateSchema, hashPassword } = require("../helpers/users.js");
 const { rowExists } = require("../helpers/sql.js");
-const { isLoggedIn, isCurrUsername } = require("../middleware/auth.js");
+const { isLoggedIn, isCurrUser } = require("../middleware/auth.js");
 const favSavRecipeSchema = require("../schemas/favSavRecipe.json");
 const recipeListsSchema = require("../schemas/recipeLists.json");
 const shopListsSchema = require("../schemas/shopLists.json");
@@ -54,7 +54,7 @@ router.post("/login", async (req, res, next) => {
  * Authorization: logged in
  * Returns user.
  */
-router.get("/:username", isLoggedIn, isCurrUsername, async (req, res, next) => {
+router.get("/:username", isLoggedIn, isCurrUser, async (req, res, next) => {
     try {
         const { username } = req.params;
         const user = await User.getUser(username);
@@ -73,7 +73,7 @@ router.get("/:username", isLoggedIn, isCurrUsername, async (req, res, next) => {
  * Updates a user's information.
  * Returns updated user data.
  */
-router.patch("/:username", isLoggedIn, isCurrUsername, async (req, res, next) => {
+router.patch("/:username", isLoggedIn, isCurrUser, async (req, res, next) => {
     try {
         const { username } = req.params;
         const data = req.body;
@@ -94,7 +94,7 @@ router.patch("/:username", isLoggedIn, isCurrUsername, async (req, res, next) =>
  * Authorization: logged in
  * Returns deleted message.
  */
-router.delete("/:username", isLoggedIn, async (req, res, next) => {
+router.delete("/:username", isLoggedIn, isCurrUser, async (req, res, next) => {
     try {
         const { username } = req.params;
         const msg = "Deleted user from users!"
@@ -112,7 +112,7 @@ router.delete("/:username", isLoggedIn, async (req, res, next) => {
  * Authorization: logged in
  * Returns favorited recipes.
  */
-router.get("/:id/favorite-recipes", isLoggedIn, async (req, res, next) => {
+router.get("/:id/favorite-recipes", isLoggedIn, isCurrUser, async (req, res, next) => {
     try {
         const { id } = req.params;
         const favRecipes = await User.getFavRecipes(id);
@@ -129,7 +129,7 @@ router.get("/:id/favorite-recipes", isLoggedIn, async (req, res, next) => {
  * Authorization: logged in
  * Returns message.
  */
-router.post("/:id/favorite-recipes", isLoggedIn, async (req, res, next) => {
+router.post("/:id/favorite-recipes", isLoggedIn, isCurrUser, async (req, res, next) => {
     try {
         const { id } = req.params;
         const { recipe_id } = req.body;
@@ -148,7 +148,7 @@ router.post("/:id/favorite-recipes", isLoggedIn, async (req, res, next) => {
  * Authorization: logged in
  * Returns favorited recipe.
  */
-router.get("/:id/favorite-recipes/:recipe_id", isLoggedIn, async (req, res, next) => {
+router.get("/:id/favorite-recipes/:recipe_id", isLoggedIn, isCurrUser, async (req, res, next) => {
     try {
         const { id, recipe_id } = req.params;
         const favRecipe = await User.getFavRecipes(id, recipe_id);
