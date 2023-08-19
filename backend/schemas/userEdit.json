@@ -6,16 +6,6 @@
     "title": "Root Schema",
     "required": [],
     "properties": {
-        "username": {
-            "type": "string",
-            "default": "",
-            "minLength": 1,
-            "maxLength": 30,
-            "title": "The username Schema",
-            "examples": [
-                "fvin"
-            ]
-        },
         "first_name": {
             "type": "string",
             "default": "",
@@ -84,7 +74,6 @@
         }
     },
     "examples": [{
-        "username": "fvin",
         "first_name": "Vin",
         "last_name": "I",
         "email": "bank@g.com",

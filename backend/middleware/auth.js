@@ -28,9 +28,9 @@ function authenticateToken(req, res, next) {
 }
 
 /**
- * authenticateToken
- * Searches for a token.
- * Places token on response object.
+ * isLoggedIn
+ * Searches for the user object,
+ * if found, authorizes user.
  */
 function isLoggedIn(req, res, next) {
     try {
@@ -46,4 +46,28 @@ function isLoggedIn(req, res, next) {
     }
 }
 
-module.exports = { authenticateToken, isLoggedIn };
+/**
+ * isCurrUser
+ * Searches for user object,
+ * if user matches current user,
+ * authorizes.
+ */
+function isCurrUsername(req, res, next) {
+    try {
+        const payload = res.user[0] || [];
+        const { userUsername: user = false } = payload;
+        const { username = false } = req.params;
+        if (user) {
+            if (user === username) return next();
+        }
+        const error = new ExpressError(400, "Can only access current user's profile!")
+        return next(error);
+    } catch(err) {
+        throw new ExpressError(400, `${err}`);
+    }
+}
+
+module.exports = {
+    authenticateToken, isLoggedIn,
+    isCurrUsername
+};

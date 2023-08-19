@@ -5,7 +5,7 @@ const User = require("../models/users.js");
 const Recipe = require("../models/recipes.js");
 const { validateSchema, hashPassword } = require("../helpers/users.js");
 const { rowExists } = require("../helpers/sql.js");
-const { isLoggedIn } = require("../middleware/auth.js");
+const { isLoggedIn, isCurrUsername } = require("../middleware/auth.js");
 const favSavRecipeSchema = require("../schemas/favSavRecipe.json");
 const recipeListsSchema = require("../schemas/recipeLists.json");
 const shopListsSchema = require("../schemas/shopLists.json");
@@ -54,7 +54,7 @@ router.post("/login", async (req, res, next) => {
  * Authorization: logged in
  * Returns user.
  */
-router.get("/:username", isLoggedIn, async (req, res, next) => {
+router.get("/:username", isLoggedIn, isCurrUsername, async (req, res, next) => {
     try {
         const { username } = req.params;
         const user = await User.getUser(username);
@@ -70,9 +70,10 @@ router.get("/:username", isLoggedIn, async (req, res, next) => {
  * "/username"
  * route type: PATCH
  * Authorization: logged in
+ * Updates a user's information.
  * Returns updated user data.
  */
-router.patch("/:username", isLoggedIn, async (req, res, next) => {
+router.patch("/:username", isLoggedIn, isCurrUsername, async (req, res, next) => {
     try {
         const { username } = req.params;
         const data = req.body;

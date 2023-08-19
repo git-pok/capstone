@@ -166,8 +166,10 @@ class User {
             const jsonErrors = isValid.errors.map(error => error.message);
             throw new ExpressError(400, jsonErrors);
         }
-        const { is_admin } = data;
+        const { is_admin, id } = data;
         if (is_admin !== undefined) throw new ExpressError(400, "Cannot edit is_admin!");
+        if (id !== undefined) throw new ExpressError(400, "Cannot edit id!");
+        if (data["username"]) throw new ExpressError(400, "Cannot edit username!");
         const { password } = data;
         if (password !== undefined) data["password"] = await hashPassword(password);
         const dbUser = await db.query(`SELECT * FROM users WHERE username = $1`, [username]);
