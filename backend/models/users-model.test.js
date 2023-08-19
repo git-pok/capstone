@@ -139,13 +139,12 @@ describe("User.getUser", () => {
 describe("User.editUser", () => {
 	test("edit user", async () => {
 		const data = {
-			username: "usr1Test newUsrName",
 			first_name: "usr1Test newFname"
 		}
         const user = await User.editUser(data, usr1Test.username);
         expect(user).toEqual({
             "id": expect.any(Number),
-		    "username": "usr1Test newUsrName",
+		    "username": "usr1",
 		    "first_name": "usr1Test newFname",
 		    "last_name": usr1Test.last_name,
 		    "email": usr1Test.email,
@@ -154,6 +153,17 @@ describe("User.editUser", () => {
 		    "header_img": null,
 		    "profile_img": null
         });
+    });
+
+	test("error for editing username", async () => {
+		const data = {
+			username: "usr1Test newUsrName",
+			first_name: "usr1Test newFname"
+		}
+
+        await expect(async () => {
+			await User.editUser(data, usr1Test.username);
+		}).rejects.toThrow(ExpressError);
     });
 });
 
@@ -870,10 +880,9 @@ describe("User.userRecipes", () => {
 		]);
 	});
 
-	test("error for not found user recipes", async () => {
-		await expect(async () => {
-			await User.userRecipes(usr2IdTest + 1);
-		}).rejects.toThrow(ExpressError);
+	test("empty array for no user recipes", async () => {
+		const res = await User.userRecipes(usr2IdTest + 1);
+		expect(res).toEqual([]);
 	});
 });
 

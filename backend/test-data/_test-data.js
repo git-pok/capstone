@@ -50,9 +50,12 @@ async function genTestUsers () {
         RETURNING username, id`,
         ["usr2", "usr2fn", "usr2ln", "usr2@g.com", "813 507 4490", pwd2]
     );
-
-    usr1Token = generateToken(usr1Res.rows[0], SECRET_KEY);
-    usr2Token = generateToken(usr2Res.rows[0], SECRET_KEY);
+    const { username: user1Username, id: user1Id } = usr1Res.rows[0];
+    const { username: user2Username, id: user2Id } = usr1Res.rows[0];
+    const user1TknObj = { userId: user1Id, userUsername: user1Username };
+    const user2TknObj = { userId: user2Id, userUsername: user2Username };
+    usr1Token = generateToken(user1TknObj, SECRET_KEY);
+    usr2Token = generateToken(user2TknObj, SECRET_KEY);
 
     const usr1Id = usr1Res.rows[0].id;
     const usr2Id = usr2Res.rows[0].id;

@@ -3,7 +3,7 @@ const ExpressError = require("../models/error.js");
 const router = new express.Router();
 const Recipe = require("../models/recipes.js");
 const User = require("../models/users.js");
-const { isLoggedIn } = require("../middleware/auth.js");
+const { isLoggedIn, isCurrUser } = require("../middleware/auth.js");
 const { isFilter } = require("../helpers/recipes.js");
 const { rowExists } = require("../helpers/sql.js");
 /**
@@ -50,7 +50,7 @@ router.get("/", isLoggedIn, async (req, res, next) => {
  * Likes a recipe.
  * Returns message.
  */
-router.post("/:recipe_id/likes/:user_id", isLoggedIn, async (req, res, next) => {
+router.post("/:recipe_id/likes/:user_id", isLoggedIn, isCurrUser, async (req, res, next) => {
     try {
         const { recipe_id, user_id } = req.params;
         const rowExistsArr = [["id", +user_id]];
@@ -73,7 +73,7 @@ router.post("/:recipe_id/likes/:user_id", isLoggedIn, async (req, res, next) => 
  * Deletes a liked recipe.
  * Returns message.
  */
-router.delete("/:recipe_id/likes/:user_id", isLoggedIn, async (req, res, next) => {
+router.delete("/:recipe_id/likes/:user_id", isLoggedIn, isCurrUser, async (req, res, next) => {
     try {
         const { recipe_id, user_id } = req.params;
         await rowExists("user", "id", "users", [["id", +user_id]]);
@@ -95,7 +95,7 @@ router.delete("/:recipe_id/likes/:user_id", isLoggedIn, async (req, res, next) =
  * Dislikes a recipe.
  * Returns message.
  */
-router.post("/:recipe_id/dislikes/:user_id", isLoggedIn, async (req, res, next) => {
+router.post("/:recipe_id/dislikes/:user_id", isLoggedIn, isCurrUser, async (req, res, next) => {
     try {
         const { recipe_id, user_id } = req.params;
         const rowExistsArr = [["id", +user_id]];
@@ -118,7 +118,7 @@ router.post("/:recipe_id/dislikes/:user_id", isLoggedIn, async (req, res, next) 
  * Deletes a disliked recipe.
  * Returns message.
  */
-router.delete("/:recipe_id/dislikes/:user_id", isLoggedIn, async (req, res, next) => {
+router.delete("/:recipe_id/dislikes/:user_id", isLoggedIn, isCurrUser, async (req, res, next) => {
     try {
         const { recipe_id, user_id } = req.params;
         await rowExists("user", "id", "users", [["id", +user_id]]);

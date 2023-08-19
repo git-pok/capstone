@@ -23,6 +23,9 @@ beforeEach(async () => {
     usr2TokenTest = usr2Token;
     usr1IdTest = usr1Id;
     usr2IdTest = usr2Id;
+    // const req = await request(app).post(`/users/login`)
+    //     .send({ username: usr1, password: "password1" });
+    // console.log("$#$#$#$#$#$#$#$#$#$#$ PASSWORD req", req.body);
 })
 
 afterEach(async () => {
@@ -204,14 +207,15 @@ describe("/POST /recipes/:recipe_id/likes/:user_id", () => {
     test("like a recipe", async () => {
         const req = await request(app).post(`/recipes/${430}/likes/${usr1IdTest}`)
             .set("_token", `Bearer ${usr1TokenTest}`);
+
         expect(req.statusCode).toEqual(200);
         expect(req.body).toEqual({ message: "Liked recipe!"});
     });
 
-    test("404 error for not found user", async () => {
-        const req = await request(app).post(`/recipes/${430}/likes/${usr2IdTest + 1}`)
+    test("400 error for not current user", async () => {
+        const req = await request(app).post(`/recipes/${430}/likes/${usr2IdTest}`)
             .set("_token", `Bearer ${usr1TokenTest}`);
-        expect(req.statusCode).toEqual(404);
+        expect(req.statusCode).toEqual(400);
     });
 
     test("404 error for logged out user", async () => {
@@ -233,15 +237,15 @@ describe("/DELETE /recipes/:recipe_id/likes/:user_id", () => {
     });
 
     test("404 error for not found row", async () => {
-        const req = await request(app).delete(`/recipes/${430}/likes/${usr1IdTest}`)
+        const req = await request(app).delete(`/recipes/${4300}/likes/${usr1IdTest}`)
             .set("_token", `Bearer ${usr1TokenTest}`);
         expect(req.statusCode).toEqual(404);
     });
 
-    test("404 error for not found user", async () => {
-        const req = await request(app).delete(`/recipes/${430}/likes/${usr2IdTest + 1}`)
+    test("400 error for not current user", async () => {
+        const req = await request(app).delete(`/recipes/${430}/likes/${usr2IdTest}`)
             .set("_token", `Bearer ${usr1TokenTest}`);
-        expect(req.statusCode).toEqual(404);
+        expect(req.statusCode).toEqual(400);
     });
 
     test("400 error for logged out user", async () => {
@@ -259,13 +263,13 @@ describe("/POST /recipes/:recipe_id/dislikes/:user_id", () => {
         expect(req.body).toEqual({ message: "Disliked recipe!"});
     });
 
-    test("404 error for not found user", async () => {
-        const req = await request(app).post(`/recipes/${430}/dislikes/${usr2IdTest + 1}`)
+    test("400 error for not current user", async () => {
+        const req = await request(app).post(`/recipes/${430}/dislikes/${usr2IdTest}`)
             .set("_token", `Bearer ${usr1TokenTest}`);
-        expect(req.statusCode).toEqual(404);
+        expect(req.statusCode).toEqual(400);
     });
 
-    test("404 error for logged out user", async () => {
+    test("400 error for logged out user", async () => {
         const req = await request(app).post(`/recipes/${430}/dislikes/${usr1IdTest}`)
             .set("_token", `Bearer`);
         expect(req.statusCode).toEqual(400);
@@ -284,15 +288,15 @@ describe("/DELETE /recipes/:recipe_id/dislikes/:user_id", () => {
     });
 
     test("404 error for not found row", async () => {
-        const req = await request(app).delete(`/recipes/${430}/dislikes/${usr1IdTest}`)
+        const req = await request(app).delete(`/recipes/${4300}/dislikes/${usr1IdTest}`)
             .set("_token", `Bearer ${usr1TokenTest}`);
         expect(req.statusCode).toEqual(404);
     });
 
-    test("404 error for not found user", async () => {
-        const req = await request(app).delete(`/recipes/${430}/dislikes/${usr2IdTest + 1}`)
+    test("400 error for not current user", async () => {
+        const req = await request(app).delete(`/recipes/${430}/dislikes/${usr2IdTest}`)
             .set("_token", `Bearer ${usr1TokenTest}`);
-        expect(req.statusCode).toEqual(404);
+        expect(req.statusCode).toEqual(400);
     });
 
     test("400 error for logged out user", async () => {

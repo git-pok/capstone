@@ -8,6 +8,7 @@ const {
 
 /**
  * authenticateToken
+ * Authorizes.
  * Searches for a token.
  * Places token on response object.
  */
@@ -18,7 +19,6 @@ function authenticateToken(req, res, next) {
         if (reqToken) {
             const payload = decodeToken(reqToken, SECRET_KEY)
             res.user = [ payload ];
-            // console.log(res.user);
         }
         else res.user = [];
         return next();
@@ -29,8 +29,9 @@ function authenticateToken(req, res, next) {
 
 /**
  * isLoggedIn
- * Searches for the user object,
- * if found, authorizes user.
+ * Authorizes user.
+ * Searches for the user object
+ * to authorize.
  */
 function isLoggedIn(req, res, next) {
     try {
@@ -48,18 +49,19 @@ function isLoggedIn(req, res, next) {
 
 /**
  * isCurrUser
+ * Authorizes a user.
  * Searches for user object,
- * if user matches current user,
- * authorizes.
+ * and compares a username to userUsername,
+ * or user id to userId.
  */
 function isCurrUser(req, res, next) {
     try {
         const payload = res.user[0] || [];
         const { userUsername: user = false, userId = false } = payload;
-        const { username = false, id = false } = req.params;
-        // console.log("payload", payload);
+        const { username = false, id = false, user_id = false } = req.params;
         if (user) if (user === username) return next();
         if (userId) if (userId === +id) return next();
+        if (userId) if (userId === +user_id) return next();
         const error = new ExpressError(400, "Must be current user!");
         return next(error);
     } catch(err) {
