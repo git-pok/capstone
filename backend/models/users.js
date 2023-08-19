@@ -215,9 +215,11 @@ class User {
 
         if (recipeId !== false && favRecipeRows.length) {
             // Retrieves recipe likes user ids.
-            const usrsRecipeLiks = await Recipe.getRecipeLikes(recipeId);
+            const usrsRecipeLiks = await Recipe.getLikesOrDis(recipeId);
+            // const usrsRecipeLiks = await Recipe.getRecipeLikes(recipeId);
             // Retireves recipe dislikes user ids.
-            const usrsRecipeDislikes = await Recipe.getRecipeDisLikes(recipeId);
+            const usrsRecipeDislikes = await Recipe.getLikesOrDis(recipeId, false);
+            // const usrsRecipeDislikes = await Recipe.getRecipeDisLikes(recipeId);
             // Retrieves recipe's ingredients.
             const recipeIngredts = await Recipe.getRecipeIngrdts(recipeId);
             // Retrieves recipe's reviews.
@@ -258,9 +260,11 @@ class User {
 
         if (recipeId !== false && savedRecipeRows.length) {
             // Retrieves recipe likes user ids.
-            const usrsRecipeLiks = await Recipe.getRecipeLikes(recipeId);
+            const usrsRecipeLiks = await Recipe.getLikesOrDis(recipeId);
+            // const usrsRecipeLiks = await Recipe.getRecipeLikes(recipeId);
             // Retireves recipe dislikes user ids.
-            const usrsRecipeDislikes = await Recipe.getRecipeDisLikes(recipeId);
+            const usrsRecipeDislikes = await Recipe.getLikesOrDis(recipeId, false);
+            // const usrsRecipeDislikes = await Recipe.getRecipeDisLikes(recipeId);
             // Retrieves recipe's ingredients.
             const recipeIngredts = await Recipe.getRecipeIngrdts(recipeId);
             // Retrieves recipe's reviews.

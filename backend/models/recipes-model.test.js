@@ -51,6 +51,20 @@ describe("Recipe.getRecipeDisLikes", () => {
     });
 });
 
+describe("Recipe.getLikesOrDis", () => {
+    test("get user ids for recipe likes", async () => {
+        const recipeliks = await Recipe.getLikesOrDis(1684);
+        expect(recipeliks).toEqual([]);
+    });
+});
+
+describe("Recipe.getLikesOrDis", () => {
+    test("get user ids for recipe dislikes", async () => {
+        const recipeDisliks = await Recipe.getLikesOrDis(1684, false);
+        expect(recipeDisliks).toEqual([]);
+    });
+});
+
 describe("Recipe.getRecipeIngrdts", () => {
     test("get ingredients for recipe", async () => {
         const recipeIngrdts = await Recipe.getRecipeIngrdts(1684);
