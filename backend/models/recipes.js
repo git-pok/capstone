@@ -206,18 +206,26 @@ class Recipe {
      * defineLiksDis(id) =>
      * [{id: 1, name: "berry smoothie", liked_user_ids: [1], ...}]
      */
-    static async defineLiksDis(arrayOfObjs) {
+    static async defineLiksDis(arrayOfObjs, pure = false) {
+        const isPure = pure === true;
+        const pureArr = [];
         for (let obj of arrayOfObjs) {
             // Retrieves recipe likes user ids.
             const usrsRecipeLiks = await Recipe.getRecipeLikes(obj.id);
             // Retireves recipe dislikes user ids.
             const usrsRecipeDislikes = await Recipe.getRecipeDisLikes(obj.id);
-            // Retrieves recipe's ingredients.
-            // Defines new liked/disliked recipe user ids and reviews props.
-            obj["liked_user_ids"] = usrsRecipeLiks;
-            obj["disliked_user_ids"] = usrsRecipeDislikes;
+            if (!isPure) {
+                // Defines new liked/disliked recipe user ids and reviews props.
+                obj["liked_user_ids"] = usrsRecipeLiks;
+                obj["disliked_user_ids"] = usrsRecipeDislikes;
+            } else {
+                const newObj = JSON.parse(JSON.stringify(obj));
+                newObj["liked_user_ids"] = usrsRecipeLiks;
+                newObj["disliked_user_ids"] = usrsRecipeDislikes;
+                pureArr.push(newObj);
+            }
         }
-        return arrayOfObjs;
+        return !isPure ? arrayOfObjs : pureArr;
     }
 
     /**

@@ -89,7 +89,7 @@ describe("Recipe.getRecipeReviews", () => {
 });
 
 describe("Recipe.defineLiksDis", () => {
-    test("request and define recipe likes/dislikes on array", async () => {
+    test("request and define recipe likes/dislikes on array, impure", async () => {
         const recipe = [{
             "id": 1686,
             "name": "vitamin booster smoothie",
@@ -130,7 +130,53 @@ describe("Recipe.defineLiksDis", () => {
                     "disliked_user_ids": []
                 }
             ]
-        )
+        );
+        expect(recipe).toBe(newRecipeArray);
+    });
+
+    test("request and define recipe likes/dislikes on array, pure", async () => {
+        const recipe = [{
+            "id": 1686,
+            "name": "vitamin booster smoothie",
+            "author": "good food team",
+            "rating": 3,
+            "vote_count": 10,
+            "url": "https://www.bbcgoodfood.com/recipes/vitamin-booster-smoothie",
+            "image": "https://images.immediate.co.uk/production/volatile/sites/30/2020/08/vitamin-booster-3c28ae8.jpg",
+            "description": "Up your vitamin quota with help from this bright and fresh smoothie. Orange, carrot, celery and mango pack a nutritious punch",
+            "serves": 1,
+            "level": "easy",
+            "main_cat_name": "health",
+            "sub_cat_name": "smoothies",
+            "steps": "Put all the orange, carrot, celery and mango in the blender, top up with water, then blitz until smooth.",
+            "prep_time": "5 mins",
+            "cook_time": "No Time"
+        }];
+        const newRecipeArray = await Recipe.defineLiksDis(recipe, true);
+        expect(newRecipeArray).toEqual(
+            [
+                {
+                    "id": 1686,
+                    "name": "vitamin booster smoothie",
+                    "author": "good food team",
+                    "rating": 3,
+                    "vote_count": 10,
+                    "url": "https://www.bbcgoodfood.com/recipes/vitamin-booster-smoothie",
+                    "image": "https://images.immediate.co.uk/production/volatile/sites/30/2020/08/vitamin-booster-3c28ae8.jpg",
+                    "description": "Up your vitamin quota with help from this bright and fresh smoothie. Orange, carrot, celery and mango pack a nutritious punch",
+                    "serves": 1,
+                    "level": "easy",
+                    "main_cat_name": "health",
+                    "sub_cat_name": "smoothies",
+                    "steps": "Put all the orange, carrot, celery and mango in the blender, top up with water, then blitz until smooth.",
+                    "prep_time": "5 mins",
+                    "cook_time": "No Time",
+                    "liked_user_ids": [],
+                    "disliked_user_ids": []
+                }
+            ]
+        );
+        expect(recipe).not.toBe(newRecipeArray);
     });
 });
 
