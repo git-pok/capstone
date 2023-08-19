@@ -4,15 +4,8 @@
     "type": "object",
     "default": {},
     "title": "Root Schema",
-    "required": ["user_id", "occasion_id", "list_name"],
+    "required": ["occasion_id", "list_name"],
     "properties": {
-        "user_id": {
-            "type": "number",
-            "title": "The Recipe Lists Schema",
-            "examples": [
-                1
-            ]
-        },
         "occasion_id": {
             "type": "number",
             "title": "The Recipe Lists Schema",
@@ -32,7 +25,6 @@
         }
     },
     "examples": [{
-        "user_id": 1,
         "occasion_id": 2,
         "list_name": "weekly meals"
     }]

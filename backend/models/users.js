@@ -468,7 +468,7 @@ class User {
         // Check if user exists.
         // await rowExists("user", "id", "users", [["id", +userId]]);
         // Check if user has recipes.
-        await rowExists("user's recipes", "id", "user_recipes", [["user_id", +userId]]);
+        // await rowExists("user's recipes", "id", "user_recipes", [["user_id", +userId]]);
         const selectClmns = ["id", "recipe_name"];
         const listSelStr = genSelectSql(selectClmns, "user_recipes");
         const whereVals = { user_id: userId };
