@@ -18,7 +18,7 @@ const {
         decodeToken, verifyPassword
     } = require("../helpers/users.js");
 const {
-        definePropsPure, defineProps
+        defineProps
     } = require("../helpers/all-purpose.js");
 const SECRET_KEY = require("../keys.js");
 // const jsonschema = require("jsonschema");
@@ -232,7 +232,7 @@ class User {
                 ["reviews", recipeRvws], ["ingredients", recipeIngredts]
             ]
             // Defines new liked/disliked recipe user ids and reviews props.
-            const newObj = defineProps(recipeProps, favRecipeRows[0]);
+            defineProps(recipeProps, favRecipeRows[0], false);
         }
         return favRecipeRows;
     }
@@ -277,7 +277,7 @@ class User {
                 ["reviews", recipeRvws], ["ingredients", recipeIngredts]
             ]
             // Defines new liked/disliked recipe user ids and reviews props.
-            const newObj = defineProps(recipeProps, savedRecipeRows[0]);
+            defineProps(recipeProps, savedRecipeRows[0], false);
         }
         return savedRecipeRows;
     }

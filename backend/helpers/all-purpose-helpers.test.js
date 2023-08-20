@@ -2,7 +2,7 @@ process.env.NODE_ENV = "test";
 const { db } = require("../config.js");
 const ExpressError = require("../models/error.js");
 const {
-    defineProps, definePropsPure
+    defineProps
 } = require("./all-purpose.js");
 
 
@@ -26,24 +26,31 @@ afterAll(async () => {
 });
 
 
-describe("definePropsPure", () => {
-    test("define props in empty object", () => {
+describe("defineProps", () => {
+    test("define props in empty object, pure parmater", () => {
         const propsArr = [["username", "biz"], ["first_name", "bizq"]];
-        const newObj = definePropsPure(propsArr, {});
+        const obj = {};
+        const newObj = defineProps(propsArr, obj);
         expect(newObj).toEqual(
             {
                 username: "biz", first_name: "bizq"
             }
         );
+        expect(obj).not.toEqual(
+            {
+                username: "biz", first_name: "bizq"
+            }
+        );
+        expect(newObj).not.toBe(obj);
     });
 
-    test("define props in object", () => {
+    test("define props in object, pure parmater", () => {
         const propsArr = [["first_name", "bizq"], ["last_name", "dreco"]];
         const object = {
             name: "V", rating: 5,
             username: "vn", header_img: "img"
         };
-        const newObj = definePropsPure(propsArr, object);
+        const newObj = defineProps(propsArr, object);
         expect(newObj).toEqual(
             {
                 name: "V", rating: 5,
@@ -51,37 +58,31 @@ describe("definePropsPure", () => {
                 first_name: "bizq", last_name: "dreco"
             }
         );
-    });
-    
-    test("error for non array in propsArr arg", () => {
-        const propsArr = { name: "l", age: 8 };
-        function error () {
-            definePropsPure(propsArr, {});
-        }
-        expect(error).toThrow(ExpressError);
-    });
-});
-
-describe("defineProps", () => {
-    test("define props in empty object", () => {
-        const obj = {};
-        expect(obj.username).toEqual(undefined);
-        expect(obj.first_name).toEqual(undefined);
-        const propsArr = [["username", "biz"], ["first_name", "bizq"]];
-        const newObj = defineProps(propsArr, obj);
-        expect(newObj).toEqual(undefined);
-        expect(obj.username).toEqual("biz");
-        expect(obj.first_name).toEqual("bizq");
+        expect(object).not.toEqual(
+            {
+                name: "V", rating: 5,
+                username: "vn", header_img: "img",
+                first_name: "bizq", last_name: "dreco"
+            }
+        );
+        expect(newObj).not.toEqual(object);
     });
 
-    test("define props in empty object", () => {
-        expect(obj1.username).toEqual(undefined);
-        expect(obj1.first_name).toEqual(undefined);
-        const propsArr = [["username", "biz"], ["first_name", "bizq"]];
-        const newObj = defineProps(propsArr, obj1);
-        expect(newObj).toEqual(undefined);
-        expect(obj1.username).toEqual("biz");
-        expect(obj1.first_name).toEqual("bizq");
+    test("define props in object, impure parmater", () => {
+        const propsArr = [["first_name", "bizq"], ["last_name", "dreco"]];
+        const object = {
+            name: "V", rating: 5,
+            username: "vn", header_img: "img"
+        };
+        const newObj = defineProps(propsArr, object, false);
+        expect(newObj).toEqual("Object props defined.");
+        expect(object).toEqual(
+            {
+                name: "V", rating: 5,
+                username: "vn", header_img: "img",
+                first_name: "bizq", last_name: "dreco"
+            }
+        );
     });
     
     test("error for non array in propsArr arg", () => {
