@@ -30,7 +30,7 @@ beforeEach(async () => {
 
 afterEach(async () => {
     await db.query(`
-        DELETE FROM users;
+        DELETE FROM users
     `);
 });
 

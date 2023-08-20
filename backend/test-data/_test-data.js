@@ -37,6 +37,7 @@ async function genTestUsers () {
 		phone: "813 507 4490",
         password: pwd2
     }
+
     const usr1Res = await db.query(`
         INSERT INTO users (username, first_name, last_name, email, phone, password)
         VALUES ($1, $2, $3, $4, $5, $6)
@@ -51,7 +52,7 @@ async function genTestUsers () {
         ["usr2", "usr2fn", "usr2ln", "usr2@g.com", "813 507 4490", pwd2]
     );
     const { username: user1Username, id: user1Id } = usr1Res.rows[0];
-    const { username: user2Username, id: user2Id } = usr1Res.rows[0];
+    const { username: user2Username, id: user2Id } = usr2Res.rows[0];
     const user1TknObj = { userId: user1Id, userUsername: user1Username };
     const user2TknObj = { userId: user2Id, userUsername: user2Username };
     usr1Token = generateToken(user1TknObj, SECRET_KEY);
@@ -90,7 +91,7 @@ async function genTestUsers () {
             usr2Id, 1, "christmas appetizers"
         ]
     );
-    // console.log("LIST IDS $#$#$#$$#$#$#$#$", listId3Req.rows);
+
     const { id: listId1 } = listId1Req.rows[0];
     const { id: listId2 } = listId2Req.rows[0];
     const { id: listId3 } = listId3Req.rows[0];

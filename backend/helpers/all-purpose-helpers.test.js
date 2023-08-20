@@ -8,7 +8,7 @@ const {
 
 let obj1 = {};
 
-beforeEach(() => {
+beforeEach(async () => {
     obj1.name = "dumplings";
     obj1.cat = "chineese"
 });
