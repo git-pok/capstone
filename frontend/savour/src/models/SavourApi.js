@@ -1,19 +1,21 @@
 import axios from 'axios';
 
+
 const BASE_URL = "http://localhost:3000";
-const jsonHeader = { "Content-Type": "application/json" };
-
-
 class Savour {
     constructor (token = null) {
         this.token = token;
     }
     /**
-     * 
+     * request
+     * Makes a request.
+     * Arguments: method, url, data, params, headers
+     * const data = { username: "b" };
+     * request("post", "/users/register", data) =>
+     * user object returned from route.
     */
     static async request (method, url, data = {}, params = {}, headers = {}) {
         console.log("REQ ARGS", method, url, data, params, headers);
-        // const jsonData = JSON.stringify(data);
         const req = await axios({
             method,
             url: `${BASE_URL}${url}`,
@@ -22,26 +24,8 @@ class Savour {
             headers
           });
         console.log("req", req);
+        return req;
     }
-    /** 
-     * register.
-     * 
-    */
-    // static async register({username, password, first_name, last_name, email, phone}) {
-
-    //     const reqs = await this.request(
-    //         {
-    //             endpoint: "auth/register",
-    //             method: "post",
-    //             data: {
-    //                 username, password,
-    //                 first_name, last_name,
-    //                 email, phone
-    //             }
-    //         }
-    //     );
-    //     return reqs;
-    // }
 }
 
 export default Savour;

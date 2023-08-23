@@ -13,6 +13,8 @@ const RegisterForm = () => {
         username: "", first_name: "", last_name: "",
         email: "", phone: "", password: ""
     };
+  const [ usrData, setUsrData ] = useLocalStorage("userData", null);
+  const [ formErrMsg, setFormErrMsg ] = useState(null);
   const [ formData, setFormData ] = useState(initialState);
   const [ isSubmitted, setIsSubmitted ] = useToggleState(false);
   const [ invalidForm, setInvalidForm ] = useToggleState(false);
@@ -32,12 +34,15 @@ const RegisterForm = () => {
         };
         const regResult = await SavourApi.request("post", "/users/register", data);
         console.log("regResult", regResult);
-        // const token = loginResult.data.token;
-        // const payload = await jwt_decode(token);
-        // payload.token = token;
-        // setUserData(data => (
-        //   payload
-        // ));
+        const token = regResult.data[0].token;
+        SavourApi.token = token;
+        console.log("SAVOUR TOKEN", SavourApi.token);
+        const payload = await jwt_decode(token);
+        payload.token = token;
+
+        setUsrData(data => (
+          payload
+        ));
         console.log("RegisterForm SUBMITTED!");
         // Set isSubmitted to false.
         setIsSubmitted();
@@ -46,8 +51,10 @@ const RegisterForm = () => {
 
       } catch (err) {
         // <Redirect exact to="/signup" />
-        // setInvalidForm();
-        // setTimeout(setInvalidForm, 3000);
+        console.log("ERROR", err);
+        setFormErrMsg(() => "Error");
+        setInvalidForm();
+        setTimeout(setInvalidForm, 3000);
         // Set isSubmitted to false.
         setTimeout(setIsSubmitted, 3000);
       }
@@ -68,11 +75,25 @@ const RegisterForm = () => {
 
   const handleSubmit = async (evt) => {
     evt.preventDefault();
+    // Create array of props formData needs.
+    const reqProps = [
+      "username", "first_name", "last_name",
+      "email", "phone", "password"
+    ];
+    // Check if props are missing.
+    const isValMsn = reqProps.some(val => (
+      formData[val] === ""
+    ));
+    if (isValMsn) {
+      setFormErrMsg(() => "All fields must be complete!");
+      setInvalidForm();
+      setTimeout(setInvalidForm, 3000);
+    }
     // Set isSubmitted to true.
-    setIsSubmitted();
+    else setIsSubmitted();
   }
 
-  // if (isSubmitted) return <Redirect exact to="/" />;
+  if (isSubmitted) return <Redirect exact to="/" />;
 
   return (
     <>
@@ -128,15 +149,15 @@ const RegisterForm = () => {
             name="password"
             placeholder="Type a password"
             autoComplete="current-password"></input>
-      {/* {
+      {
         invalidForm &&
         <Message msgObj={
           {
             class: "fail",
-            msg: "Invalid form data!"
+            msg: formErrMsg ? formErrMsg : "Error!"
           }
         } />
-      } */}
+      }
       <button>SUBMIT</button>
     </form>
     </>
