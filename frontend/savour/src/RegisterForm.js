@@ -5,14 +5,16 @@ import SavourApi from './models/SavourApi.js';
 // import SavourContext from './context/SavourContext.js';
 import useLocalStorage from './hooks/useLocalStorage.js';
 import useToggleState from './hooks/useToggleState.js';
+import useFormHandles from './hooks/useFormHandles.js';
 import jwt_decode from 'jwt-decode';
 import './RegisterForm.css';
 
 const RegisterForm = () => {
-    const initialState = {
-        username: "", first_name: "", last_name: "",
-        email: "", phone: "", password: ""
-    };
+  const initialState = {
+      username: "", first_name: "", last_name: "",
+      email: "", phone: "", password: ""
+  };
+  // const [ formData, setFormData, handleChange, resetForm ] = useFormHandles(initialState);
   const [ usrData, setUsrData ] = useLocalStorage("userData", null);
   const [ formErrMsg, setFormErrMsg ] = useState(null);
   const [ formData, setFormData ] = useState(initialState);
@@ -28,6 +30,7 @@ const RegisterForm = () => {
           username, email, first_name,
           last_name, phone, password
         } = formData;
+
         const data = { 
             username, first_name, last_name, email,
             phone, password
@@ -46,7 +49,11 @@ const RegisterForm = () => {
         console.log("RegisterForm SUBMITTED!");
         // Set isSubmitted to false.
         setIsSubmitted();
+        // setFormData();
+        // console.log("formData", formData);
         setFormData(() => initialState);
+        // if (isSubmitted) return <Redirect exact to="/" />;
+        // <Redirect exact to="/" />
         // <Redirect exact to="/" />
 
       } catch (err) {
@@ -93,7 +100,7 @@ const RegisterForm = () => {
     else setIsSubmitted();
   }
 
-  if (isSubmitted) return <Redirect exact to="/" />;
+  // if (isSubmitted) return <Redirect exact to="/" />;
 
   return (
     <>
