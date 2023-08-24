@@ -49,6 +49,12 @@ const Routes = () => {
           <LoginForm />
         </Route>
       }
+      { userToken &&
+        <Route exact path="/recipes">
+          {/* <Home /> */}
+          <h1>RECIPES</h1>
+        </Route>
+      }
     {/* { userToken &&
       <Route exact path="/companies">
         <SearchBox />
