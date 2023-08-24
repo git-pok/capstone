@@ -1,10 +1,10 @@
-.RegisterForm-bg-img {
+.LoginForm-bg-img {
   width: 100vw;
   height: 100vh;
   margin: 0px 0px;
 }
 
-.RegisterForm {
+.LoginForm {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -16,11 +16,11 @@
   border-radius: 10px;
 }
 
-.RegisterForm-field {
+.LoginForm-field {
   display: block;
 }
   
-.RegisterForm-h1 {
+.LoginForm-h1 {
   text-align: center;
   display: block;
   font-size: 60px;
@@ -28,7 +28,7 @@
   padding-top: 120px;
 }
 
-.RegisterForm-field label {
+.LoginForm-field label {
   display: block;
   width: 260px;
   height: 30px;
@@ -36,19 +36,19 @@
   color: rgb(221, 230, 237);
 }
   
-.RegisterForm-field input {
+.LoginForm-field input {
   width: 260px;
   height: 30px;
   margin-bottom: 30px;
 }
 
-.RegisterForm-submit {
+.LoginForm-submit {
   display: block;
   width: 100%;
   margin-top: 10px;
 }
 
-.RegisterForm-submit button {
+.LoginForm-submit button {
   display: block;
   width: 260px;
   height: 30px;
@@ -60,7 +60,7 @@
   transition: .5s ease-in-out background-color;
 }
   
-.RegisterForm button:hover {
+.LoginForm button:hover {
   border-color: rgb(39, 55, 77);
   background-color: rgb(39, 55, 77);
   color: rgb(221, 230, 237);

@@ -1,5 +1,6 @@
 import { Route, Switch, Redirect } from 'react-router-dom';
 import { useContext } from 'react';
+import useLocalStorage from './hooks/useLocalStorage.js';
 // import CoOrJobCard from './CoOrJobCard.js';
 // import ContentCard from './ContentCard.js';
 // import CompanyDetailsCard from './CompanyDetailsCard.js';
@@ -8,14 +9,16 @@ import { useContext } from 'react';
 // import SearchBox from './SearchBox.js';
 // import LogInForm from './LogInForm.js';
 import RegisterForm from './RegisterForm.js';
+import LoginForm from './LoginForm.js';
+import Home from './Home.js';
 // import UserProfileEditForm from './UserProfileEditForm.js';
 // import SavourContext from './context/SavourContext.js';
 
 const Routes = () => {
 
-  // const { userData, setUserData } = useContext(JoblyContext);
-  // const userToken = userData ? userData.token : null;
-
+  const [ usrData, setUsrData ] = useLocalStorage("userData", null);
+  const userToken = usrData ? usrData.token : null;
+  console.log("userToken", userToken);
   // const findJobApps = (data, id) => {
   //   const jobApps = data.indexOf(id);
   //   return jobApps === -1;
@@ -23,20 +26,11 @@ const Routes = () => {
 
   return (
     <Switch>
-      <Route exact path="/">
-        <h1>HOME</h1>
-        {/* <ContentCard
-          dataObj={{
-            title: "Welcome to the Jobly App!",
-            description: "Enjoy!" 
-          }}
-        /> */}
-      </Route>
-    {/* { !userToken && 
-      <Route exact path="/login">
-        <LogInForm />
-      </Route>
-    } */}
+      { userToken &&
+        <Route exact path="/">
+          <Home />
+        </Route>
+      }
       {/* <Route exact path="/logout">
         <Redirect exact to="/" />
       </Route> */}
@@ -45,9 +39,16 @@ const Routes = () => {
         <SignupForm />
       </Route>
     } */}
-      <Route exact path="/signup">
-        <RegisterForm />
-      </Route>
+      { !userToken &&
+        <Route exact path="/signup">
+          <RegisterForm />
+        </Route>
+      }
+      { !userToken &&
+        <Route exact path="/login">
+          <LoginForm />
+        </Route>
+      }
     {/* { userToken &&
       <Route exact path="/companies">
         <SearchBox />
