@@ -6,6 +6,7 @@
 import CenterText from './CenterText.js';
 import Button from './Button.js';
 import useLocalStorage from './hooks/useLocalStorage.js';
+import UserContext from './context/UserContext.js';
 // import useToggleState from './hooks/useToggleState.js';
 import image from './img/cut-board.jpg';
 import './Home.css';
