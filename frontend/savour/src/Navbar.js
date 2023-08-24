@@ -37,7 +37,7 @@ const Navbar = ({ linkNames, logOut }) => {
         }
         { userToken
           ?
-            <NavLink exact to="/logout" onClick={logOut}>
+            <NavLink exact to="/login" onClick={logOut}>
               LOG OUT
             </NavLink>
           :

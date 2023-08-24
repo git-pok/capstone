@@ -18,12 +18,7 @@ import './Home.css';
 */
 const Home = () => {
 
-  const [ usrData, setUsrData ] = useLocalStorage("userData", null);
-  // const [ formErrMsg, setFormErrMsg ] = useState(null);
-  // const [ formData, setFormData ] = useState(initialState);
-  // const [ formCmplt, setFormCmplt ] = useToggleState(false);
-  // const [ isSubmitted, setIsSubmitted ] = useToggleState(false);
-  // const [ invalidForm, setInvalidForm ] = useToggleState(false);
+  // const [ usrData, setUsrData ] = useLocalStorage("userData", null);
   // image styles.
   const styles = {
     backgroundImage: `url(${image})`,

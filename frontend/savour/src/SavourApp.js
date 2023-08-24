@@ -13,19 +13,23 @@ const SavourApp = () => {
   // const { usrData, setUsrData } = useContext(UserContext);
   const [ usrData, setUsrData ] = useLocalStorage("userData", null);
   const history = useHistory();
+
   const logOut = () => {
     window.localStorage.clear();
     setUsrData(() => null);
-    setIsLoggedOut();
+    history.push("/login");
   }
-  if (isLoggedOut) return <Redirect to="/login" />;
-  // if (isLoggedOut) history.push("/login");
+  const linkNames = [
+    ["recipes", "/recipes"], ["my recipes", "/my-recipes"],
+    ["recipelists", "/recipelists"], ["favs", "/favs"],
+    ["saved", "/saved"], ["profile", "/profile"]
+  ]
 
   return (
     <div className="SavourApp">
       <UserContext.Provider value={{usrData, setUsrData}}>
         <Navbar
-          linkNames={[["recipes", "/recipes"], ["my recipes", "/my-recipes"], ["recipelists", "/recipelists"], ["profile", "/profile"]]}
+          linkNames={linkNames}
           logOut={logOut} />
         <Routes />
       </UserContext.Provider>

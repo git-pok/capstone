@@ -95,7 +95,9 @@ const LoginForm = () => {
     // Set isSubmitted to true if all props exist.
     else setIsSubmitted();
   }
+
   if (formCmplt) return <Redirect exact to="/" />;
+  
   // image styles.
   const styles = {
     backgroundImage: `url(${image})`,

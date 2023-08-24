@@ -20,27 +20,12 @@ const Routes = () => {
   // }
 
   return (
-    // <UserContext.Provider value={{usrData, setUsrData}}>
     <Switch>
-      {/* <Route exact path="/">
-        <Home />
-      </Route> */}
-      {/* <Route exact path="/login">
-        <LoginForm />
-      </Route> */}
       { userToken &&
         <Route exact path="/">
           <Home />
         </Route>
       }
-      {/* <Route exact path="/logout">
-        <Redirect exact to="/" />
-      </Route> */}
-    {/* { !userToken &&
-      <Route exact path="/signup">
-        <SignupForm />
-      </Route>
-    } */}
       { !userToken &&
         <Route exact path="/signup">
           <RegisterForm />
@@ -56,54 +41,8 @@ const Routes = () => {
           <h1>RECIPES</h1>
         </Route>
       }
-      {
-        <Route exact path="/logout">
-        </Route>
-      }
-    {/* { userToken &&
-      <Route exact path="/companies">
-        <SearchBox />
-        <CoOrJobCard
-          data={companies}
-          title="Companies" />
-      </Route>
-    } */}
-    {/* { userToken &&
-      <Route exact path="/jobs">
-        <CoOrJobCard
-          data={jobs}
-          title="Jobs"
-          jobs={true} />
-      </Route>
-    }
-    { userToken &&
-      <Route exact path="/profile">
-        <ProfileCard />
-      </Route>
-    }
-    { userToken &&
-      <Route exact path="/companies/:handle">
-        <CompanyDetailsCard findJobApps={findJobApps} />
-      </Route>
-    }
-    { userToken &&
-      <Route exact path="/jobs/:id">
-        <JobDetailsCard findJobApps={findJobApps} />
-      </Route>
-    }
-    { userToken &&
-      <Route exact path="/users/:username">
-
-      </Route>
-    }
-    { userToken &&
-      <Route exact path="/users/:username/edit">
-        <UserProfileEditForm />
-      </Route>
-    } */}
       <Redirect exact to="/" />
     </Switch>
-    // </UserContext.Provider>
   );
 }
 
