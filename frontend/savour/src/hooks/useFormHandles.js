@@ -1,6 +1,7 @@
 import { useState } from 'react';
 
 const useFormHandles = (initialState) => {
+  console.log("useFormHandles RAN");
   const [ formData, setFormData ] = useState(initialState);
 
   const handleChange = (evt) => {

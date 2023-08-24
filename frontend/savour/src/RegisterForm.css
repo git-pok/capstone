@@ -1,46 +1,67 @@
+.bg-img {
+  width: 100vw;
+  height: 100vh;
+  margin: 0px 0px;
+}
+
 .RegisterForm {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 50%;
-    height: 100%;
-    margin: 0px auto;
-    margin-top: 10px;
-    padding: 50px 0px;
-    background-color: rgb(39, 55, 77);
-    border-radius: 10px;
-  }
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  width: 80%;
+  margin: 100px auto 0px auto;
+  padding: 50px 0px;
+  background-color: rgb(39, 55, 77);
+  border-radius: 10px;
+}
+
+.RegisterForm-field {
+  display: block;
+}
   
-  .RegisterForm-h1 {
-    text-align: center;
-    margin-top: 100px;
-  }
+.RegisterForm-h1 {
+  text-align: center;
+  display: block;
+  font-size: 60px;
+  margin: 0px 0px;
+  padding-top: 120px;
+}
+
+.RegisterForm-field label {
+  display: block;
+  width: 260px;
+  height: 30px;
+  margin-right: 30px;
+  color: rgb(221, 230, 237);
+}
   
-  .RegisterForm label {
-    width: 260px;
-    height: 30px;
-    color: rgb(221, 230, 237);
-  }
+.RegisterForm-field input {
+  width: 260px;
+  height: 30px;
+  margin-bottom: 30px;
+}
+
+.RegisterForm-submit {
+  display: block;
+  width: 100%;
+  margin-top: 10px;
+}
+
+.RegisterForm-submit button {
+  display: block;
+  width: 260px;
+  height: 30px;
+  margin: 0px auto;
+  margin-top: 10px;
+  border: 3px inset rgb(221, 230, 237);
+  background-color: rgb(221, 230, 237);
+  color: rgb(39, 55, 77);
+  transition: .5s ease-in-out background-color;
+}
   
-  .RegisterForm input {
-    width: 260px;
-    height: 30px;
-    margin-bottom: 30px;
-  }
-  
-  .RegisterForm button {
-    display: block;
-    width: 260px;
-    height: 30px;
-    margin-top: 10px;
-    border: 3px inset rgb(221, 230, 237);
-    background-color: rgb(221, 230, 237);
-    color: rgb(39, 55, 77);
-    transition: .5s ease-in-out background-color;
-  }
-  
-  .RegisterForm button:hover {
-    border-color: rgb(39, 55, 77);
-    background-color: rgb(39, 55, 77);
-    color: rgb(221, 230, 237);
-  }
+.RegisterForm button:hover {
+  border-color: rgb(39, 55, 77);
+  background-color: rgb(39, 55, 77);
+  color: rgb(221, 230, 237);
+}

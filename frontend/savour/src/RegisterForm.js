@@ -1,26 +1,30 @@
-import { useState, useContext, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Redirect } from 'react-router-dom';
 import Message from './Message.js';
 import SavourApi from './models/SavourApi.js';
-// import SavourContext from './context/SavourContext.js';
 import useLocalStorage from './hooks/useLocalStorage.js';
 import useToggleState from './hooks/useToggleState.js';
-import useFormHandles from './hooks/useFormHandles.js';
 import jwt_decode from 'jwt-decode';
+import image from './img/cut-board.jpg';
 import './RegisterForm.css';
 
+/**
+ * RegisterForm
+ * Register Form
+ * Props: none
+*/
 const RegisterForm = () => {
   const initialState = {
       username: "", first_name: "", last_name: "",
       email: "", phone: "", password: ""
   };
-  // const [ formData, setFormData, handleChange, resetForm ] = useFormHandles(initialState);
+
   const [ usrData, setUsrData ] = useLocalStorage("userData", null);
   const [ formErrMsg, setFormErrMsg ] = useState(null);
   const [ formData, setFormData ] = useState(initialState);
+  const [ formCmplt, setFormCmplt ] = useToggleState(false);
   const [ isSubmitted, setIsSubmitted ] = useToggleState(false);
   const [ invalidForm, setInvalidForm ] = useToggleState(false);
-//   const { userData, setUserData } = useContext(JoblyContext);
 
   useEffect(() => {
     const signup = async () => {
@@ -49,15 +53,11 @@ const RegisterForm = () => {
         console.log("RegisterForm SUBMITTED!");
         // Set isSubmitted to false.
         setIsSubmitted();
-        // setFormData();
         // console.log("formData", formData);
         setFormData(() => initialState);
-        // if (isSubmitted) return <Redirect exact to="/" />;
-        // <Redirect exact to="/" />
-        // <Redirect exact to="/" />
+        setFormCmplt();
 
       } catch (err) {
-        // <Redirect exact to="/signup" />
         console.log("ERROR", err);
         setFormErrMsg(() => "Error");
         setInvalidForm();
@@ -82,7 +82,7 @@ const RegisterForm = () => {
 
   const handleSubmit = async (evt) => {
     evt.preventDefault();
-    // Create array of props formData needs.
+    // Create array of props formData requires.
     const reqProps = [
       "username", "first_name", "last_name",
       "email", "phone", "password"
@@ -91,21 +91,28 @@ const RegisterForm = () => {
     const isValMsn = reqProps.some(val => (
       formData[val] === ""
     ));
+    // If props are missing set invalidForm.
     if (isValMsn) {
       setFormErrMsg(() => "All fields must be complete!");
       setInvalidForm();
       setTimeout(setInvalidForm, 3000);
     }
-    // Set isSubmitted to true.
+    // Set isSubmitted to true if all props exist.
     else setIsSubmitted();
   }
-
-  // if (isSubmitted) return <Redirect exact to="/" />;
-
+  if (formCmplt) return <Redirect exact to="/" />;
+  // image styles.
+  const styles = {
+    backgroundImage: `url(${image})`,
+    backgroundSize: "cover",
+    backgroundRepeat: "no-repeat"
+  }
   return (
     <>
+    <div className="bg-img" style={styles}>
     <h1 className="RegisterForm-h1">Sign Up</h1>
     <form onSubmit={handleSubmit} className="RegisterForm">
+      <div className="RegisterForm-field">
         <label htmlFor="username">Username</label>
         <input
             type="text"
@@ -115,6 +122,8 @@ const RegisterForm = () => {
             name="username"
             placeholder="Type a username"
             autoComplete="username"></input>
+      </div>
+      <div className="RegisterForm-field">
         <label htmlFor="firstName">First Name</label>
         <input
             type="text"
@@ -123,6 +132,8 @@ const RegisterForm = () => {
             value={formData.first_name}
             name="first_name"
             placeholder="Type a first name"></input>
+      </div>
+      <div className="RegisterForm-field">
         <label htmlFor="lastName">Last Name</label>
         <input
             type="text"
@@ -131,6 +142,8 @@ const RegisterForm = () => {
             value={formData.last_name}
             name="last_name"
             placeholder="Type a last name"></input>
+      </div>
+      <div className="RegisterForm-field">
         <label htmlFor="email">Email</label>
         <input
             type="email"
@@ -139,6 +152,8 @@ const RegisterForm = () => {
             value={formData.email}
             name="email"
             placeholder="Type an email"></input>
+      </div>
+      <div className="RegisterForm-field">
         <label htmlFor="phone">Phone</label>
         <input
             type="text"
@@ -147,6 +162,8 @@ const RegisterForm = () => {
             value={formData.phone}
             name="phone"
             placeholder="Type a phone"></input>
+      </div>
+      <div className="RegisterForm-field">
         <label htmlFor="password">Password</label>
         <input
             type="password"
@@ -156,6 +173,7 @@ const RegisterForm = () => {
             name="password"
             placeholder="Type a password"
             autoComplete="current-password"></input>
+      </div>
       {
         invalidForm &&
         <Message msgObj={
@@ -165,8 +183,11 @@ const RegisterForm = () => {
           }
         } />
       }
-      <button>SUBMIT</button>
+      <div className="RegisterForm-submit">
+        <button>SUBMIT</button>
+      </div>
     </form>
+    </div>
     </>
   );
 }
