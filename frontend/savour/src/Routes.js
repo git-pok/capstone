@@ -56,6 +56,10 @@ const Routes = () => {
           <h1>RECIPES</h1>
         </Route>
       }
+      {
+        <Route exact path="/logout">
+        </Route>
+      }
     {/* { userToken &&
       <Route exact path="/companies">
         <SearchBox />

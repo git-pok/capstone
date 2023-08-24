@@ -5,7 +5,6 @@ import Navbar from './Navbar.js';
 import Routes from './Routes.js';
 import useLocalStorage from './hooks/useLocalStorage.js';
 import UserContext from './context/UserContext.js';
-import NavContext from './context/UserContext.js';
 import useToggleState from './hooks/useToggleState';
 
 const SavourApp = () => {
@@ -13,13 +12,14 @@ const SavourApp = () => {
   const [ isLoggedOut, setIsLoggedOut ] = useToggleState(false);
   // const { usrData, setUsrData } = useContext(UserContext);
   const [ usrData, setUsrData ] = useLocalStorage("userData", null);
+  const history = useHistory();
   const logOut = () => {
     window.localStorage.clear();
     setUsrData(() => null);
     setIsLoggedOut();
   }
-
-  if (isLoggedOut) return <Redirect exact to="/login" />
+  if (isLoggedOut) return <Redirect to="/login" />;
+  // if (isLoggedOut) history.push("/login");
 
   return (
     <div className="SavourApp">

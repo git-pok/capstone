@@ -27,8 +27,7 @@ const LoginForm = () => {
   const [ isSubmitted, setIsSubmitted ] = useToggleState(false);
   const [ invalidForm, setInvalidForm ] = useToggleState(false);
   const { usrData, setUsrData } = useContext(UserContext);
-  // const { setIsLoggedOut } = useContext(NavContext);
-  // console.log("CONTEXT usrData", usrData);
+
   useEffect(() => {
     const login = async () => {
       try {
@@ -52,7 +51,6 @@ const LoginForm = () => {
         // console.log("formData", formData);
         setFormData(() => initialState);
         setFormCmplt();
-        // setIsLoggedOut();
       } catch (err) {
         console.log("ERROR", err);
         // Define variable for API error.
