@@ -15,60 +15,48 @@ import './Recipes.css';
  * Props: none
 */
 const Recipes = () => {
-
-  // const [ recipeData, setRecipeData ] = useAxios(null);
   const { usrData, setUsrData } = useContext(UserContext);
+  const params = { subCategory: "chicken", rating: 5 };
+  const headers = { _token: `Bearer ${usrData.token}`};
+  const options = {method: "get", url: "/recipes", data: {}, params, headers}
+  const [ recipeData ] = useAxios("recipes", options);
+  // const [ recipeData, setRecipeData] = useState(null);
+  // console.log("recipeData", recipeData !== null ? recipeData[0] : recipeData);
+  const topFourArr = recipeData !== null ? [recipeData[0], recipeData[1], recipeData[2], recipeData[3]] : null;
+  console.log("topFourArr", topFourArr);
+  // const topFive = recipeData !== null ? topFourArr.map((recipe, idx) => {
+  //   return recipe;
+  // }) : null
+  // console.log("topFive", topFive);
+
   // const [ formErrMsg, setFormErrMsg ] = useState(null);
   // const [ isSubmitted, setIsSubmitted ] = useToggleState(false);
   // const [ invalidForm, setInvalidForm ] = useToggleState(false);
 
-  // useEffect(() => {
-  //   const getRecipes = async () => {
-
-  //     try {
-  //       console.log("usrData", usrData);
-  //       const headers = { _token: `Bearer ${usrData.token}`}
-        // const regResult = await SavourApi.request("post", "/users/register", {}, {}, headers);
-        // const options = {method: "get", url: "/recipes", data: {}, params: {}, headers}
-        // const regResult = setRecipeData("/recipes", options);
-        // console.log("regResult", regResult);
-        
-
-        // setUsrData(data => (
-        //   payload
-        // ));
-        // console.log("RegisterForm SUBMITTED!");
-        // Set isSubmitted to false.
-        // setIsSubmitted();
-        // console.log("formData", formData);
-        // setFormData(() => initialState);
-        // setFormCmplt();
-
-      // } catch (err) {
-      //   console.log("ERROR", err);
-        // setFormErrMsg(() => "Error");
-        // setInvalidForm();
-        // setTimeout(setInvalidForm, 3000);
-        // // Set isSubmitted to false.
-        // setTimeout(setIsSubmitted, 3000);
-    //   }
-    // }
-
-  //   getRecipes();
-
-  // }, [])
-
-
-  // if (formCmplt) return <Redirect exact to="/" />;
   // image styles.
-  const styles = {
-    backgroundImage: `url(${image})`,
-    backgroundSize: "cover",
-    backgroundRepeat: "no-repeat"
-  }
+  // const styles = {
+  //   backgroundImage: `url(${image})`,
+  //   backgroundSize: "cover",
+  //   backgroundRepeat: "no-repeat"
+  // }
   return (
     <>
-    <h1>RECIPES</h1>
+    <h1>Top Chicken Recipes</h1>
+    <div>
+      {
+        topFourArr !== null ?
+        topFourArr.map(recipe => (
+          <div key={recipe.id}>
+            <h3>{recipe.name}</h3>
+            <h3>By {recipe.author}</h3>
+            <p>Prep Time: {recipe.prep_time}</p>
+            <p>Cook Time: {recipe.cook_time}</p>
+            <p>{recipe.description}</p>
+            <img src={recipe.image}></img>
+          </div>
+          )) : null
+      }
+    </div>
     </>
   );
 }
