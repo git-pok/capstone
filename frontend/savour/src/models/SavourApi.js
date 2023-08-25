@@ -16,6 +16,8 @@ class Savour {
     */
     static async request (method, url, data = {}, params = {}, headers = {}) {
         console.log("REQ ARGS", method, url, data, params, headers);
+        // const userData = JSON.parse(localStorage.getItem("userData"));
+        // if (userData) headers["_token"] = `Bearer ${userData.token}`;
         const req = await axios({
             method,
             url: `${BASE_URL}${url}`,

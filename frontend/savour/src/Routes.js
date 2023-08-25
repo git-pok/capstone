@@ -4,6 +4,7 @@ import useLocalStorage from './hooks/useLocalStorage.js';
 import RegisterForm from './RegisterForm.js';
 import LoginForm from './LoginForm.js';
 import Home from './Home.js';
+import Recipes from './Recipes.js';
 import UserContext from './context/UserContext.js';
 
 const Routes = () => {
@@ -38,7 +39,7 @@ const Routes = () => {
       }
       { userToken &&
         <Route exact path="/recipes">
-          <h1>RECIPES</h1>
+          <Recipes />
         </Route>
       }
       <Redirect exact to="/" />
