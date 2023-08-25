@@ -6,6 +6,8 @@ import useLocalStorage from './hooks/useLocalStorage.js';
 import useToggleState from './hooks/useToggleState.js';
 import useAxios from './hooks/useAxios.js';
 import UserContext from './context/UserContext.js';
+import RecipeContainer from './RecipeContainer.js';
+// import ShowHideText from './ShowHideText.js';
 import image from './img/ambient-kitchen.jpg';
 import './Recipes.css';
 
@@ -41,21 +43,9 @@ const Recipes = () => {
   // }
   return (
     <>
-    <h1>Top Chicken Recipes</h1>
-    <div>
-      {
-        topFourArr !== null ?
-        topFourArr.map(recipe => (
-          <div key={recipe.id}>
-            <h3>{recipe.name}</h3>
-            <h3>By {recipe.author}</h3>
-            <p>Prep Time: {recipe.prep_time}</p>
-            <p>Cook Time: {recipe.cook_time}</p>
-            <p>{recipe.description}</p>
-            <img src={recipe.image}></img>
-          </div>
-          )) : null
-      }
+    <h1 className="Recipes-h1">Top Chicken Recipes</h1>
+    <div className="Recipes">
+      <RecipeContainer showHide={true} recipeArray={topFourArr} />
     </div>
     </>
   );
