@@ -1,10 +1,11 @@
-import { Route, Switch, Redirect } from 'react-router-dom';
+import { Route, Switch, Redirect, useParams } from 'react-router-dom';
 import { useContext } from 'react';
 import useLocalStorage from './hooks/useLocalStorage.js';
 import RegisterForm from './RegisterForm.js';
 import LoginForm from './LoginForm.js';
 import Home from './Home.js';
 import Recipes from './Recipes.js';
+import RecipeDetails from './RecipeDetails.js';
 import UserContext from './context/UserContext.js';
 
 const Routes = () => {
@@ -19,6 +20,8 @@ const Routes = () => {
   //   const jobApps = data.indexOf(id);
   //   return jobApps === -1;
   // }
+  // let params = useParams();
+  // console.log("params", params);
 
   return (
     <Switch>
@@ -40,6 +43,11 @@ const Routes = () => {
       { userToken &&
         <Route exact path="/recipes">
           <Recipes />
+        </Route>
+      }
+      { userToken &&
+        <Route exact path="/recipes/:id">
+          <RecipeDetails />
         </Route>
       }
       <Redirect exact to="/" />

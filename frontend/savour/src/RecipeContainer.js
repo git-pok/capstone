@@ -1,4 +1,5 @@
-import useToggleState from './hooks/useToggleState.js';
+import { Link } from 'react-router-dom';
+// import useToggleState from './hooks/useToggleState.js';
 import ShowHideBtnAndText from './ShowHideBtnAndText.js';
 import './RecipeContainer.css';
 
@@ -18,7 +19,9 @@ const RecipeContainer = ({ showHide = false, recipeArray = [] }) => {
         recipeArray !== null ?
         recipeArray.map(recipe => (
           <div key={recipe.id} className="RecipeContainer-recipe">
-            <h3>{recipe.name}</h3>
+            <Link exact="true" to={`recipes/${recipe.id}`}>
+              <h3>{recipe.name}</h3>
+            </Link>
             <h3>By {recipe.author}</h3>
             <img src={recipe.image}></img>
             { showHide ?
@@ -28,9 +31,9 @@ const RecipeContainer = ({ showHide = false, recipeArray = [] }) => {
                 {text: `${recipe.description}`}
               ]} /> :
               <>
-              <p className="RecipeContainer-recipe-p">Prep Time: {recipe.prep_time}</p>
-              <p className="RecipeContainer-recipe-p">Cook Time: {recipe.cook_time}</p>
-              <p className="RecipeContainer-recipe-p">{recipe.description}</p>
+                <p className="RecipeContainer-recipe-p">Prep Time: {recipe.prep_time}</p>
+                <p className="RecipeContainer-recipe-p">Cook Time: {recipe.cook_time}</p>
+                <p className="RecipeContainer-recipe-p">{recipe.description}</p>
               </>
             }
           </div>
