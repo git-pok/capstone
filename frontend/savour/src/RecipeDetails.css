@@ -5,6 +5,7 @@
 }
 
 .RecipeDetails-h1 {
+  width: 100%;
   font-size: 60px;
   margin-bottom: 70px;
 }
@@ -35,6 +36,17 @@
 .RecipeDetails-float-img-div {
   flex: 60%;
   background-color: rgba(229, 253, 253, 0.184);
+}
+
+.RecipeDetails-no-float-div {
+  display: block;
+  width: 70%;
+  height: 100%;
+  padding: 20px 20px;
+  box-sizing: border-box;
+  margin-bottom: 70px;
+  border-radius: 10px;
+  background-color: rgba(188, 191, 211, 0.233);
 }
 
 .RecipeDetails-subtitle {

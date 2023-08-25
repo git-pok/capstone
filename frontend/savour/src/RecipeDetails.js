@@ -7,24 +7,21 @@ import useToggleState from './hooks/useToggleState.js';
 import useAxios from './hooks/useAxios.js';
 import UserContext from './context/UserContext.js';
 import RecipeContainer from './RecipeContainer.js';
-// import ShowHideText from './ShowHideText.js';
 import image from './img/ambient-kitchen.jpg';
 import './RecipeDetails.css';
 
 /**
- * Recipes
- * Recipes Component
+ * RecipeDetails
+ * Recipe Details Component
  * Props: none
 */
 const RecipeDetails = () => {
   const { id } = useParams();
-  console.log("params", id);
   const { usrData, setUsrData } = useContext(UserContext);
-  // const params = { subCategory: "chicken", rating: 5 };
   const headers = { _token: `Bearer ${usrData.token}`};
   const options = {method: "get", url: `/recipes/${id}`, data: {}, params: {}, headers}
   const [ recipeData ] = useAxios("recipe", options);
-  console.log("recipeData", recipeData);
+  const isReveiws = recipeData ? recipeData[0].reviews.length > 0 : null;
 
   // const [ formErrMsg, setFormErrMsg ] = useState(null);
   // const [ isSubmitted, setIsSubmitted ] = useToggleState(false);
@@ -37,7 +34,6 @@ const RecipeDetails = () => {
     <div className="RecipeDetails">
     { recipeData &&
         <>
-        <div className="RecipeDetails">
           <div className="RecipeDetails-div">
             <div className="RecipeDetails-float-img-div">
               <img src={recipeData[0].image}></img>
@@ -71,7 +67,7 @@ const RecipeDetails = () => {
               <h2 className="RecipeDetails-subtitle">Ingredients</h2>
               <ul className="RecipeDetails-ul">
                 {recipeData[0].ingredients.map(ingrd => (
-                  <li key={ingrd.ingredient_id}>{ingrd.qty} {ingrd.unit !== "no unit" ? ingrd.unit : null} {ingrd.ingredient}</li>
+                  <li key={`${ingrd.qty}-${ingrd.ingredient_id}`}>{ingrd.qty} {ingrd.unit !== "no unit" ? ingrd.unit : null} {ingrd.ingredient}</li>
                 ))}
               </ul>
             </div>
@@ -81,11 +77,19 @@ const RecipeDetails = () => {
             </div>
           </div>
 
-        </div>
-          {/* <h2 className="RecipeDetails-subtitle"></h2> */}
+          <h1 className="RecipeDetails-h1">Reviews</h1>
+            { isReveiws ? recipeData[0].reviews.map((rvw, idx) => (
+              <div className="RecipeDetails-no-float-div" key={`div-${rvw.user_id}`}>
+              <p key={`stars-${rvw.user_id}`}>{rvw.stars}</p>
+              <p key={`review-${rvw.user_id}`}>{rvw.review}</p>
+              </div>
+            )) :
+              <div className="RecipeDetails-no-float-div">
+                <p>No reviews!</p>
+              </div>
+            }
         </>
     }
-      {/* <RecipeContainer showHide={true} recipeArray={topFourArr} /> */}
     </div>
     </>
   );
