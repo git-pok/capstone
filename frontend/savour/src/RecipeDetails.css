@@ -72,6 +72,14 @@
   text-align: center;
 }
 
+.RecipeDetails-short-text:link {
+  display: block;
+  width: 90%;
+  margin: 10px auto 20px auto;
+  text-align: center;
+  text-decoration: none;
+}
+
 .RecipeDetails-ul {
   list-style: circle;
   width: 100%;
@@ -84,5 +92,6 @@
 
 .RecipeDetails-ul li {
   /* background-color: blueviolet; */
+  text-align: left;
   margin-bottom: 10px;
 }

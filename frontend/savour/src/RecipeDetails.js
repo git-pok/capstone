@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from 'react';
-import { Redirect, useParams } from 'react-router-dom';
+import { Redirect, useParams, Link } from 'react-router-dom';
 import Message from './Message.js';
 import SavourApi from './models/SavourApi.js';
 import useLocalStorage from './hooks/useLocalStorage.js';
@@ -42,8 +42,8 @@ const RecipeDetails = () => {
               <h2 className="RecipeDetails-subtitle">Descritpion</h2>
               <p className="RecipeDetails-p">{recipeData[0].description}</p>
 
-              <h2 className="RecipeDetails-subtitle">Recipe Link</h2>
-              <p className="RecipeDetails-p">{recipeData[0].url}</p>
+              <h2 className="RecipeDetails-subtitle">Source Link</h2>
+              <a href={recipeData[0].url} className="RecipeDetails-short-text">Visit Site</a>
 
               <h2 className="RecipeDetails-subtitle">Rating</h2>
               <p className="RecipeDetails-short-text">{recipeData[0].rating}</p>

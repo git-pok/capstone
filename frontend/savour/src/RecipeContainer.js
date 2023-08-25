@@ -13,13 +13,17 @@ const RecipeContainer = ({ showHide = false, recipeArray = [] }) => {
   //   color,
   //   fontSize
   // }
+  // console.log("RecipeContainer");
+  // console.log("recipeArray.length", recipeArray.length);
+  // console.log("recipeArray", recipeArray);
+  // console.log("recipeArray", recipeArray[0].id);
   return (
     <>
       {
-        recipeArray !== null ?
+        recipeArray.length &&
         recipeArray.map(recipe => (
           <div key={recipe.id} className="RecipeContainer-recipe">
-            <Link exact="true" to={`recipes/${recipe.id}`}>
+            <Link exact to={`recipes/${recipe.id}`}>
               <h3>{recipe.name}</h3>
             </Link>
             <h3>By {recipe.author}</h3>
@@ -37,7 +41,7 @@ const RecipeContainer = ({ showHide = false, recipeArray = [] }) => {
               </>
             }
           </div>
-          )) : null
+          ))
       }
     </>
   );
