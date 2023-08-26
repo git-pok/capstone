@@ -25,7 +25,7 @@ class Savour {
             params,
             headers
           });
-        console.log("req", req);
+        console.log("SAVOUR API req", req);
         return req;
     }
 }
