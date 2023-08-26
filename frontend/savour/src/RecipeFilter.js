@@ -37,13 +37,13 @@ const RecipeFilter = ({ setState }) => {
 
   useEffect(() => {
     const filterRecipes = async () => {
-
       try {
         const { 
           subCategory = "", name = "", author = "",
           rating = "", orderBy = "", orderBy2 = "",
           chronOrder = ""
         } = formData;
+
         const formDataArr = Object.entries(formData);
         console.log("FORM VALUES", subCategory, name, author, rating, orderBy, orderBy2, chronOrder);
         console.log("formDataArr", formDataArr);
@@ -68,11 +68,10 @@ const RecipeFilter = ({ setState }) => {
         console.log("RegisterForm SUBMITTED!");
         // Set isSubmitted to false.
         setIsSubmitted();
-        // console.log("formData", formData);
         // setFormData(() => initialState);
 
       } catch (err) {
-        console.log("ERROR", err);
+        // console.log("ERROR $#$#$#$#$#$#$#$#$#$#$", err);
         const error = err.response.data.error.message;
         setFormErrMsg(() => error || "Error");
         setInvalidForm();
@@ -112,13 +111,40 @@ const RecipeFilter = ({ setState }) => {
       <form onSubmit={handleSubmit} className="RecipeFilter-form">
         <div className="RecipeFilter-form-field">
           <label htmlFor="subCategory">Sub Category</label>
-          <input
-            type="text"
+          <select
             id="subCategory"
-            onChange={handleChange}
-            value={formData.subCategory}
             name="subCategory"
-            placeholder="Type a sub category"></input>
+            onChange={handleChange}
+            value={formData.subCategory}>
+              <option value="">None</option>
+              <option value="lunch">Lunch</option>
+              <option value="breakfast">Breakfast</option>
+              <option value="sweet treats">Sweet Treats</option>
+              <option value="dinner">Dinner</option>
+              <option value="storecupboard">Storecupboard</option>
+              <option value="desserts">Desserts</option>
+              <option value="cheese">Cheese</option>
+              <option value="fish and seafood">Fish and Seafood</option>
+              <option value="pasta">Pasta</option>
+              <option value="vegan">Vegan</option>
+              <option value="kids' baking">Kids' Baking</option>
+              <option value="meat">Meat</option>
+              <option value="chicken">Chicken</option>
+              <option value="savoury pastries">Savoury Pastries</option>
+              <option value="keto">Keto</option>
+              <option value="low calorie">Low Calorie</option>
+              <option value="salads">Salads</option>
+              <option value="vegan baking">Vegan Baking</option>
+              <option value="vegetarian">Vegetarian</option>
+              <option value="bread">Bread</option>
+              <option value="cakes">Cakes</option>
+              <option value="quick bakes">Quick Bakes</option>
+              <option value="biscuit recipes">Biscuit Recipes</option>
+              <option value="high protein">High Protein</option>
+              <option value="free from baking">Free From Baking</option>
+              <option value="smoothies">Smoothies</option>
+              <option value="fitness & lifestyle">Fitness & Lifestyle</option>
+          </select>
         </div>
         <div className="RecipeFilter-form-field">
           <label htmlFor="name">Recipe Name</label>
@@ -152,33 +178,41 @@ const RecipeFilter = ({ setState }) => {
         </div>
         <div className="RecipeFilter-form-field">
           <label htmlFor="orderBy">Order By</label>
-          <input
-              type="text"
-              id="orderBy"
-              onChange={handleChange}
-              value={formData.orderBy}
-              name="orderBy"
-              placeholder="Type a order by"></input>
+          <select
+            id="orderBy"
+            name="orderBy"
+            onChange={handleChange}
+            value={formData.orderBy}>
+              <option value="">None</option>
+              <option value="name">Name</option>
+              <option value="rating">Rating</option>
+              <option value="author">Author</option>
+          </select>
         </div>
         <div className="RecipeFilter-form-field">
-          <label htmlFor="rating">Order By 2</label>
-          <input
-              type="text"
-              id="orderBy2"
-              onChange={handleChange}
-              value={formData.orderBy2}
-              name="orderBy2"
-              placeholder="Type an order by"></input>
+          <label htmlFor="orderBy2">Order By 2</label>
+          <select
+            id="orderBy2"
+            name="orderBy2"
+            onChange={handleChange}
+            value={formData.orderBy2}>
+              <option value="">None</option>
+              <option value="name">Name</option>
+              <option value="rating">Rating</option>
+              <option value="author">Author</option>
+          </select>
         </div>
         <div className="RecipeFilter-form-field">
-          <label htmlFor="chronOrder">Chronological Order</label>
-          <input
-              type="text"
-              id="chronOrder"
-              onChange={handleChange}
-              value={formData.chronOrder}
-              name="chronOrder"
-              placeholder="Type a chron order"></input>
+          <label htmlFor="chronOrder">Sort Order</label>
+          <select
+            id="chronOrder"
+            name="chronOrder"
+            onChange={handleChange}
+            value={formData.chronOrder}>
+              <option value="">None</option>
+              <option value="asc">Ascending</option>
+              <option value="desc">Descending</option>
+          </select>
         </div>
         <div className="RecipeFilter-form-submit">
           {

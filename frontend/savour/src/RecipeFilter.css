@@ -43,7 +43,7 @@
   color: rgb(221, 230, 237);
 }
   
-.RecipeFilter-form-field input {
+.RecipeFilter-form-field input, select {
   width: 260px;
   height: 30px;
   margin-bottom: 30px;
