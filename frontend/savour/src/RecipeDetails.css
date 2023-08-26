@@ -1,7 +1,27 @@
 .RecipeDetails {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.RecipeDetails-msg {
+  display: block;
+  width: 180px;
+  height: 50px;
+  margin: 0px auto;
+}
+
+.RecipeDetails-icons-float {
+  width: 100%;
+  height: 50px;
   display: flex;
+  flex-direction: row;
   justify-content: center;
-  flex-wrap: wrap;
+}
+
+.RecipeDetails-icons {
+  margin: 10px 10px;
+  font-size: 30px;
 }
 
 .RecipeDetails-h1 {
@@ -16,12 +36,10 @@
 }
 
 .RecipeDetails-div {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  flex-wrap: wrap;
+  display: inline-block;
   width: 70%;
-  margin-bottom: 140px;
+  height: 100%;
+  margin: 0px auto 140px auto;
   padding: 30px 30px;
   box-sizing: content-box;
   border-radius: 10px;
@@ -29,13 +47,24 @@
 }
 
 .RecipeDetails-float-div {
-  flex: 40%;
-  background-color: rgba(229, 253, 253, 0.184);
+  display: block;
+  float: left;
+  width: 40%;
 }
 
 .RecipeDetails-float-img-div {
-  flex: 60%;
-  background-color: rgba(229, 253, 253, 0.184);
+  float: left;
+  width: 60%;
+}
+
+.RecipeDetails-float-ul-div {
+  float: left;
+  width: 50%;
+}
+
+.RecipeDetails-float-steps-div {
+  float: left;
+  width: 50%;
 }
 
 .RecipeDetails-no-float-div {
@@ -44,7 +73,7 @@
   height: 100%;
   padding: 20px 20px;
   box-sizing: border-box;
-  margin-bottom: 70px;
+  margin: 0px auto 70px auto;
   border-radius: 10px;
   background-color: rgba(188, 191, 211, 0.233);
 }
@@ -59,7 +88,6 @@
 .RecipeDetails-p {
   display: block;
   width: 90%;
-  /* background-color: antiquewhite; */
   margin: 10px auto 20px auto;
   text-align: left;
 }
@@ -67,7 +95,6 @@
 .RecipeDetails-short-text {
   display: block;
   width: 90%;
-  /* background-color: antiquewhite; */
   margin: 10px auto 20px auto;
   text-align: center;
 }
@@ -91,7 +118,33 @@
 }
 
 .RecipeDetails-ul li {
-  /* background-color: blueviolet; */
   text-align: left;
   margin-bottom: 10px;
+}
+
+@media only screen and (max-width: 1302px) and (min-width: 400px) {
+  .RecipeDetails-float-div {
+    display: block;
+    float: none;
+    width: 100%;
+    margin-top: 40px;
+  }
+  
+  .RecipeDetails-float-img-div {
+    float: none;
+    width: 100%;
+  }
+  
+  .RecipeDetails-float-ul-div {
+    float: none;
+    display: block;
+    width: 90%;
+    margin: 0px auto;
+  }
+  
+  .RecipeDetails-float-steps-div {
+    float: none;
+    width: 100%;
+    margin-top: 40px;
+  }
 }

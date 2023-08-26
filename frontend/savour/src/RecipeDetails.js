@@ -1,5 +1,7 @@
 import { useState, useEffect, useContext } from 'react';
 import { Redirect, useParams, Link } from 'react-router-dom';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faThumbsUp, faThumbsDown, faStar, faFloppyDisk } from '@fortawesome/free-solid-svg-icons'
 import Message from './Message.js';
 import SavourApi from './models/SavourApi.js';
 import useLocalStorage from './hooks/useLocalStorage.js';
@@ -22,18 +24,71 @@ const RecipeDetails = () => {
   const options = {method: "get", url: `/recipes/${id}`, data: {}, params: {}, headers}
   const [ recipeData ] = useAxios("recipe", options);
   const isReveiws = recipeData ? recipeData[0].reviews.length > 0 : null;
+  const [ reqDataObj, setReqDataObj ] = useState(null);
+  const [ reqObjUrl, setReqObjUrl ] = useState(null);
+  const [ likDisFavSucc, setLikDisFavSucc ] = useToggleState(false);
+  const [ lkdDslkdOrFavd, setLkdDslkdOrFavd ] = useToggleState(false);
+  const [ formErrMsg, setFormErrMsg ] = useState(null);
+  const [ isSubmitted, setIsSubmitted ] = useToggleState(false);
+  const [ invalidForm, setInvalidForm ] = useToggleState(false);
+  
+  const likOrDisRecipe = (recipeId, likes = true) => {
+    // Create post url and set state with it.
+    setReqObjUrl(() => `/recipes/${recipeId}/${likes ? "likes" : "dislikes"}/${usrData.userId}`);
+    setReqDataObj(() => ({}));
+    // Set isSubmitted to true.
+    setIsSubmitted();
+  }
 
-  // const [ formErrMsg, setFormErrMsg ] = useState(null);
-  // const [ isSubmitted, setIsSubmitted ] = useToggleState(false);
-  // const [ invalidForm, setInvalidForm ] = useToggleState(false);
+  const savOrFavRecipe = (recipeId, fav = true) => {
+    // Create post url and set state with it.
+    const url = fav ? `/users/${usrData.userId}/favorite-recipes` : `/users/${usrData.userId}/saved-recipes`;
+    setReqObjUrl(() => url);
+    setReqDataObj(() => ({ recipe_id: recipeId }));
+    // Set isSubmitted to true.
+    setIsSubmitted();
+  }
+  
+  useEffect(() => {
+    const likDislikOrFav = async () => {
+      try {
+        // console.log("reqObjUrl", reqObjUrl);
+        const req = await SavourApi.request("post", reqObjUrl, reqDataObj, {}, headers);
+        // Set isSubmitted to false.
+        setIsSubmitted();
+        // Set liked or disliked state to true.
+        setLkdDslkdOrFavd();
+        // Set liked or disliked success state to true.
+        setLikDisFavSucc();
+        // Set liked or disliked state to false.
+        setTimeout(setLkdDslkdOrFavd, 3000);
+        // Set liked or disliked success state to false.
+        setTimeout(setLikDisFavSucc, 3000);
+        setReqObjUrl(null);
+        setReqDataObj(() => ({ }));
+      } catch(err) {
+        // Set liked or disliked state to true.
+        setLkdDslkdOrFavd();
+        const error = err.response.data.error.message.constraint ? "Already added recipe!" : null;
+        setFormErrMsg(() => error || "Error");
+        setInvalidForm();
+        setTimeout(setInvalidForm, 3000);
+        // Set isSubmitted to false.
+        setTimeout(setIsSubmitted, 3000);
+        // Set liked or disliked state to false.
+        setTimeout(setLkdDslkdOrFavd, 3000);
+        setReqObjUrl(null);
+        setReqDataObj(() => ({ }));
+      }
+    }
+    if (isSubmitted) likDislikOrFav();
+  }, [isSubmitted]);
 
-  // image styles.
   return (
     <>
     <h1 className="RecipeDetails-h1">{recipeData && `${recipeData[0].name} by ${recipeData[0].author}`}</h1>
-    <div className="RecipeDetails">
     { recipeData &&
-        <>
+        <div className="RecipeDetails">
           <div className="RecipeDetails-div">
             <div className="RecipeDetails-float-img-div">
               <img src={recipeData[0].image}></img>
@@ -59,11 +114,40 @@ const RecipeDetails = () => {
 
               <h2 className="RecipeDetails-subtitle">Cook Time</h2>
               <p className="RecipeDetails-short-text">{recipeData[0].cook_time}</p>
+              <div className="RecipeDetails-icons-float">
+                <FontAwesomeIcon
+                  onClick={() => likOrDisRecipe(recipeData[0].id)}
+                  className="RecipeDetails-icons"
+                  icon={faThumbsUp} />
+                <FontAwesomeIcon
+                  onClick={() => likOrDisRecipe(recipeData[0].id, false)}
+                  className="RecipeDetails-icons"
+                  icon={faThumbsDown} />
+                <FontAwesomeIcon
+                  onClick={() => savOrFavRecipe(recipeData[0].id)}
+                  className="RecipeDetails-icons"
+                  icon={faStar} />
+                <FontAwesomeIcon
+                  onClick={() => savOrFavRecipe(recipeData[0].id, false)}
+                  className="RecipeDetails-icons"
+                  icon={faFloppyDisk} />
+              </div>
+              <div className="RecipeDetails-msg">
+              {
+                lkdDslkdOrFavd &&
+                  <Message msgObj={
+                    {
+                      class: likDisFavSucc ? "success" : "fail",
+                      msg: likDisFavSucc ? "Added recipe!" : formErrMsg
+                    }
+                  } />
+              }
+              </div>
             </div>
           </div>
 
           <div className="RecipeDetails-div">
-            <div className="RecipeDetails-float-div">
+            <div className="RecipeDetails-float-ul-div">
               <h2 className="RecipeDetails-subtitle">Ingredients</h2>
               <ul className="RecipeDetails-ul">
                 {recipeData[0].ingredients.map(ingrd => (
@@ -71,7 +155,7 @@ const RecipeDetails = () => {
                 ))}
               </ul>
             </div>
-            <div className="RecipeDetails-float-div">
+            <div className="RecipeDetails-float-steps-div">
               <h2 className="RecipeDetails-subtitle">Steps</h2>
               <p className="RecipeDetails-p">{recipeData[0].steps}</p>
             </div>
@@ -88,9 +172,8 @@ const RecipeDetails = () => {
                 <p>No reviews!</p>
               </div>
             }
-        </>
+            </div>
     }
-    </div>
     </>
   );
 }

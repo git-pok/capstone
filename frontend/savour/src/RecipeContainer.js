@@ -1,4 +1,6 @@
+import { useContext } from 'react';
 import { Link } from 'react-router-dom';
+import UserContext from './context/UserContext.js';
 // import useToggleState from './hooks/useToggleState.js';
 import ShowHideBtnAndText from './ShowHideBtnAndText.js';
 import './RecipeContainer.css';
@@ -9,20 +11,28 @@ import './RecipeContainer.css';
  * Props: showHide, recipeArray
 */
 const RecipeContainer = ({ showHide = false, recipeArray = [] }) => {
-  // const styles = {
-  //   color,
-  //   fontSize
-  // }
+  const { usrData, setUsrData } = useContext(UserContext);
+  console.log("USER DATA RECIPE CONTAINER", usrData);
+  const disLikstyles = {
+    like_user_ids: "3px solid green",
+    disliked_user_ids: "3px solid red"
+  }
   // console.log("RecipeContainer");
   // console.log("recipeArray.length", recipeArray.length);
-  // console.log("recipeArray", recipeArray);
+  console.log("recipeArray", recipeArray);
   // console.log("recipeArray", recipeArray[0].id);
   return (
     <>
       {
         recipeArray.length &&
         recipeArray.map(recipe => (
-          <div key={recipe.id} className="RecipeContainer-recipe">
+          <div style={
+              recipe.liked_user_ids.includes(usrData.userId)
+              ? { border: "2px solid green" }
+              : null
+            }
+            key={recipe.id}
+            className="RecipeContainer-recipe">
             <Link exact="true" to={`recipes/${recipe.id}`}>
               <h3>{recipe.name}</h3>
             </Link>
