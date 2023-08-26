@@ -1,10 +1,7 @@
 import { useState, useEffect, useContext } from 'react';
-// import { Redirect } from 'react-router-dom';
 import Message from './Message.js';
 import SavourApi from './models/SavourApi.js';
-// import useLocalStorage from './hooks/useLocalStorage.js';
 import useToggleState from './hooks/useToggleState.js';
-// import useAxios from './hooks/useAxios.js';
 import UserContext from './context/UserContext.js';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faFilter, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons'
@@ -13,12 +10,14 @@ import './RecipeFilter.css';
 /**
  * RecipeFilter
  * Recipe Filter Component
- * Props: none
+ * Renders a search icon and a form.
+ * Props: setState
+ *    setState: state function
 */
 const RecipeFilter = ({ setState }) => {
   const { usrData, setUsrData } = useContext(UserContext);
-  
   const headers = { _token: `Bearer ${usrData.token}`};
+
   const initialState = {
     subCategory: "", name: "", author: "",
     rating: "", orderBy: "", orderBy2: "",
@@ -38,40 +37,22 @@ const RecipeFilter = ({ setState }) => {
   useEffect(() => {
     const filterRecipes = async () => {
       try {
-        const { 
-          subCategory = "", name = "", author = "",
-          rating = "", orderBy = "", orderBy2 = "",
-          chronOrder = ""
-        } = formData;
-
         const formDataArr = Object.entries(formData);
-        console.log("FORM VALUES", subCategory, name, author, rating, orderBy, orderBy2, chronOrder);
-        console.log("formDataArr", formDataArr);
-        // const {
-        //   subCategory
-        // } = formData;
         const recipesFltrParams = {};
         formDataArr.forEach(prop => {
           if (prop[1] !== "") recipesFltrParams[prop[0]] = prop[1]; 
         })
-        console.log("recipesFltrParams", recipesFltrParams);
-        // const recipesFltrParams = {
-        //   subCategory, name, author, rating, orderBy,
-        //   orderBy2, chronOrder
-        // };
+
         const req = await SavourApi.request("get", "/recipes", {}, recipesFltrParams, headers);
-        console.log("$#$#$#$#$#$#$#$#$#$#$$#$#$# FLTR Req Result", req);
 
         setState(() => (
           req.data
         ));
-        console.log("RegisterForm SUBMITTED!");
         // Set isSubmitted to false.
         setIsSubmitted();
         // setFormData(() => initialState);
 
       } catch (err) {
-        // console.log("ERROR $#$#$#$#$#$#$#$#$#$#$", err);
         const error = err.response.data.error.message;
         setFormErrMsg(() => error || "Error");
         setInvalidForm();

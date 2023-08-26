@@ -266,8 +266,11 @@ class Recipe {
 	* }
      */
     static async recipesFilter(qryParams) {
-        if (qryParams.chronOrder && qryParams.orderBy === undefined) throw new ExpressError(400, "Must select order by for chron order to work!");
-        else if (qryParams.chronOrder && qryParams.orderBy2 === undefined) throw new ExpressError(400, "Must select order by for chron order to work!");
+        if (
+            (qryParams.chronOrder)
+            && (qryParams.orderBy === undefined)
+            && (qryParams.orderBy2 === undefined)
+        ) throw new ExpressError(400, "Must select order by for chron order to work!");
         const finalSql = [];
         // Create parametizer for qry values.
         let prmTzr = 1;

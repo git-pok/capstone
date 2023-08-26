@@ -23,7 +23,7 @@ const RecipeContainer = ({ showHide = false, recipeArray = [] }) => {
         recipeArray.length &&
         recipeArray.map(recipe => (
           <div key={recipe.id} className="RecipeContainer-recipe">
-            <Link exact to={`recipes/${recipe.id}`}>
+            <Link exact="true" to={`recipes/${recipe.id}`}>
               <h3>{recipe.name}</h3>
             </Link>
             <h3>By {recipe.author}</h3>
