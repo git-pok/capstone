@@ -299,6 +299,24 @@ const selectDisRecUsrId = [
     "dis.user_id AS disliked_user_id"
 ];
 
+/**
+ * selectFavRecUsrId
+ * Select column names to
+ * query user id from favorite_recipes table.
+ */
+const selectFavRecUsrId = [
+    "fr.user_id AS fav_user_id"
+];
+
+/**
+ * selectSavRecUsrId
+ * Select column names to
+ * query user id from saved_recipes table.
+ */
+const selectSavRecUsrId = [
+    "sv.user_id AS sav_user_id"
+];
+
 
 const orderByChron = {
     asc: "ASC",
@@ -342,6 +360,13 @@ const disRecipeJoinData = [
     ["disliked_recipes", "r.id", "dis.recipe_id"]
 ];
 
+const favRecipeJoinData = [
+    ["favorite_recipes", "r.id", "fr.recipe_id"]
+];
+
+const savRecipeJoinData = [
+    ["saved_recipes", "r.id", "sv.recipe_id"]
+];
 
 const ingrdRecipesJoinData = [
     ["units", "ri.unit_id", "u.id"],
@@ -395,10 +420,12 @@ module.exports = {
     sqlOperatorStrict, sqlCommandsObj, sqlCommandsModifsObj,
     recipesRelDataSelectColumns,
     ingrdsRelDataSelectColumns,
-    selectLikRecUsrId, selectDisRecUsrId, orderByChron,
-    recipesOnData,
+    selectLikRecUsrId, selectDisRecUsrId,
+    selectFavRecUsrId, selectSavRecUsrId,
+    orderByChron, recipesOnData,
     favRecipesjoinArr, savedRecipesjoinArr,
     likRecipeJoinData, disRecipeJoinData,
+    favRecipeJoinData, savRecipeJoinData,
     ingrdRecipesJoinData, savourTableNames, recipeQryFilterKeys,
     recipeFilterKeys, orderByKeys, isNumbers,
     userSqlReturnNoAbrv

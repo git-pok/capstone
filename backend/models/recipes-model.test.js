@@ -37,17 +37,17 @@ afterAll(async () => {
     await db.end();
 });
 
-describe("Recipe.getLikesOrDis", () => {
-    test("get user ids for recipe likes", async () => {
-        const recipeliks = await Recipe.getLikesOrDis(1684);
-        expect(recipeliks).toEqual([]);
+describe("Recipe.getFavsOrSavs", () => {
+    test("get user ids for favorite recipes", async () => {
+        const recipeliks = await Recipe.getFavsOrSavs(6);
+        expect(recipeliks).toEqual([usr1IdTest]);
     });
 });
 
-describe("Recipe.getLikesOrDis", () => {
-    test("get user ids for recipe dislikes", async () => {
-        const recipeDisliks = await Recipe.getLikesOrDis(1684, false);
-        expect(recipeDisliks).toEqual([]);
+describe("Recipe.getFavsOrSavs", () => {
+    test("get user ids for saved recipes", async () => {
+        const recipeDisliks = await Recipe.getFavsOrSavs(300, false);
+        expect(recipeDisliks).toEqual([usr1IdTest]);
     });
 });
 
@@ -88,8 +88,8 @@ describe("Recipe.getRecipeReviews", () => {
     });
 });
 
-describe("Recipe.defineLiksDis", () => {
-    test("request and define recipe likes/dislikes on array, impure", async () => {
+describe("Recipe.defineFavsSavs", () => {
+    test("request and define recipe favs/savs on array, impure", async () => {
         const recipe = [{
             "id": 1686,
             "name": "vitamin booster smoothie",
@@ -107,7 +107,7 @@ describe("Recipe.defineLiksDis", () => {
             "prep_time": "5 mins",
             "cook_time": "No Time"
         }];
-        const newRecipeArray = await Recipe.defineLiksDis(recipe);
+        const newRecipeArray = await Recipe.defineFavsSavs(recipe);
         expect(recipe).toEqual(
             [
                 {
@@ -126,15 +126,15 @@ describe("Recipe.defineLiksDis", () => {
                     "steps": "Put all the orange, carrot, celery and mango in the blender, top up with water, then blitz until smooth.",
                     "prep_time": "5 mins",
                     "cook_time": "No Time",
-                    "liked_user_ids": [],
-                    "disliked_user_ids": []
+                    "fav_user_ids": [],
+                    "sav_user_ids": []
                 }
             ]
         );
         expect(recipe).toBe(newRecipeArray);
     });
 
-    test("request and define recipe likes/dislikes on array, pure", async () => {
+    test("request and define recipe favs/savs on array, pure", async () => {
         const recipe = [{
             "id": 1686,
             "name": "vitamin booster smoothie",
@@ -152,7 +152,7 @@ describe("Recipe.defineLiksDis", () => {
             "prep_time": "5 mins",
             "cook_time": "No Time"
         }];
-        const newRecipeArray = await Recipe.defineLiksDis(recipe, true);
+        const newRecipeArray = await Recipe.defineFavsSavs(recipe, true);
         expect(newRecipeArray).toEqual(
             [
                 {
@@ -171,8 +171,8 @@ describe("Recipe.defineLiksDis", () => {
                     "steps": "Put all the orange, carrot, celery and mango in the blender, top up with water, then blitz until smooth.",
                     "prep_time": "5 mins",
                     "cook_time": "No Time",
-                    "liked_user_ids": [],
-                    "disliked_user_ids": []
+                    "fav_user_ids": [],
+                    "sav_user_ids": []
                 }
             ]
         );
@@ -199,8 +199,8 @@ describe("Recipe.recipeOrRecipes", () => {
 			"steps": "Mix the grated carrot, mixed spice and cinnamon with the oats, 150ml water and a pinch of salt, then cover and chill in the fridge overnight. The next day, stir in the honey and sultanas then top with Greek yogurt.",
 			"prep_time": "10 mins",
 			"cook_time": "No Time",
-			"liked_user_ids": [],
-			"disliked_user_ids": [],
+			"fav_user_ids": [],
+			"sav_user_ids": [],
             "reviews": [],
             "ingredients": [
                 {
@@ -267,9 +267,9 @@ describe("Recipe.recipesFilter", () => {
 		const qry = { name: "chicken" };
         const recipes = await Recipe.recipesFilter(qry);
         expect(recipes[0].name).toContain("chicken");
-        expect(recipes[0]["disliked_user_ids"]).toEqual(expect.any((Array)));
+        expect(recipes[0]["fav_user_ids"]).toEqual(expect.any((Array)));
         expect(recipes[20].name).toContain("chicken");
-        expect(recipes[20]["liked_user_ids"]).toEqual(expect.any((Array)));
+        expect(recipes[20]["sav_user_ids"]).toEqual(expect.any((Array)));
         expect(recipes[recipes.length - 1].name).toContain("chicken");
     });
 
@@ -277,8 +277,8 @@ describe("Recipe.recipesFilter", () => {
 		const qry = { orderBy: "rating", chronOrder: "desc" };
         const recipes = await Recipe.recipesFilter(qry);
         expect(recipes[0].rating).toEqual(5);
-        expect(recipes[0]["liked_user_ids"]).toEqual(expect.any((Array)));
-        expect(recipes[0]["disliked_user_ids"]).toEqual(expect.any((Array)));
+        expect(recipes[0]["fav_user_ids"]).toEqual(expect.any((Array)));
+        expect(recipes[0]["sav_user_ids"]).toEqual(expect.any((Array)));
         expect(recipes[recipes.length - 1].rating).toEqual(1);
     });
 
@@ -286,8 +286,8 @@ describe("Recipe.recipesFilter", () => {
 		const qry = { rating: 5 };
         const recipes = await Recipe.recipesFilter(qry);
         expect(recipes[0].rating).toEqual(5);
-        expect(recipes[0]["liked_user_ids"]).toEqual(expect.any((Array)));
-        expect(recipes[0]["disliked_user_ids"]).toEqual(expect.any((Array)));
+        expect(recipes[0]["fav_user_ids"]).toEqual(expect.any((Array)));
+        expect(recipes[0]["sav_user_ids"]).toEqual(expect.any((Array)));
         expect(recipes[recipes.length - 1].rating).toEqual(5);
     });
 

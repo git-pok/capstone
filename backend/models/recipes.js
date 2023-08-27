@@ -3,8 +3,11 @@ const {
         favRecipesjoinArr, savedRecipesjoinArr,
         ingrdsRelDataSelectColumns,
         selectLikRecUsrId, selectDisRecUsrId,
+        selectFavRecUsrId, selectSavRecUsrId,
         likRecipeJoinData,
-        disRecipeJoinData, ingrdRecipesJoinData,
+        disRecipeJoinData,
+        favRecipeJoinData, savRecipeJoinData,
+        ingrdRecipesJoinData,
         recipeFilterKeys, recipesClmnToTblAbrev,
         favRecpesClmnToTblAbrev, savedRecpesClmnToTblAbrev,
         recipesOnData,
@@ -40,22 +43,23 @@ const ExpressError = require("./error.js");
  */
 class Recipe {
     /**
-     * getLikesOrDis
-     * Retrieves liked or disliked usr ids for recipe.
-     * Arguments: recipe id
-     * getRecipeDisLikes(id) => [1, 2, 3]
+     * getFavsOrSavs
+     * Old Name: getLikesOrDis
+     * Retrieves fav or sav usr ids for recipe.
+     * Arguments: recipe id, favs
+     * getFavsOrSavs(id) => [1, 2, 3]
      */
-    static async getLikesOrDis(id, likes = true) {
-        const isLikes = likes === true;
+    static async getFavsOrSavs(id, favs = true) {
+        const isFavs = favs === true;
         await rowExists("recipe", "id", "recipes", [["id", id]]);
         const dbRecipe = await db.query(`SELECT * FROM recipes WHERE id = $1`, [id]);
         const dbRecipeRows = JSON.parse(JSON.stringify(dbRecipe.rows));
         const dbRecipeRowsObj = JSON.parse(JSON.stringify(dbRecipeRows[0]));
         // Creates select sql string.
-        const selectClmns = isLikes ? [...selectLikRecUsrId] : [...selectDisRecUsrId];
+        const selectClmns = isFavs ? [...selectFavRecUsrId] : [...selectSavRecUsrId];
         const selectSqlStr = genSelectSql(selectClmns, "recipes", true);
         // Creates join sql string.
-        const joinVals = isLikes ? [...likRecipeJoinData] : [...disRecipeJoinData];
+        const joinVals = isFavs ? [...favRecipeJoinData] : [...savRecipeJoinData];
         const joinSqlStr = genJoinSql(joinVals, "FULL JOIN");
         // Creates one string from array of sql strings.
         const selectJoinSqlStr = arrayConcat([selectSqlStr, joinSqlStr]);
@@ -73,10 +77,10 @@ class Recipe {
             `${sqlQry}`, pgValues
         );
         // Maps recipe's user ids.
-        const mapProp = isLikes ? ["liked_user_id"] : ["disliked_user_id"];
+        const mapProp = isFavs ? ["fav_user_id"] : ["sav_user_id"];
         const usrIds = recipesReq.rows.map(obj => obj[mapProp]);
         // Deletes null values from usr ids arrays.
-        const noNullUrdIds = deleteNullInArrPure(usrIds);  
+        const noNullUrdIds = deleteNullInArrPure(usrIds);
         return noNullUrdIds;
     }
 
@@ -164,32 +168,33 @@ class Recipe {
     }
 
     /**
-     * defineLiksDis
+     * defineFavsSavs
+     * Old Name: defineLiksDis
      * Requests user likes and dislikes for a recipe and
      * defines props for them on obj.
      * Arguments: array of objects
      * const obj = [{ id: 1, name: "berry smoothie"}]
-     * defineLiksDis(id) =>
+     * defineFavsSavs(id) =>
      * [{id: 1, name: "berry smoothie", liked_user_ids: [1], ...}]
      */
-    static async defineLiksDis(arrayOfObjs, pure = false) {
+    static async defineFavsSavs(arrayOfObjs, pure = false) {
         const isPure = pure === true;
         const pureArr = [];
         for (let obj of arrayOfObjs) {
             // Retrieves recipe likes user ids.
-            const usrsRecipeLiks = await Recipe.getLikesOrDis(obj.id);
+            const usrsRecipeFavs = await Recipe.getFavsOrSavs(obj.id);
             // const usrsRecipeLiks = await Recipe.getRecipeLikes(obj.id);
             // Retireves recipe dislikes user ids.
-            const usrsRecipeDislikes = await Recipe.getLikesOrDis(obj.id, false);
+            const usrsRecipeSavs = await Recipe.getFavsOrSavs(obj.id, false);
             // const usrsRecipeDislikes = await Recipe.getRecipeDisLikes(obj.id);
             if (!isPure) {
                 // Defines new liked/disliked recipe user ids and reviews props.
-                obj["liked_user_ids"] = usrsRecipeLiks;
-                obj["disliked_user_ids"] = usrsRecipeDislikes;
+                obj["fav_user_ids"] = usrsRecipeFavs;
+                obj["sav_user_ids"] = usrsRecipeSavs;
             } else {
                 const newObj = JSON.parse(JSON.stringify(obj));
-                newObj["liked_user_ids"] = usrsRecipeLiks;
-                newObj["disliked_user_ids"] = usrsRecipeDislikes;
+                newObj["fav_user_ids"] = usrsRecipeFavs;
+                newObj["sav_user_ids"] = usrsRecipeSavs;
                 pureArr.push(newObj);
             }
         }
@@ -232,7 +237,7 @@ class Recipe {
         const recipeRows = recipesReq.rows;
         // Retrieves recipe likes/dislikes user ids
         // and defines props for them.
-        await Recipe.defineLiksDis(recipeRows);
+        await Recipe.defineFavsSavs(recipeRows);
 
         if (!isRecipes) {
             for (let obj of recipeRows) {
@@ -301,7 +306,7 @@ class Recipe {
         );
         const recipeRows = recipesReq.rows;
 
-        if (recipeRows.length) await Recipe.defineLiksDis(recipeRows);
+        if (recipeRows.length) await Recipe.defineFavsSavs(recipeRows);
         return recipeRows;
     }
 }

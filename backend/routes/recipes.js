@@ -50,21 +50,21 @@ router.get("/", isLoggedIn, async (req, res, next) => {
  * Likes a recipe.
  * Returns message.
  */
-router.post("/:recipe_id/likes/:user_id", isLoggedIn, isCurrUser, async (req, res, next) => {
-    try {
-        const { recipe_id, user_id } = req.params;
-        const rowExistsArr = [["id", +user_id]];
-        await rowExists("user", "id", "users", rowExistsArr);
-        const msg = "Liked recipe!";
-        const qryObj = { recipe_id: +recipe_id, user_id: +user_id };
-        const likMsg = await User.insertRow("liked_recipes", qryObj, false, false, msg);
-        return res.status(200).json(
-            likMsg
-        );
-    } catch (err) {
-        return next(err);
-    }
-});
+// router.post("/:recipe_id/likes/:user_id", isLoggedIn, isCurrUser, async (req, res, next) => {
+//     try {
+//         const { recipe_id, user_id } = req.params;
+//         const rowExistsArr = [["id", +user_id]];
+//         await rowExists("user", "id", "users", rowExistsArr);
+//         const msg = "Liked recipe!";
+//         const qryObj = { recipe_id: +recipe_id, user_id: +user_id };
+//         const likMsg = await User.insertRow("liked_recipes", qryObj, false, false, msg);
+//         return res.status(200).json(
+//             likMsg
+//         );
+//     } catch (err) {
+//         return next(err);
+//     }
+// });
 
 /**
  * "/:recipe_id/likes/:user_id"
@@ -73,20 +73,20 @@ router.post("/:recipe_id/likes/:user_id", isLoggedIn, isCurrUser, async (req, re
  * Deletes a liked recipe.
  * Returns message.
  */
-router.delete("/:recipe_id/likes/:user_id", isLoggedIn, isCurrUser, async (req, res, next) => {
-    try {
-        const { recipe_id, user_id } = req.params;
-        await rowExists("user", "id", "users", [["id", +user_id]]);
-        const msg = "Deleted liked recipe!";
-        const qryObj = { recipe_id: +recipe_id, user_id: +user_id };
-        const likDltMsg = await User.deleteRow("liked_recipes", qryObj, msg);
-        return res.status(200).json(
-            likDltMsg
-        );
-    } catch (err) {
-        return next(err);
-    }
-});
+// router.delete("/:recipe_id/likes/:user_id", isLoggedIn, isCurrUser, async (req, res, next) => {
+//     try {
+//         const { recipe_id, user_id } = req.params;
+//         await rowExists("user", "id", "users", [["id", +user_id]]);
+//         const msg = "Deleted liked recipe!";
+//         const qryObj = { recipe_id: +recipe_id, user_id: +user_id };
+//         const likDltMsg = await User.deleteRow("liked_recipes", qryObj, msg);
+//         return res.status(200).json(
+//             likDltMsg
+//         );
+//     } catch (err) {
+//         return next(err);
+//     }
+// });
 
 /**
  * "/:recipe_id/dislikes/:user_id"
@@ -95,21 +95,21 @@ router.delete("/:recipe_id/likes/:user_id", isLoggedIn, isCurrUser, async (req, 
  * Dislikes a recipe.
  * Returns message.
  */
-router.post("/:recipe_id/dislikes/:user_id", isLoggedIn, isCurrUser, async (req, res, next) => {
-    try {
-        const { recipe_id, user_id } = req.params;
-        const rowExistsArr = [["id", +user_id]];
-        await rowExists("user", "id", "users", rowExistsArr);
-        const msg = "Disliked recipe!";
-        const qryObj = { recipe_id: +recipe_id, user_id: +user_id };
-        const dislikMsg = await User.insertRow("disliked_recipes", qryObj, false, false, msg);
-        return res.status(200).json(
-            dislikMsg
-        );
-    } catch (err) {
-        return next(err);
-    }
-});
+// router.post("/:recipe_id/dislikes/:user_id", isLoggedIn, isCurrUser, async (req, res, next) => {
+//     try {
+//         const { recipe_id, user_id } = req.params;
+//         const rowExistsArr = [["id", +user_id]];
+//         await rowExists("user", "id", "users", rowExistsArr);
+//         const msg = "Disliked recipe!";
+//         const qryObj = { recipe_id: +recipe_id, user_id: +user_id };
+//         const dislikMsg = await User.insertRow("disliked_recipes", qryObj, false, false, msg);
+//         return res.status(200).json(
+//             dislikMsg
+//         );
+//     } catch (err) {
+//         return next(err);
+//     }
+// });
 
 /**
  * "/:recipe_id/dislikes/:user_id"
@@ -118,20 +118,20 @@ router.post("/:recipe_id/dislikes/:user_id", isLoggedIn, isCurrUser, async (req,
  * Deletes a disliked recipe.
  * Returns message.
  */
-router.delete("/:recipe_id/dislikes/:user_id", isLoggedIn, isCurrUser, async (req, res, next) => {
-    try {
-        const { recipe_id, user_id } = req.params;
-        await rowExists("user", "id", "users", [["id", +user_id]]);
-        const msg = "Deleted disliked recipe!";
-        const qryObj = { recipe_id: +recipe_id, user_id: +user_id };
-        const dislikDltMsg = await User.deleteRow("disliked_recipes", qryObj, msg);
-        return res.status(200).json(
-            dislikDltMsg
-        );
-    } catch (err) {
-        return next(err);
-    }
-});
+// router.delete("/:recipe_id/dislikes/:user_id", isLoggedIn, isCurrUser, async (req, res, next) => {
+//     try {
+//         const { recipe_id, user_id } = req.params;
+//         await rowExists("user", "id", "users", [["id", +user_id]]);
+//         const msg = "Deleted disliked recipe!";
+//         const qryObj = { recipe_id: +recipe_id, user_id: +user_id };
+//         const dislikDltMsg = await User.deleteRow("disliked_recipes", qryObj, msg);
+//         return res.status(200).json(
+//             dislikDltMsg
+//         );
+//     } catch (err) {
+//         return next(err);
+//     }
+// });
 
 
 module.exports = router;
