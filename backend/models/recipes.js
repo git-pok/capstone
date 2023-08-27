@@ -270,7 +270,7 @@ class Recipe {
             (qryParams.chronOrder)
             && (qryParams.orderBy === undefined)
             && (qryParams.orderBy2 === undefined)
-        ) throw new ExpressError(400, "Must select order by for chron order to work!");
+        ) throw new ExpressError(400, "Must select order by for sort order to work!");
         const finalSql = [];
         // Create parametizer for qry values.
         let prmTzr = 1;
