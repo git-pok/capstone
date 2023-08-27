@@ -290,4 +290,11 @@ describe("Recipe.recipesFilter", () => {
         expect(recipes[0]["disliked_user_ids"]).toEqual(expect.any((Array)));
         expect(recipes[recipes.length - 1].rating).toEqual(5);
     });
+
+    test("error for chron order without order by", async () => {
+		const qry = { rating: 5, chronOrder: "asc" };
+        await expect(async () => {
+            await Recipe.recipesFilter(qry);
+        }).rejects.toThrow(ExpressError);
+    });
 });
