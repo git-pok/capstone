@@ -12,15 +12,10 @@ import './RecipeContainer.css';
 */
 const RecipeContainer = ({ showHide = false, recipeArray = [] }) => {
   const { usrData, setUsrData } = useContext(UserContext);
-  console.log("USER DATA RECIPE CONTAINER", usrData);
-  const disLikstyles = {
-    like_user_ids: "3px solid green",
-    disliked_user_ids: "3px solid red"
-  }
-  // console.log("RecipeContainer");
-  // console.log("recipeArray.length", recipeArray.length);
-  console.log("recipeArray", recipeArray);
-  // console.log("recipeArray", recipeArray[0].id);
+  // const disLikstyles = {
+  //   like_user_ids: "3px solid green",
+  //   disliked_user_ids: "3px solid red"
+  // }
   return (
     <>
       {

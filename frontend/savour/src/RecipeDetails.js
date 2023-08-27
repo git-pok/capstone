@@ -21,30 +21,23 @@ const RecipeDetails = () => {
   const { id } = useParams();
   const { usrData, setUsrData } = useContext(UserContext);
   const headers = { _token: `Bearer ${usrData.token}`};
-  const options = {method: "get", url: `/recipes/${id}`, data: {}, params: {}, headers}
+  const options = {method: "get", url: `/recipes/${id}`, data: {}, params: {}, headers};
   const [ recipeData ] = useAxios("recipe", options);
+  // NEW LOGIC
+  const [ isFav, setIsFav ] = useState(false);
+  const [ recipeDtlsId, setRecipeDtlsId ] = useState([]);
+  // END NEW LOGIC
   const isReveiws = recipeData ? recipeData[0].reviews.length > 0 : null;
-  const [ reqDataObj, setReqDataObj ] = useState(null);
-  const [ reqObjUrl, setReqObjUrl ] = useState(null);
   const [ likDisFavSucc, setLikDisFavSucc ] = useToggleState(false);
   const [ lkdDslkdOrFavd, setLkdDslkdOrFavd ] = useToggleState(false);
   const [ formErrMsg, setFormErrMsg ] = useState(null);
+  const [ succMsg, setSuccMsg ] = useState(null);
   const [ isSubmitted, setIsSubmitted ] = useToggleState(false);
   const [ invalidForm, setInvalidForm ] = useToggleState(false);
-  
-  const likOrDisRecipe = (recipeId, likes = true) => {
-    // Create post url and set state with it.
-    setReqObjUrl(() => `/recipes/${recipeId}/${likes ? "likes" : "dislikes"}/${usrData.userId}`);
-    setReqDataObj(() => ({}));
-    // Set isSubmitted to true.
-    setIsSubmitted();
-  }
 
-  const savOrFavRecipe = (recipeId, fav = true) => {
-    // Create post url and set state with it.
-    const url = fav ? `/users/${usrData.userId}/favorite-recipes` : `/users/${usrData.userId}/saved-recipes`;
-    setReqObjUrl(() => url);
-    setReqDataObj(() => ({ recipe_id: recipeId }));
+  const savOrFavRecipe = async (recipeId, fav = true) => {
+    setIsFav(fav);
+    setRecipeDtlsId(recipeId);
     // Set isSubmitted to true.
     setIsSubmitted();
   }
@@ -52,8 +45,33 @@ const RecipeDetails = () => {
   useEffect(() => {
     const likDislikOrFav = async () => {
       try {
-        // console.log("reqObjUrl", reqObjUrl);
-        const req = await SavourApi.request("post", reqObjUrl, reqDataObj, {}, headers);
+        // NEW LOGIC
+        const favReq = await SavourApi.request("get", `/users/${usrData.userId}/favorite-recipes`, {}, {}, headers);
+        const favReqIds = favReq.data.map(recipe => recipe.id);
+        const savReq = await SavourApi.request("get", `/users/${usrData.userId}/saved-recipes`, {}, {}, headers);
+        const savReqIds = savReq.data.map(recipe => recipe.id);
+        // Create post url and set state with it.
+        const favUrl = favReqIds.includes(recipeDtlsId)
+            ? `/users/${usrData.userId}/favorite-recipes/${recipeDtlsId}`
+            : `/users/${usrData.userId}/favorite-recipes`;
+        const savUrl = savReqIds.includes(recipeDtlsId)
+            ? `/users/${usrData.userId}/saved-recipes/${recipeDtlsId}`
+            : `/users/${usrData.userId}/saved-recipes`;
+        const url = isFav ? favUrl : savUrl;
+        const favDataObj = favReqIds.includes(recipeDtlsId) ? {} : { recipe_id: recipeDtlsId };
+        const savDataObj = savReqIds.includes(recipeDtlsId) ? {} : { recipe_id: recipeDtlsId };
+        const dataObj = isFav ? favDataObj : savDataObj;
+        // END OF NEW LOGIC
+        const favMethod =  favReqIds.includes(recipeDtlsId) ? "delete" : "post";
+        const savMethod =  savReqIds.includes(recipeDtlsId) ? "delete" : "post";
+        const method = isFav ? favMethod : savMethod;
+        const req = await SavourApi.request(method, url, dataObj, {}, headers);
+        const favMsg = isFav && url === `/users/${usrData.userId}/favorite-recipes/${recipeDtlsId}`
+            ? "Removed recipe from favorites!" : "Added recipe to favorites!";
+        const savMsg = !isFav && url === `/users/${usrData.userId}/saved-recipes/${recipeDtlsId}`
+            ? "Removed recipe from saved recipes!" : "Added recipe to saved recipes!";
+        const msg = isFav ? favMsg : savMsg;
+        setSuccMsg(() => msg);
         // Set isSubmitted to false.
         setIsSubmitted();
         // Set liked or disliked state to true.
@@ -64,8 +82,7 @@ const RecipeDetails = () => {
         setTimeout(setLkdDslkdOrFavd, 3000);
         // Set liked or disliked success state to false.
         setTimeout(setLikDisFavSucc, 3000);
-        setReqObjUrl(null);
-        setReqDataObj(() => ({ }));
+        setRecipeDtlsId(null);
       } catch(err) {
         // Set liked or disliked state to true.
         setLkdDslkdOrFavd();
@@ -77,8 +94,7 @@ const RecipeDetails = () => {
         setTimeout(setIsSubmitted, 3000);
         // Set liked or disliked state to false.
         setTimeout(setLkdDslkdOrFavd, 3000);
-        setReqObjUrl(null);
-        setReqDataObj(() => ({ }));
+        setRecipeDtlsId(null);
       }
     }
     if (isSubmitted) likDislikOrFav();
@@ -116,14 +132,6 @@ const RecipeDetails = () => {
               <p className="RecipeDetails-short-text">{recipeData[0].cook_time}</p>
               <div className="RecipeDetails-icons-float">
                 <FontAwesomeIcon
-                  onClick={() => likOrDisRecipe(recipeData[0].id)}
-                  className="RecipeDetails-icons"
-                  icon={faThumbsUp} />
-                <FontAwesomeIcon
-                  onClick={() => likOrDisRecipe(recipeData[0].id, false)}
-                  className="RecipeDetails-icons"
-                  icon={faThumbsDown} />
-                <FontAwesomeIcon
                   onClick={() => savOrFavRecipe(recipeData[0].id)}
                   className="RecipeDetails-icons"
                   icon={faStar} />
@@ -138,7 +146,7 @@ const RecipeDetails = () => {
                   <Message msgObj={
                     {
                       class: likDisFavSucc ? "success" : "fail",
-                      msg: likDisFavSucc ? "Added recipe!" : formErrMsg
+                      msg: likDisFavSucc ? succMsg : formErrMsg
                     }
                   } />
               }
