@@ -13,32 +13,44 @@ import useAxios from './hooks/useAxios.js';
 import UserContext from './context/UserContext.js';
 import RecipeContainer from './RecipeContainer.js';
 import image from './img/ambient-kitchen.jpg';
-import './UserEdit.css';
+import './Profile.css';
 
 /**
- * UserEdit
- * UserEdit Component
+ * Profile
+ * User Profile Component
 */
-const UserEdit = () => {
+const Profile = () => {
   // const { id } = useParams();
-  const { usrData, setUsrData } = useContext(UserContext);
+  // const [ usrData, setUsrData ] = useLocalStorage("userData", null);
+  const { usrData, setUsrData, logOut } = useContext(UserContext);
+  console.log("USER EDIT USER TOKEN", usrData.token);
   const headers = { _token: `Bearer ${usrData.token}`};
+  console.log("USER EDIT USER DATA", usrData);
   const options = {method: "get", url: `/users/${usrData.userUsername}`, data: {}, params: {}, headers};
+  console.log("USER EDIT options", options);
   const [ userReqData, setUserReqData ] = useAxios(options);
   const [ userData, setUserData ] = useState(null);
-  // console.log("USER DATA",userReqData && userReqData[0].user.username);
+  const [ formErrMsg, setFormErrMsg ] = useState(null);
+  const [ isSubmitted, setIsSubmitted ] = useToggleState(false);
+  const [ invalidForm, setInvalidForm ] = useToggleState(false);
+  const [ formReqMade, setFormReqMade ] = useToggleState(false);
+  const [ dltReqMade, setDltReqMade ] = useToggleState(false);
+  const [ reqMadeSucc, setReqMadeSucc ] = useToggleState(false);
+  const [ succMsg, setSuccMsg ] = useState(null);
+  const [ isDelete, setIsDelete ] = useToggleState(false);
+  const history = useHistory();
 
   const initialState = {
     firstName: "", lastName: "", email: "",
     phone: "", password: ""
   };
+
+  const [ formData, setFormData ] = useState(initialState);
   console.log("LOGIN RAN");
 
-  const [ formErrMsg, setFormErrMsg ] = useState(null);
-  const [ formData, setFormData ] = useState(initialState);
-  const [ isSubmitted, setIsSubmitted ] = useToggleState(false);
-  const [ invalidForm, setInvalidForm ] = useToggleState(false);
-  const history = useHistory();
+  const deleteTrue = () => {
+    setIsDelete();
+  }
 
   useEffect(() => {
     const editUser = async () => {
@@ -47,35 +59,28 @@ const UserEdit = () => {
           firstName: first_name, lastName: last_name,
           email, phone, password
         } = formData;
+        // Make array of object props.
         const formValsArr = Object.entries({ first_name, last_name, email, phone, password });
         const data = {};
-        console.log("formValsArr", formValsArr);
+        // define props in data for values.
         formValsArr.forEach(arr => {
           if (arr[1] !== "") data[arr[0]] = arr[1];
         });
-        console.log("data", data);
+        // console.log("data", data);
         const usrReq = await SavourApi.request("patch", `/users/${usrData.userUsername}`, data, {}, headers);
-        console.log("usrReq Result", usrReq.data);
-        const userArr = [ ...usrReq.data ]
-        console.log("userObj", userArr);
+        // console.log("usrReq Result", usrReq.data);
+        const userArr = [ ...usrReq.data ];
         setUserReqData(() => userArr);
-        // history.push(`/users/${usrData.userUsername}`);
-        // const token = regResult.data[0].user.token;
-        // SavourApi.token = token;
-        // console.log("SAVOUR TOKEN", SavourApi.token);
-        // const payload = await jwt_decode(token);
-        // payload.token = token;
-        // console.log("payload", payload);
-
-        // setUsrData(data => (
-        // payload
-        // ));
-        console.log("LoginForm SUBMITTED!");
+        console.log("EditForm SUBMITTED!");
+        setSuccMsg(() => "User edited!");
+        setFormReqMade();
+        setReqMadeSucc();
+        setTimeout(setFormReqMade, 3000);
+        setTimeout(setReqMadeSucc, 3000);
+        setTimeout(() => setSuccMsg(null), 3000);
         // Set isSubmitted to false.
         setIsSubmitted();
-        // console.log("formData", formData);
         setFormData(() => initialState);
-        // history.push("/");
       } catch (err) {
         console.log("ERROR", err);
         // Define variable for API error.
@@ -88,9 +93,38 @@ const UserEdit = () => {
       }
     }
 
-    if (isSubmitted) editUser();
+    const deleteUser = async () => {
+      try {
+        const deleteUsrReq = await SavourApi.request("delete", `/users/${usrData.userUsername}`, {}, {}, headers);
+        console.log("DELETE SUBMITTED!");
+        setSuccMsg(() => "User deleted! Logging out!");
+        setDltReqMade();
+        setReqMadeSucc();
+        setTimeout(setDltReqMade, 3000);
+        setTimeout(setReqMadeSucc, 3000);
+        setTimeout(() => setSuccMsg(null), 3000);
+        setTimeout(logOut, 5000);
+        // Set isDelete to false.
+        setIsDelete();
 
-  }, [isSubmitted])
+      } catch (err) {
+        console.log("ERROR", err);
+        // Define variable for API error.
+        const error = err.response.data.error.message;
+        setFormErrMsg(() => error || "Error");
+        setInvalidForm();
+        setTimeout(setInvalidForm, 3000);
+        // Set isSubmitted to false.
+        setTimeout(setIsSubmitted, 3000);
+        // Set isDelete to false.
+        setIsDelete();
+      }
+    }
+
+    if (isSubmitted) editUser();
+    else if (isDelete) deleteUser();
+
+  }, [isSubmitted, isDelete])
 
   const handleChange = (evt) => {
     const { name, value } = evt.target;
@@ -112,45 +146,49 @@ const UserEdit = () => {
     const isVal = reqProps.some(val => (
       formData[val] !== ""
     ));
+    // console.log("isVal", isVal);
     // If no props are present set invalidForm.
     if (!isVal) {
-      setFormErrMsg(() => "Atleast one field must be complete!");
+      setFormErrMsg(() => "Fill atleast 1 field!");
       setInvalidForm();
       setTimeout(setInvalidForm, 3000);
+      setTimeout(() => setFormErrMsg(null), 3000);
+      setFormReqMade();
+      setTimeout(setFormReqMade, 3000);
     }
     // Set isSubmitted to true if all props exist.
     else setIsSubmitted();
-    // setIsSubmitted();
   }
 
   return (
     <>
-    <h1 className="DetailCardRow-h1">{userReqData && `${userReqData[0].user.username} Details`}</h1>
+    <h1 className="Profile-h1">{userReqData && `${userReqData[0].user.username} Details`}</h1>
     { userReqData &&
-      <div className="DetailCardRow">
-        <div className="DetailCardRow-div">
-          <div className="DetailCardRow-float-div">
-            <h2 className="DetailCardRow-subtitle">Username</h2>
-            <p className="DetailCardRow-short-text">{userReqData[0].user.username}</p>
+      <div className="Profile">
+        <div className="Profile-div">
+          <div className="Profile-float-div">
+            <h2 className="Profile-subtitle">Username</h2>
+            <p className="Profile-short-text">{userReqData[0].user.username}</p>
 
-            <h2 className="DetailCardRow-subtitle">First Name</h2>
-            <p className="DetailCardRow-short-text">{userReqData[0].user.first_name}</p>
+            <h2 className="Profile-subtitle">First Name</h2>
+            <p className="Profile-short-text">{userReqData[0].user.first_name}</p>
 
-            <h2 className="DetailCardRow-subtitle">Last Name</h2>
-            <p className="DetailCardRow-short-text">{userReqData[0].user.last_name}</p>
+            <h2 className="Profile-subtitle">Last Name</h2>
+            <p className="Profile-short-text">{userReqData[0].user.last_name}</p>
 
-            <h2 className="DetailCardRow-subtitle">Email</h2>
-            <p className="DetailCardRow-short-text">{userReqData[0].user.email}</p>
+            <h2 className="Profile-subtitle">Email</h2>
+            <p className="Profile-short-text">{userReqData[0].user.email}</p>
 
-            <h2 className="DetailCardRow-subtitle">Phone</h2>
-            <p className="DetailCardRow-short-text">{userReqData[0].user.phone}</p>
+            <h2 className="Profile-subtitle">Phone</h2>
+            <p className="Profile-short-text">{userReqData[0].user.phone}</p>
 
-            <h2 className="DetailCardRow-subtitle">Delete User</h2>
+            <h2 className="Profile-subtitle">Delete User</h2>
             <FontAwesomeIcon
                 // onClick={() => savOrFavRecipe(recipeData[0].id)}
-                className="DetailCardRow-icons"
+                className="Profile-icons"
+                onClick={deleteTrue}
                 icon={faUserXmark} />
-            <div className="DetailCardRow-msg">
+            <div className="Profile-msg">
             {/* {
               lkdDslkdOrFavd &&
                 <Message msgObj={
@@ -161,14 +199,22 @@ const UserEdit = () => {
                 } />
             } */}
             </div>
+            <div className="Profile-msg-div">
+            {
+              dltReqMade &&
+                <Message msgObj={
+                  {
+                    class: reqMadeSucc ? "success" : "fail",
+                    msg: reqMadeSucc ? succMsg : formErrMsg
+                  }
+                } />
+            }
+            </div>
           </div>
-          <div className="DetailCardRow-float-div-form">
-          <h2 className="DetailCardRow-subtitle">Edit User</h2>
-          {/* <div className="LoginForm-bg-img" style={styles}> */}
-          {/* <h1 className="DetailCardRow-form-h1">Login</h1> */}
-          <form onSubmit={handleSubmit} className="DetailCardRow-form">
-            {/* <h3 className="DetailCardRow-form-subtitle">Edit User</h3> */}
-            <div className="DetailCardRow-form-field">
+          <div className="Profile-float-div-form">
+          <h2 className="Profile-subtitle">Edit User</h2>
+          <form onSubmit={handleSubmit} className="Profile-form">
+            <div className="Profile-form-field">
               <label htmlFor="firstName">First Name</label>
               <input
                 type="text"
@@ -178,7 +224,7 @@ const UserEdit = () => {
                 name="firstName"
                 placeholder="Type a first name"></input>
             </div>
-            <div className="DetailCardRow-form-field">
+            <div className="Profile-form-field">
               <label htmlFor="lastName">Last Name</label>
               <input
                 type="text"
@@ -188,7 +234,7 @@ const UserEdit = () => {
                 name="lastName"
                 placeholder="Type a last name"></input>
             </div>
-            <div className="DetailCardRow-form-field">
+            <div className="Profile-form-field">
               <label htmlFor="email">Email</label>
               <input
                 type="text"
@@ -198,7 +244,7 @@ const UserEdit = () => {
                 name="email"
                 placeholder="Type an email"></input>
             </div>
-            <div className="DetailCardRow-form-field">
+            <div className="Profile-form-field">
               <label htmlFor="phone">Phone</label>
               <input
                 type="text"
@@ -208,7 +254,7 @@ const UserEdit = () => {
                 name="phone"
                 placeholder="Type a phone number"></input>
             </div>
-            <div className="DetailCardRow-form-field">
+            <div className="Profile-form-field">
               <label htmlFor="password">Password</label>
               <input
                 type="text"
@@ -218,52 +264,27 @@ const UserEdit = () => {
                 name="password"
                 placeholder="Type a password"></input>
             </div>
-            <div className="DetailCardRow-form-submit">
+            <div className="Profile-msg-div">
             {
-              invalidForm &&
-              <Message msgObj={
-                {
-                  class: "fail",
-                  msg: formErrMsg ? formErrMsg : "Error!"
-                }
-              } />
+              formReqMade &&
+                <Message msgObj={
+                  {
+                    class: reqMadeSucc ? "success" : "fail",
+                    msg: reqMadeSucc ? succMsg : formErrMsg
+                  }
+                } />
             }
-        <button>SUBMIT</button>
-      </div>
+            </div>
+            <div className="Profile-form-submit">
+              <button>SUBMIT</button>
+            </div>
             </form>
           </div>
         </div>
-
-        {/* <div className="DetailCardRow-div">
-          <div className="DetailCardRow-float-ul-div">
-            <h2 className="DetailCardRow-subtitle">Ingredients</h2>
-            <ul className="DetailCardRow-ul">
-              {recipeData[0].ingredients.map(ingrd => (
-                <li key={`${ingrd.qty}-${ingrd.ingredient_id}`}>{ingrd.qty} {ingrd.unit !== "no unit" ? ingrd.unit : null} {ingrd.ingredient}</li>
-              ))}
-            </ul>
-          </div>
-          <div className="DetailCardRow-float-steps-div">
-            <h2 className="DetailCardRow-subtitle">Steps</h2>
-            <p className="DetailCardRow-p">{recipeData[0].steps}</p>
-          </div>
-        </div>
-
-        <h1 className="DetailCardRow-h1">Reviews</h1>
-          { isReveiws ? recipeData[0].reviews.map((rvw, idx) => (
-            <div className="DetailCardRow-no-float-div" key={`div-${rvw.user_id}`}>
-            <p key={`stars-${rvw.user_id}`}>{rvw.stars}</p>
-            <p key={`review-${rvw.user_id}`}>{rvw.review}</p>
-            </div>
-          )) :
-            <div className="DetailCardRow-no-float-div">
-              <p>No reviews!</p>
-            </div>
-          } */}
       </div>
     }
     </>
   );
 }
 
-export default UserEdit;
+export default Profile;

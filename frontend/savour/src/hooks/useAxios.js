@@ -10,6 +10,7 @@ const useAxios = (optionsObj) => {
       // console.log("useAxios FNC ARGS", method, url, data, params, headers);
       const req = await SavourApi.request(method, url, data, params, headers);
       setReqData(() => req.data);
+      // console.log("USE AXIOS RAN", req.data);
     }
 
     axiosReq(method, url, data, params, headers);

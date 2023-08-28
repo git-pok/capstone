@@ -6,6 +6,7 @@ import Routes from './Routes.js';
 import useLocalStorage from './hooks/useLocalStorage.js';
 import UserContext from './context/UserContext.js';
 import useToggleState from './hooks/useToggleState';
+import SavourApi from './models/SavourApi.js';
 
 const SavourApp = () => {
   console.log("SavourApp RAN");
@@ -16,6 +17,7 @@ const SavourApp = () => {
   const logOut = () => {
     window.localStorage.clear();
     setUsrData(() => null);
+    SavourApi.token = null;
     history.push("/login");
   }
   const userLink = usrData ? `${usrData.userUsername}` : "";
@@ -27,7 +29,7 @@ const SavourApp = () => {
 
   return (
     <div className="SavourApp">
-      <UserContext.Provider value={{usrData, setUsrData}}>
+      <UserContext.Provider value={{usrData, setUsrData, logOut}}>
         <Navbar
           linkNames={linkNames}
           logOut={logOut} />

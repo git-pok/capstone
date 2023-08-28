@@ -8,7 +8,7 @@ import Recipes from './Recipes.js';
 import RecipeDetails from './RecipeDetails.js';
 import DetailCardRow from './DetailCardRow.js';
 import PageNotFound from './PageNotFound.js';
-import UserEdit from './UserEdit.js';
+import Profile from './Profile.js';
 import UserContext from './context/UserContext.js';
 
 const Routes = () => {
@@ -16,7 +16,7 @@ const Routes = () => {
 
   // const [ usrData, setUsrData ] = useLocalStorage("userData", null);
   const { usrData, setUsrData } = useContext(UserContext);
-  // console.log("usrData CONTEXT", usrData ? usrData : "NONE");
+  console.log("ROUTES usrData CONTEXT", usrData ? usrData : "NONE");
   const userToken = usrData ? usrData.token : null;
   console.log("userToken ROUTES", userToken);
   // const context = useContext(UserContext);
@@ -57,7 +57,7 @@ const Routes = () => {
       { userToken &&
         <Route exact path="/users/:id">
           {/* <DetailCardRow /> */}
-          <UserEdit />
+          <Profile />
         </Route>
       }
       { userToken &&

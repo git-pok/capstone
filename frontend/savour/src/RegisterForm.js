@@ -1,9 +1,10 @@
-import { useState, useEffect } from 'react';
-import { Redirect } from 'react-router-dom';
+import { useState, useEffect, useContext } from 'react';
+import { useHistory } from 'react-router-dom';
 import Message from './Message.js';
 import SavourApi from './models/SavourApi.js';
 import useLocalStorage from './hooks/useLocalStorage.js';
 import useToggleState from './hooks/useToggleState.js';
+import UserContext from './context/UserContext.js';
 import jwt_decode from 'jwt-decode';
 import image from './img/ambient-kitchen.jpg';
 import './RegisterForm.css';
@@ -18,13 +19,13 @@ const RegisterForm = () => {
       username: "", first_name: "", last_name: "",
       email: "", phone: "", password: ""
   };
-
-  const [ usrData, setUsrData ] = useLocalStorage("userData", null);
+  const { usrData, setUsrData } = useContext(UserContext);
   const [ formErrMsg, setFormErrMsg ] = useState(null);
   const [ formData, setFormData ] = useState(initialState);
   const [ formCmplt, setFormCmplt ] = useToggleState(false);
   const [ isSubmitted, setIsSubmitted ] = useToggleState(false);
   const [ invalidForm, setInvalidForm ] = useToggleState(false);
+  const history = useHistory();
 
   useEffect(() => {
     const signup = async () => {
@@ -40,22 +41,23 @@ const RegisterForm = () => {
             phone, password
         };
         const regResult = await SavourApi.request("post", "/users/register", data);
-        console.log("regResult", regResult);
         const token = regResult.data[0].token;
         SavourApi.token = token;
-        console.log("SAVOUR TOKEN", SavourApi.token);
         const payload = await jwt_decode(token);
         payload.token = token;
-
+        payload.userUsername = payload.username;
+        delete payload.username;
+        payload.userId = payload.id;
+        delete payload.id;
         setUsrData(data => (
           payload
         ));
-        console.log("RegisterForm SUBMITTED!");
         // Set isSubmitted to false.
         setIsSubmitted();
         // console.log("formData", formData);
         setFormData(() => initialState);
-        setFormCmplt();
+        // setFormCmplt();
+        history.push("/");
 
       } catch (err) {
         console.log("ERROR", err);
@@ -100,7 +102,7 @@ const RegisterForm = () => {
     // Set isSubmitted to true if all props exist.
     else setIsSubmitted();
   }
-  if (formCmplt) return <Redirect exact to="/" />;
+  // if (formCmplt) return <Redirect exact to="/" />;
   // image styles.
   const styles = {
     backgroundImage: `url(${image})`,

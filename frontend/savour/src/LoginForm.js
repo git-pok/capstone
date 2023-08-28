@@ -34,13 +34,10 @@ const LoginForm = () => {
         const { username, password } = formData;
         const data = { username, password };
         const regResult = await SavourApi.request("post", "/users/login", data);
-        // console.log("regResult", regResult);
         const token = regResult.data[0].user.token;
         SavourApi.token = token;
-        // console.log("SAVOUR TOKEN", SavourApi.token);
         const payload = await jwt_decode(token);
         payload.token = token;
-        console.log("payload", payload);
 
         setUsrData(data => (
           payload

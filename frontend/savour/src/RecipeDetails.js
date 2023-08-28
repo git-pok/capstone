@@ -44,7 +44,7 @@ const RecipeDetails = () => {
     // Set isSubmitted to true.
     setIsSubmitted();
   }
-  
+
   useEffect(() => {
     const likDislikOrFav = async () => {
       try {

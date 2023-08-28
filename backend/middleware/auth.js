@@ -57,11 +57,23 @@ function isLoggedIn(req, res, next) {
 function isCurrUser(req, res, next) {
     try {
         const payload = res.user[0] || [];
-        const { userUsername: user = false, userId = false } = payload;
+        // Destructures different payload username key names.
+        // For my app, a token's payload will have either
+        // username or userUsername key for username props.
+        // User.register and User.login create the payloads
+        // these keys are set on.
+        const {
+            username: usrName = false, userUsername: user = false,
+            userId = false, id: userId2 = false
+        } = payload;
+        // Destructures params.
         const { username = false, id = false, user_id = false } = req.params;
+        if (usrName) if (usrName === username) return next();
         if (user) if (user === username) return next();
         if (userId) if (userId === +id) return next();
         if (userId) if (userId === +user_id) return next();
+        if (userId2) if (userId2 === +id) return next();
+        if (userId2) if (userId2 === +user_id) return next();
         const error = new ExpressError(400, "Must be current user!");
         return next(error);
     } catch(err) {

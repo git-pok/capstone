@@ -9,12 +9,11 @@ import './Navbar.css';
  * Props: linkNames, logOut
 */
 const Navbar = ({ linkNames, logOut }) => {
-
-  // const { userData } = useContext(JoblyContext);
-  // const [ usrData, setUsrData ] = useLocalStorage("userData", null);
+  // const [ usrDataLs, setUsrDataLs ] = useLocalStorage("userData", null);
   const { usrData, setUsrData } = useContext(UserContext);
   const userToken = usrData ? usrData.token : null;
-  console.log("userToken", userToken);
+  console.log("LINK NAV usrData", usrData);
+  const usrName = usrData ? usrData.userUsername.toUpperCase(): null;
   return (
     <nav className="Navbar">
       <div className="Navbar-left-links">
@@ -23,7 +22,7 @@ const Navbar = ({ linkNames, logOut }) => {
         </NavLink>
       { userToken &&
         <span>
-          WELCOME {usrData.userUsername.toUpperCase()}!
+          WELCOME {usrName}!
         </span> 
       }
       </div>
