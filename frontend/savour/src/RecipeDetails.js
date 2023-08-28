@@ -1,7 +1,10 @@
 import { useState, useEffect, useContext } from 'react';
 import { Redirect, useParams, Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faThumbsUp, faThumbsDown, faStar, faFloppyDisk } from '@fortawesome/free-solid-svg-icons'
+import {
+          faThumbsUp, faThumbsDown, faStar,
+          faFloppyDisk, faList
+        } from '@fortawesome/free-solid-svg-icons'
 import Message from './Message.js';
 import SavourApi from './models/SavourApi.js';
 import useLocalStorage from './hooks/useLocalStorage.js';

@@ -6,6 +6,7 @@ import LoginForm from './LoginForm.js';
 import Home from './Home.js';
 import Recipes from './Recipes.js';
 import RecipeDetails from './RecipeDetails.js';
+import PageNotFound from './PageNotFound.js';
 import UserContext from './context/UserContext.js';
 
 const Routes = () => {
@@ -50,7 +51,12 @@ const Routes = () => {
           <RecipeDetails />
         </Route>
       }
-      <Redirect exact to="/" />
+      { userToken &&
+        <Route exact path="/page-not-found">
+          <PageNotFound />
+        </Route>
+      }
+      <Redirect exact to="/page-not-found" />
     </Switch>
   );
 }

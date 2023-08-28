@@ -22,7 +22,7 @@ const RecipeContainer = ({ showHide = false, recipeArray = [] }) => {
         recipeArray.length &&
         recipeArray.map(recipe => (
           <div style={
-              recipe.liked_user_ids.includes(usrData.userId)
+              recipe.fav_user_ids.includes(usrData.userId)
               ? { border: "2px solid green" }
               : null
             }
