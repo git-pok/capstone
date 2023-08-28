@@ -10,7 +10,6 @@ import useToggleState from './hooks/useToggleState';
 const SavourApp = () => {
   console.log("SavourApp RAN");
   const [ isLoggedOut, setIsLoggedOut ] = useToggleState(false);
-  // const { usrData, setUsrData } = useContext(UserContext);
   const [ usrData, setUsrData ] = useLocalStorage("userData", null);
   const history = useHistory();
 
@@ -19,11 +18,12 @@ const SavourApp = () => {
     setUsrData(() => null);
     history.push("/login");
   }
+  const userLink = usrData ? `${usrData.userUsername}` : "";
   const linkNames = [
     ["recipes", "/recipes"], ["my recipes", "/my-recipes"],
     ["recipelists", "/recipelists"], ["favs", "/favs"],
-    ["saved", "/saved"], ["profile", "/profile"]
-  ]
+    ["saved", "/saved"], ["profile", `/users/${userLink}`]
+  ];
 
   return (
     <div className="SavourApp">

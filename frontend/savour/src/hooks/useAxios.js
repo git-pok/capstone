@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import SavourApi from '../models/SavourApi.js';
 
-const useAxios = (resource, optionsObj) => {
+const useAxios = (optionsObj) => {
   const [ reqData, setReqData ] = useState(null);
   const { method = null, url = null, data = null, params = null, headers = null } = optionsObj;
   // console.log("useAxios HOOK ARGS", method, url, data, params, headers);
@@ -13,7 +13,7 @@ const useAxios = (resource, optionsObj) => {
     }
 
     axiosReq(method, url, data, params, headers);
-  }, [resource]);
+  }, []);
 
   return [reqData, setReqData];
 }

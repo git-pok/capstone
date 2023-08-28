@@ -25,7 +25,7 @@ const RecipeDetails = () => {
   const { usrData, setUsrData } = useContext(UserContext);
   const headers = { _token: `Bearer ${usrData.token}`};
   const options = {method: "get", url: `/recipes/${id}`, data: {}, params: {}, headers};
-  const [ recipeData ] = useAxios("recipe", options);
+  const [ recipeData ] = useAxios(options);
   // NEW LOGIC
   const [ isFav, setIsFav ] = useState(false);
   const [ recipeDtlsId, setRecipeDtlsId ] = useState([]);

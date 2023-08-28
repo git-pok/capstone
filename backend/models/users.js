@@ -182,7 +182,6 @@ class User {
         const whereSqlObj = genWhereSqlArr({ username }, prmTzr, true, [...userSqlReturnNoAbrv, "is_admin"]);
         const whereSqlCmds = whereSqlObj.whereSql;
         const pgVals = [...sqlObj.values, ...whereSqlObj.values];
-        // console.log("FINAL SQL", `${sqlObj.sql} ${whereSqlCmds}`, pgVals);
         const user = await db.query(
             `${sqlObj.sql} ${whereSqlCmds}`,
             pgVals

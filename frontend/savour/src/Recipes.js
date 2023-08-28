@@ -30,13 +30,13 @@ const Recipes = () => {
   // Dessert req obj.
   const dessertOptions = {method: "get", url: "/recipes", data: {}, params: dessertParams, headers};
   // Request chicken recipes.
-  const [ chickenData ] = useAxios("chicken", chickenOptions);
+  const [ chickenData ] = useAxios(chickenOptions);
   // Request pasta recipes.
-  const [ pastaData ] = useAxios("pasta", pastaOptions);
+  const [ pastaData ] = useAxios(pastaOptions);
   // Request dessert recipes.
-  const [ dessertData ] = useAxios("dessert", dessertOptions);
+  const [ dessertData ] = useAxios(dessertOptions);
   // Request all recipes.
-  const [ recipesData, setRecipesData ] = useAxios("all recipes", {method: "get", url: "/recipes", data: {}, params: {}, headers});
+  const [ recipesData, setRecipesData ] = useAxios({method: "get", url: "/recipes", data: {}, params: {}, headers});
   // const [ recipesData, setRecipesData ] = useState(null);
   const topFourChickArr = chickenData !== null ? [{...chickenData[0]}, {...chickenData[1]}, {...chickenData[2]}, {...chickenData[3]}] : null;
   const topFourPastaArr = pastaData !== null ? [{...pastaData[0]}, {...pastaData[1]}, {...pastaData[2]}, {...pastaData[3]}] : null;
