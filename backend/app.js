@@ -4,6 +4,7 @@ const ExpressError = require("./models/error.js");
 const userRoutes = require("./routes/users.js");
 const recipeRoutes = require("./routes/recipes.js");
 const ingrdtRoutes = require("./routes/ingredients.js");
+const occsnRoutes = require("./routes/occasions.js");
 const { authenticateToken } = require("./middleware/auth.js");
 
 const app = express();
@@ -14,6 +15,7 @@ app.use(authenticateToken);
 app.use("/users", userRoutes);
 app.use("/recipes", recipeRoutes);
 app.use("/ingredients", ingrdtRoutes);
+app.use("/occasions", occsnRoutes);
 
 /**
  * "/"

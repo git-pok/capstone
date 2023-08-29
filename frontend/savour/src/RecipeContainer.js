@@ -12,10 +12,7 @@ import './RecipeContainer.css';
 */
 const RecipeContainer = ({ showHide = false, recipeArray = [] }) => {
   const { usrData, setUsrData } = useContext(UserContext);
-  // const disLikstyles = {
-  //   like_user_ids: "3px solid green",
-  //   disliked_user_ids: "3px solid red"
-  // }
+
   return (
     <>
       {
@@ -37,6 +34,8 @@ const RecipeContainer = ({ showHide = false, recipeArray = [] }) => {
               <ShowHideBtnAndText paragraphArr={[
                 {text: `Prep Time: ${recipe.prep_time}`},
                 {text: `Cook Time: ${recipe.cook_time}`},
+                {text: `Rating: ${recipe.rating}`},
+                {text: `Difficulty: ${recipe.level}`},
                 {text: `${recipe.description}`}
               ]} /> :
               <>
