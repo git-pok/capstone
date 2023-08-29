@@ -3,7 +3,7 @@ import { Redirect, useParams, Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
           faThumbsUp, faThumbsDown, faStar,
-          faFloppyDisk, faList
+          faFloppyDisk, faList, faSquarePlus
         } from '@fortawesome/free-solid-svg-icons'
 import Message from './Message.js';
 import SavourApi from './models/SavourApi.js';
@@ -29,6 +29,11 @@ const RecipeDetails = () => {
   // NEW LOGIC
   const [ isFav, setIsFav ] = useState(false);
   const [ recipeDtlsId, setRecipeDtlsId ] = useState([]);
+  console.log("usrData", usrData);
+  const shopLstOpts = {method: "get", url: `/users/${usrData.userId}/shoppinglists`, data: {}, params: {}, headers};
+  const [ shoplists, setShoplists ] = useAxios(shopLstOpts);
+  const [ isShopOrRecLst, setIsShopOrRecLst ] = useToggleState(false);
+  const [ lstName, setLstName ] = useState(null);
   // END NEW LOGIC
   const isReveiws = recipeData ? recipeData[0].reviews.length > 0 : null;
   const [ likDisFavSucc, setLikDisFavSucc ] = useToggleState(false);
@@ -43,6 +48,13 @@ const RecipeDetails = () => {
     setRecipeDtlsId(recipeId);
     // Set isSubmitted to true.
     setIsSubmitted();
+  }
+
+  const addShopOrRecipe = async (recipeId, lstName) => {
+    setRecipeDtlsId(recipeId);
+    setLstName(lstName);
+    // Set isShopOrRecLst to true.
+    setIsShopOrRecLst();
   }
 
   useEffect(() => {
@@ -100,8 +112,29 @@ const RecipeDetails = () => {
         setRecipeDtlsId(null);
       }
     }
+
+    const shopOrRecipeList = async (shop=true) => {
+      try {
+        const data = {};
+        const req = SavourApi.request("post", `users/${usrData.userUsername}/shoppinglists`);
+        setSuccMsg(() => "ADDED RECIPE");
+
+        // Set isShopOrRecLst to false.
+        setIsShopOrRecLst();
+        setRecipeDtlsId(null);
+      } catch(err) {
+        // Set liked or disliked state to true.
+        const error = err.response.data.error.message.constraint ? "Already added recipe!" : null;
+        setFormErrMsg(() => error || "Error");
+        setInvalidForm();
+        setTimeout(setInvalidForm, 3000);
+        // Set isShopOrRecLst to false.
+        setTimeout(setIsShopOrRecLst, 3000);
+        setRecipeDtlsId(null);
+      }
+    }
     if (isSubmitted) likDislikOrFav();
-  }, [isSubmitted]);
+  }, [isSubmitted, isShopOrRecLst]);
 
   return (
     <>
@@ -172,7 +205,79 @@ const RecipeDetails = () => {
             </div>
           </div>
 
-          <h1 className="RecipeDetails-h1">Reviews</h1>
+          <h1 className="RecipeDetails-h1">Add Recipe To</h1>
+            <div className="RecipeDetails-div">
+              <div className="RecipeDetails-float-div-full">
+                <h2 className="RecipeDetails-subtitle">Add Recipe to Shoppinglist</h2>
+                <select>
+                  { shoplists.length > 0
+                  ?
+                    shoplists.map(list => (
+                      <option value="">{list.list_name}</option>
+                    ))
+                  :
+                    <option value="">No Lists</option>
+                  }
+                </select>
+                <div className="RecipeDetails-icons-float">
+                {
+                  shoplists.length > 0
+                  ?
+                    <FontAwesomeIcon
+                      // onClick={() => addShopOrRecipe(recipeData[0].id)}
+                      className="RecipeDetails-icons"
+                      icon={faSquarePlus} />
+                  :
+                    <Link exact to="/shoppinglists">
+                      User has no shoppinglists! Go to shoppinglists
+                    </Link>
+                    
+                }
+                </div>
+              </div>
+              <div className="RecipeDetails-float-div-full">
+                <h2 className="RecipeDetails-subtitle">Add Recipe To Recipelist</h2>
+                { shoplists && shoplists.length > 0
+                  ?
+                    <select name="RecipeDetails-select">
+                      {
+                        shoplists.map(list => (
+                          <option value={`${list.list_name}`}>{list.list_name}</option>
+                        ))
+                      }
+                    </select>
+                  :
+                    <h1>Create List</h1>
+                  }
+                <div className="RecipeDetails-icons-float">
+                {
+                  shoplists.length > 0
+                  ?
+                    <FontAwesomeIcon
+                      className="RecipeDetails-icons"
+                      icon={faSquarePlus} />
+                  :
+                    <Link exact to="/shoppinglists">
+                      User has no shoppinglists! Go to shoppinglists
+                    </Link>
+                    
+                }
+                </div>
+                <div className="RecipeDetails-msg">
+                {/* {
+                  lkdDslkdOrFavd &&
+                    <Message msgObj={
+                      {
+                        class: likDisFavSucc ? "success" : "fail",
+                        msg: likDisFavSucc ? succMsg : formErrMsg
+                      }
+                    } />
+                } */}
+                </div>
+              </div>
+            </div>
+
+            <h1 className="RecipeDetails-h1">Recipe Reviews</h1>
             { isReveiws ? recipeData[0].reviews.map((rvw, idx) => (
               <div className="RecipeDetails-no-float-div" key={`div-${rvw.user_id}`}>
               <p key={`stars-${rvw.user_id}`}>{rvw.stars}</p>
@@ -183,6 +288,7 @@ const RecipeDetails = () => {
                 <p>No reviews!</p>
               </div>
             }
+
             </div>
     }
     </>
