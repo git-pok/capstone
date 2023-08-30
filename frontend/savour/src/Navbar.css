@@ -45,5 +45,41 @@
 .Navbar-right-links {
     display: flex;
     justify-content: right;
+    flex-wrap: wrap;
     width: 70vw;
+}
+
+@media only screen and (max-width: 1268px) and (min-width: 726px) {
+    .Navbar-right-links {
+        display: flex;
+        justify-content: right;
+        width: 70vw;
+    }
+}
+
+@media only screen and (max-width: 725px) and (min-width: 200px) {
+    .Navbar {
+        display: block;
+        width: 100vw;
+        height: 80px;
+        background-color: rgb(39, 55, 77);
+    }
+    
+    .Navbar-left-links {
+        flex-direction: column;
+        width: 100vw;
+        margin: 0px auto;
+    }
+      
+    .Navbar-left-links span {
+        display: block;
+        width: 100vw;
+        margin-left: 0px;
+        color: rgb(255, 255, 255);
+    }
+      
+    .Navbar-right-links {
+        width: 100vw;
+        flex-direction: column;
+    }
 }

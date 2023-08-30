@@ -51,8 +51,8 @@ const RecipeDetails = () => {
   const [ isAddRecpBtn, setIsAddRecpBtn ] = useToggleState(false);
 
   const isReveiws = recipeData ? recipeData[0].reviews.length > 0 : null;
-  const [ likDisFavSucc, setLikDisFavSucc ] = useToggleState(false);
-  const [ lkdDslkdOrFavd, setLkdDslkdOrFavd ] = useToggleState(false);
+  const [ favSavSucc, setFavSavSucc ] = useToggleState(false);
+  const [ favdOrSavd, setFavdOrSavd ] = useToggleState(false);
   const [ formErrMsg, setFormErrMsg ] = useState(null);
   const [ succMsg, setSuccMsg ] = useState(null);
   const [ isSubmitted, setIsSubmitted ] = useToggleState(false);
@@ -137,27 +137,27 @@ const RecipeDetails = () => {
         // Set isSubmitted to false.
         setIsSubmitted();
         // Set liked or disliked state to true.
-        setLkdDslkdOrFavd();
+        setFavdOrSavd();
         // Set liked or disliked success state to true.
-        setLikDisFavSucc();
+        setFavSavSucc();
         // Set liked or disliked state to false.
-        setTimeout(setLkdDslkdOrFavd, 3000);
+        setTimeout(setFavdOrSavd, 3000);
         // Set liked or disliked success state to false.
-        setTimeout(setLikDisFavSucc, 3000);
+        setTimeout(setFavSavSucc, 3000);
         setRecipeDtlsId(null);
         setTimeout(() => setIsFavButton(false), 3000);
         setTimeout(() => setSuccMsg(null), 3000);
       } catch(err) {
         // Set liked or disliked state to true.
-        setLkdDslkdOrFavd();
-        const error = err.response.data.error.message.constraint ? "Already added recipe!" : null;
+        setFavdOrSavd();
+        const error = err.response.data.error.message;
         setFormErrMsg(() => error || "Error");
         setInvalidForm();
         setTimeout(setInvalidForm, 3000);
         // Set isSubmitted to false.
         setTimeout(setIsSubmitted, 3000);
         // Set liked or disliked state to false.
-        setTimeout(setLkdDslkdOrFavd, 3000);
+        setTimeout(setFavdOrSavd, 3000);
         setRecipeDtlsId(null);
         setTimeout(() => setFormErrMsg(null), 3000);
       }
@@ -192,7 +192,7 @@ const RecipeDetails = () => {
         const lstReq = await SavourApi.request("get", lstReqUrl, {}, {}, headers);
         lstReqState(() => lstReq.data);
       } catch(err) {
-        const error = err.response.data.error.message.constraint ? "Already added recipe!" : null;
+        const error = err.response.data.error.message;
         setFormErrMsg(() => error || "Error");
         setInvalidForm();
         setFormReqMade();
@@ -299,11 +299,11 @@ const RecipeDetails = () => {
             </div>
             <div className="RecipeDetails-msg">
             {
-              lkdDslkdOrFavd &&
+              favdOrSavd &&
                 <Message msgObj={
                   {
-                    class: likDisFavSucc ? "success" : "fail",
-                    msg: likDisFavSucc ? succMsg : formErrMsg
+                    class: favSavSucc ? "success" : "fail",
+                    msg: favSavSucc ? succMsg : formErrMsg
                   }
                 } />
             }
@@ -368,13 +368,13 @@ const RecipeDetails = () => {
 
             {/* RECIPE LISTS FORMS */}
             <div className="RecipeDetails-float-div-full">
-                { recipelists.length > 0
+                { recipelists && recipelists.length > 0
                   ?
                     <h2 className="RecipeDetails-subtitle">Add Recipe to Recipelist</h2>
                   :
                     <h2 className="RecipeDetails-subtitle">Create a Recipelist</h2>
                 }
-                { recipelists.length > 0
+                { recipelists && recipelists.length > 0
                   ?
                     <form onSubmit={handleSubmit} className="RecipeDetails-form">
                     <div className="RecipeDetails-form-field">

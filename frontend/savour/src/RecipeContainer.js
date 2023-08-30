@@ -16,7 +16,7 @@ const RecipeContainer = ({ showHide = false, recipeArray = [] }) => {
   return (
     <>
       {
-        recipeArray.length &&
+        recipeArray.length ?
         recipeArray.map(recipe => (
           <div style={
               recipe.fav_user_ids.includes(usrData.userId)
@@ -45,7 +45,8 @@ const RecipeContainer = ({ showHide = false, recipeArray = [] }) => {
               </>
             }
           </div>
-          ))
+        ))
+        : <h1>NO RECIPES</h1>
       }
     </>
   );

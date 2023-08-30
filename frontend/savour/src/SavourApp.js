@@ -22,9 +22,10 @@ const SavourApp = () => {
   }
   const userLink = usrData ? `${usrData.userUsername}` : "";
   const linkNames = [
-    ["recipes", "/recipes"], ["my recipes", "/my-recipes"],
+    ["recipes", "/recipes"], ["shoplists", "/shoppinglists"],
     ["recipelists", "/recipelists"], ["favs", "/favs"],
-    ["saved", "/saved"], ["profile", `/users/${userLink}`]
+    ["saved", "/saved"], ["profile", `/users/${userLink}`],
+    ["contact", "/contact"]
   ];
 
   return (
