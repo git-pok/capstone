@@ -26691,7 +26691,7 @@ VALUES
 CREATE TABLE shoppinglists_items (
     id SERIAL PRIMARY KEY,
     list_id INTEGER REFERENCES shoppinglists (id) ON DELETE CASCADE,
-    qty INTEGER,
+    qty TEXT,
     unit_id INTEGER REFERENCES units (id),
     ingredient_id INTEGER REFERENCES ingredients (id)
 );
@@ -26699,8 +26699,8 @@ CREATE TABLE shoppinglists_items (
 INSERT INTO shoppinglists_items
   (list_id, qty, unit_id, ingredient_id)
 VALUES
-  (1, 2, 3, 20), (1, 3, 3, 10), (1, 2, 5, 40),
-  (1, 2, 1, 12), (1, 12, 2, 11), (1, 30, 3, 21);
+  (1, '2', 3, 20), (1, '3', 3, 10), (1, '2', 5, 40),
+  (1, '2', 1, 12), (1, '12', 2, 11), (1, '30', 3, 21);
 
 CREATE TABLE user_recipes (
     id SERIAL PRIMARY KEY,

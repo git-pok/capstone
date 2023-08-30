@@ -19,13 +19,14 @@ const RecipeContainer = ({ showHide = false, recipeArray = [] }) => {
         recipeArray.length ?
         recipeArray.map(recipe => (
           <div style={
+              recipe.fav_user_ids &&
               recipe.fav_user_ids.includes(usrData.userId)
               ? { border: "2px solid green" }
               : null
             }
             key={recipe.id}
             className="RecipeContainer-recipe">
-            <Link exact="true" to={`recipes/${recipe.id}`}>
+            <Link exact="true" to={`/recipes/${recipe.id}`}>
               <h3>{recipe.name}</h3>
             </Link>
             <h3>By {recipe.author}</h3>

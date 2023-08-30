@@ -9,6 +9,7 @@ import RecipeDetails from './RecipeDetails.js';
 import PageNotFound from './PageNotFound.js';
 import Profile from './Profile.js';
 import ListNamesDiv from './ListNamesDiv.js';
+import ListDetails from './ListDetails.js';
 import UserContext from './context/UserContext.js';
 
 const Routes = () => {
@@ -54,10 +55,8 @@ const Routes = () => {
       }
       { userToken &&
         <Route exact path="/shoppinglists/:id">
-          <h1>SHOPLIST DETAILS</h1>
-          {/* <ListNamesDiv
-            urlEndpt="shoppinglists"
-            listTypeForH1="Shoppinglists" /> */}
+          <ListDetails
+            urlEndpt="shoppinglists" />
         </Route>
       }
       { userToken &&
@@ -70,11 +69,9 @@ const Routes = () => {
       }
       { userToken &&
         <Route exact path="/recipelists/:id">
-          <h1>RECIPELIST DETAILS</h1>
-          {/* <ListNamesDiv
+          <ListDetails
             urlEndpt="recipelists"
-            listTypeForH1="Recipelists"
-            recipelist={true} /> */}
+            recipelist={true} />
         </Route>
       }
       { userToken &&

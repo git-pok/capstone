@@ -1,0 +1,145 @@
+.ListDetails {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.ListDetails-icons {
+  margin: 10px 10px;
+  font-size: 30px;
+  transition: .5s ease-in-out background-color;
+}
+
+.ListDetails-li-icon-div {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: center;
+}
+
+.ListDetails-li-icon {
+  margin: 0px 10px;
+  font-size: 20px;
+  transition: .5s ease-in-out background-color;
+}
+
+.ListDetails-icons:hover, .ListDetails-li-icon:hover {
+  color: rgb(150, 160, 167);
+}
+
+.ListDetails-ul li {
+  text-align: left;
+  margin: 10px 10px;
+}
+
+.ListDetails-h1 {
+  width: 100%;
+  font-size: 60px;
+  margin-bottom: 70px;
+}
+
+.ListDetails-div {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  flex-wrap: wrap;
+  width: 70%;
+  height: 100%;
+  margin: 0px auto 140px auto;
+  padding: 30px 30px;
+  box-sizing: content-box;
+  border-radius: 10px;
+  background-color: rgba(188, 191, 211, 0.233);
+}
+
+.ListDetails-msg {
+  display: block;
+  width: 100%;
+}
+
+.ListDetails-msg div {
+  display: block;
+  margin: 0px auto;
+}
+
+.ListDetails-split-div {
+  display: inline-block;
+  width: 70%;
+  height: 100%;
+  margin: 0px auto 140px auto;
+  padding: 30px 30px;
+  box-sizing: content-box;
+  border-radius: 10px;
+  background-color: rgba(188, 191, 211, 0.233);
+}
+
+.ListDetails-split-content-div {
+  display: block;
+  float: left;
+  width: 40%;
+}
+
+.ListDetails-split-ul-div {
+  float: left;
+  width: 50%;
+}
+
+.ListDetails-subtitle {
+  text-align: center;
+  display: block;
+  font-size: 26px;
+  margin: 0px auto -10px auto;
+}
+
+.ListDetails-p {
+  display: block;
+  width: 90%;
+  margin: 10px auto 20px auto;
+  text-align: left;
+}
+
+.ListDetails-short-text {
+  display: block;
+  width: 90%;
+  margin: 10px auto 20px auto;
+  text-align: center;
+}
+
+.ListDetails-short-text:link {
+  display: block;
+  width: 90%;
+  margin: 10px auto 20px auto;
+  text-align: center;
+  text-decoration: none;
+}
+
+.ListDetails-ul {
+  list-style: circle;
+  width: 100%;
+  padding-left: 13px;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  align-items: start;
+}
+
+
+@media only screen and (max-width: 1302px) and (min-width: 400px) {
+  .ListDetails-div {
+    flex-direction: column;
+    align-items: center;
+    flex-wrap: nowrap;
+  }
+  .ListDetails-split-ul-div {
+    float: none;
+    width: 100%;
+    margin-bottom: 70px;
+  }
+
+  .ListDetails-split-content-div {
+    display: block;
+    float: none;
+    width: 100%;
+  }
+}

@@ -17,6 +17,7 @@ const ListNamesDiv = ({urlEndpt, listTypeForH1 = "Shoppinglists's", recipelist =
   const headers = { _token: `Bearer ${usrData.token}`};
   const listUrl = `/users/${usrData.userId}/${urlEndpt}`;
   const [ listData, setListData ] = useState(null);
+  console.log("listData", listData);
 
   useEffect(() => {
     const getLists = async () => {
@@ -32,7 +33,7 @@ const ListNamesDiv = ({urlEndpt, listTypeForH1 = "Shoppinglists's", recipelist =
     <h1 className="ListNamesDiv-h1">{`${usrData && usrData.userUsername}'s ${listTypeForH1}`}</h1>
     <div className="ListNamesDiv">
       <div className="ListNamesDiv-div">
-        { listData &&
+        { listData && listData.length ?
           listData.map(list => (
             <div key={list.id} className="ListNamesDiv-list-div">
               <Link exact="true" to={`/${urlEndpt}/${list.id}`}>
@@ -40,6 +41,8 @@ const ListNamesDiv = ({urlEndpt, listTypeForH1 = "Shoppinglists's", recipelist =
               </Link>
             </div>
           ))
+        :
+          <p>No Lists!</p>
         }
       </div>
     </div>
