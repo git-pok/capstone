@@ -142,19 +142,14 @@
   margin-bottom: 10px;
 }
 
-/* FROM STYLES */
+/* FORM STYLES */
 .RecipeDetails-form {
-  /* display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-wrap: wrap; */
   display: block;
   width: 66%;
   height: 100%;
   margin: 17px auto 10px auto;
   padding: 20px 20px;
   background-color: rgb(39, 55, 77);
-  /* background-color: rgb(190, 209, 235); */
   border-radius: 10px;
 }
 

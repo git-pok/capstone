@@ -6,7 +6,7 @@ import LoginForm from './LoginForm.js';
 import Home from './Home.js';
 import Recipes from './Recipes.js';
 import RecipeDetails from './RecipeDetails.js';
-import DetailCardRow from './DetailCardRow.js';
+// import DetailCardRow from './DetailCardRow.js';
 import PageNotFound from './PageNotFound.js';
 import Profile from './Profile.js';
 import UserContext from './context/UserContext.js';

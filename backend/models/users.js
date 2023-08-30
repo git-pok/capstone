@@ -381,7 +381,7 @@ class User {
     static async getShopLists (userId, listId = false) {
         // Check if user exists.
         await rowExists("user", "id", "users", [["id", userId]]);
-        const selectClmns = ["id", "list_name"];
+        const selectClmns = ["id", "list_name", "recipe_id"];
         const listSelStr = genSelectSql(selectClmns, "shoppinglists");
         const whereVals = listId === false ? { user_id: +userId } : { user_id: +userId, id: +listId };
         const whereSqlObj = genWhereSqlArr(whereVals, 1, true);
