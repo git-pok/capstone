@@ -6,9 +6,9 @@ import LoginForm from './LoginForm.js';
 import Home from './Home.js';
 import Recipes from './Recipes.js';
 import RecipeDetails from './RecipeDetails.js';
-// import DetailCardRow from './DetailCardRow.js';
 import PageNotFound from './PageNotFound.js';
 import Profile from './Profile.js';
+import ListNamesDiv from './ListNamesDiv.js';
 import UserContext from './context/UserContext.js';
 
 const Routes = () => {
@@ -16,16 +16,7 @@ const Routes = () => {
 
   // const [ usrData, setUsrData ] = useLocalStorage("userData", null);
   const { usrData, setUsrData } = useContext(UserContext);
-  console.log("ROUTES usrData CONTEXT", usrData ? usrData : "NONE");
   const userToken = usrData ? usrData.token : null;
-  console.log("userToken ROUTES", userToken);
-  // const context = useContext(UserContext);
-  // const findJobApps = (data, id) => {
-  //   const jobApps = data.indexOf(id);
-  //   return jobApps === -1;
-  // }
-  // let params = useParams();
-  // console.log("params", params);
 
   return (
     <Switch>
@@ -52,6 +43,50 @@ const Routes = () => {
       { userToken &&
         <Route exact path="/recipes/:id">
           <RecipeDetails />
+        </Route>
+      }
+      { userToken &&
+        <Route exact path="/shoppinglists">
+          <ListNamesDiv
+            urlEndpt="shoppinglists"
+            listTypeForH1="Shoppinglists" />
+        </Route>
+      }
+      { userToken &&
+        <Route exact path="/shoppinglists/:id">
+          <h1>SHOPLIST DETAILS</h1>
+          {/* <ListNamesDiv
+            urlEndpt="shoppinglists"
+            listTypeForH1="Shoppinglists" /> */}
+        </Route>
+      }
+      { userToken &&
+        <Route exact path="/recipelists">
+          <ListNamesDiv
+            urlEndpt="recipelists"
+            listTypeForH1="Recipelists"
+            recipelist={true} />
+        </Route>
+      }
+      { userToken &&
+        <Route exact path="/recipelists/:id">
+          <h1>RECIPELIST DETAILS</h1>
+          {/* <ListNamesDiv
+            urlEndpt="recipelists"
+            listTypeForH1="Recipelists"
+            recipelist={true} /> */}
+        </Route>
+      }
+      { userToken &&
+        <Route exact path="/favs">
+          {/* <DetailCardRow /> */}
+          <h1>FAVS</h1>
+        </Route>
+      }
+      { userToken &&
+        <Route exact path="/saved">
+          {/* <DetailCardRow /> */}
+          <h1>SAVED</h1>
         </Route>
       }
       { userToken &&
