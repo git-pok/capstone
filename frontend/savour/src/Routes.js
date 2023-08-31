@@ -10,6 +10,7 @@ import PageNotFound from './PageNotFound.js';
 import Profile from './Profile.js';
 import ListNamesDiv from './ListNamesDiv.js';
 import ListDetails from './ListDetails.js';
+import FavOrSav from './FavOrSav.js';
 import UserContext from './context/UserContext.js';
 
 const Routes = () => {
@@ -76,20 +77,24 @@ const Routes = () => {
       }
       { userToken &&
         <Route exact path="/favs">
-          {/* <DetailCardRow /> */}
           <h1>FAVS</h1>
+          <FavOrSav />
         </Route>
       }
       { userToken &&
         <Route exact path="/saved">
-          {/* <DetailCardRow /> */}
           <h1>SAVED</h1>
+          <FavOrSav fav={false} />
         </Route>
       }
       { userToken &&
         <Route exact path="/users/:id">
-          {/* <DetailCardRow /> */}
           <Profile />
+        </Route>
+      }
+      { userToken &&
+        <Route exact path="/contact">
+          <h1>CONTACT PAGE</h1>
         </Route>
       }
       { userToken &&

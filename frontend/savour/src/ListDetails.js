@@ -4,6 +4,7 @@ import UserContext from './context/UserContext.js';
 import SavourApi from './models/SavourApi.js';
 import RecipeContainer from './RecipeContainer.js';
 import Message from './Message.js';
+import AddRecipelistRecipe from './AddRecipelistRecipe.js';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
           faSquarePlus, faSquareMinus, faRectangleXmark
@@ -36,8 +37,9 @@ const ListDetails = ({urlEndpt, recipelist = false}) => {
   const [ isRmvSucc, setIsRmvSucc ] = useToggleState(false);
   const [ formErrMsg, setFormErrMsg ] = useState(null);
   const [ succMsg, setSuccMsg ] = useState(null);
-  const [ shoplistItems, setShoplistItems ] = useState(null); 
-  // console.log("LIST DATA", listData);
+  const [ shoplistItems, setShoplistItems ] = useState(null);
+  const [ updateListMsg, setUpdateListMsg ] = useState(null);
+  console.log("LIST DATA RECIPES", listData);
   
   const addOrRmvItem = (itemsObj, add=true) => {
     if (add) setIsIngrAddBtn();
@@ -109,10 +111,10 @@ const ListDetails = ({urlEndpt, recipelist = false}) => {
       }
     }
 
-    if (listUrl) getLists();
+    if (listUrl || updateListMsg) getLists();
     if (isIngrAddBtn || isIngrRmvBtn) addToList();
     if (isListDltBtn) deleteList();
-  }, [listUrl, isIngrAddBtn, isIngrRmvBtn, isListDltBtn])
+  }, [listUrl, updateListMsg, isIngrAddBtn, isIngrRmvBtn, isListDltBtn])
 
   return (
     <>
@@ -121,34 +123,51 @@ const ListDetails = ({urlEndpt, recipelist = false}) => {
       :
         <h1 className="ListDetails-h1">{`${listData && listData.list_name} for ${listData && listData.occasion}  Recipes`}</h1>
     }
-    { listData && recipelist ?
-      <div className="ListDetails">
-        <div className="ListDetails-div">
-          <RecipeContainer
-            showHide={true}
-            recipeArray={listData.recipes} />
-          <div className="ListDetails-icons-center-div">
+    { listData && recipelist && listData.recipes.length ?
+    <div className="ListDetails">
+      <div className="ListDetails-div">
+        <RecipeContainer
+          showHide={true}
+          recipeArray={listData.recipes} />
+        <div className="ListDetails-icons-center-div">
           <h2 className="ListDetails-subtitle">Delete Recipelist</h2>
           <FontAwesomeIcon
             onClick={deleteList}
             className="ListDetails-icon-center"
             icon={faRectangleXmark} />
-          <div className="ListDetails-msg">
-            {
-              isLstDltActionCmplt &&
+            <div className="ListDetails-msg">
+              {
+                isLstDltActionCmplt &&
                 <Message msgObj={
                   {
                     class: isRmvSucc ? "success" : "fail",
                     msg: isRmvSucc ? succMsg : formErrMsg
                   }
                 } />
-            }
-          </div>
-          </div>
+              }
+            </div>
         </div>
       </div>
-      :
-        null
+    </div>
+    :
+      null
+    }
+    { listData && recipelist && !listData.recipes.length ?
+      <div className="ListDetails">
+        <div className="ListDetails-div">
+          <p>No recipes</p>
+        </div>
+      </div>
+    :
+      null
+    }
+    { listData && recipelist &&
+      <div className="ListDetails">
+        <h1 className="ListDetails-h1">Add Recipes to List</h1>
+        <div className="ListDetails-div">
+          <AddRecipelistRecipe setState={setUpdateListMsg} />
+        </div>
+      </div>
     }
     { listData && !recipelist ?
         <div className="ListDetails-split-div">
