@@ -190,7 +190,7 @@ const RecipeDetails = () => {
         const lstReqState = isShopList ? setShoplists : setRecipelists;
         const lstReqUrl = isShopList ? shopListUrl : recpListUrl;
         const lstReq = await SavourApi.request("get", lstReqUrl, {}, {}, headers);
-        lstReqState(() => lstReq.data);
+        setTimeout(() => lstReqState(() => lstReq.data), 3000);
       } catch(err) {
         const error = err.response.data.error.message;
         setFormErrMsg(() => error || "Error");
@@ -386,7 +386,7 @@ const RecipeDetails = () => {
                         onChange={handleChange}
                         value={formData.recipelistId}>
                         <option key="recipelistId" value="">Select a Recipelist</option>
-                        {
+                        { recipelists &&
                           recipelists.map(recipelist => (
                             <option key={`${recipelist.id}`} value={`${recipelist.id}`}>{recipelist.list_name}</option>
                           ))
@@ -428,7 +428,7 @@ const RecipeDetails = () => {
                         onChange={handleChange}
                         value={formData.occasionId}>
                         <option key="select-an-occ" value="">Select an Occasion</option>
-                        {
+                        { occasionData &&
                           occasionData.map(occasion => (
                             <option key={`${occasion.id}`} value={`${occasion.id}`}>{occasion.occasion}</option>
                           ))
