@@ -173,7 +173,7 @@ const RecipeDetails = () => {
         else data.occasion_id = occId;
         const req = await SavourApi.request("post", url, data, {}, headers);
 
-        setSuccMsg(() => "Added recipe!");
+        setSuccMsg(() => "Created list!");
         setFormReqMade();
         setReqMadeSucc();
         setTimeout(setFormReqMade, 3000);
@@ -360,7 +360,7 @@ const RecipeDetails = () => {
                           } />
                         }
                       </div>
-                      <button onClick={() => addShopOrRecipe(recipeData[0].id, formData.listName)}>ADD TO LIST</button>
+                      <button onClick={() => addShopOrRecipe(recipeData[0].id, formData.listName)}>CREATE LIST</button>
                     </div>
                   </form>
                 }
@@ -449,7 +449,7 @@ const RecipeDetails = () => {
                         <button
                           onClick={
                             () => addShopOrRecipe(recipeData[0].id, formData.recipelistName, false)
-                          }>ADD TO LIST</button>
+                          }>CREATE LIST</button>
                     </div>
                   </form>
                 }
