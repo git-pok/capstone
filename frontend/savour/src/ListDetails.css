@@ -4,6 +4,36 @@
   height: 100%;
 }
 
+.ListDetails-div {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  flex-wrap: wrap;
+  width: 70%;
+  height: 100%;
+  margin: 0px auto 140px auto;
+  padding: 30px 30px;
+  box-sizing: content-box;
+  border-radius: 10px;
+  background-color: rgba(188, 191, 211, 0.233);
+}
+
+.ListDetails-split-ul-div {
+  float: left;
+  width: 50%;
+  margin: 0px auto;
+}
+
+.ListDetails-ul {
+  list-style: circle;
+  width: 100%;
+  padding-left: 13px;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
 .ListDetails-icons {
   margin: 10px 10px;
   font-size: 30px;
@@ -29,6 +59,7 @@
 }
 
 .ListDetails-ul li {
+  width: 400px;
   text-align: left;
   margin: 10px 10px;
 }
@@ -37,20 +68,6 @@
   width: 100%;
   font-size: 60px;
   margin-bottom: 70px;
-}
-
-.ListDetails-div {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  flex-wrap: wrap;
-  width: 70%;
-  height: 100%;
-  margin: 0px auto 140px auto;
-  padding: 30px 30px;
-  box-sizing: content-box;
-  border-radius: 10px;
-  background-color: rgba(188, 191, 211, 0.233);
 }
 
 .ListDetails-msg {
@@ -77,12 +94,8 @@
 .ListDetails-split-content-div {
   display: block;
   float: left;
-  width: 40%;
-}
-
-.ListDetails-split-ul-div {
-  float: left;
   width: 50%;
+  margin: 0px auto;
 }
 
 .ListDetails-subtitle {
@@ -114,18 +127,16 @@
   text-decoration: none;
 }
 
-.ListDetails-ul {
-  list-style: circle;
-  width: 100%;
-  padding-left: 13px;
-  display: flex;
-  flex-direction: column;
-  flex-wrap: wrap;
-  align-items: start;
-}
-
 
 @media only screen and (max-width: 1302px) and (min-width: 400px) {
+  .ListDetails-ul {
+    align-items: center;
+  }
+
+  .ListDetails-ul li {
+    width: 300px;
+  }
+  
   .ListDetails-div {
     flex-direction: column;
     align-items: center;
