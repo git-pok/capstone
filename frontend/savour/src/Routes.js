@@ -77,13 +77,11 @@ const Routes = () => {
       }
       { userToken &&
         <Route exact path="/favs">
-          <h1>FAVS</h1>
           <FavOrSav />
         </Route>
       }
       { userToken &&
         <Route exact path="/saved">
-          <h1>SAVED</h1>
           <FavOrSav fav={false} />
         </Route>
       }

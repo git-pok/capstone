@@ -1,6 +1,10 @@
 .AddRecipelistRecipe-form {
-  display: block;
-  width: 66%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: row;
+  flex-wrap: wrap;
+  width: 70%;
   height: 100%;
   margin: 17px auto 10px auto;
   padding: 20px 20px;
@@ -10,7 +14,7 @@
 
 .AddRecipelistRecipe-form-field {
   display: inline-block;
-  width: 100%;
+  width: 40%;
   height: 100%;
   margin: 0px auto;
 }
@@ -70,6 +74,14 @@
   margin: 0px auto;
 }
 
-/* @media only screen and (max-width: 1302px) and (min-width: 400px) {
+@media only screen and (max-width: 1302px) and (min-width: 400px) {
+  .AddRecipelistRecipe-form {
+    flex-direction: column;
+  }
 
-} */
+  .AddRecipelistRecipe-form-field {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+}
