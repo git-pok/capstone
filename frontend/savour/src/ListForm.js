@@ -3,12 +3,9 @@ import useAxios from './hooks/useAxios.js';
 import UserContext from './context/UserContext.js';
 import SavourApi from './models/SavourApi.js';
 import useToggleState from './hooks/useToggleState.js';
+import Message from './Message.js';
 // import image from './img/ambient-kitchen.jpg';
 import './ListForm.css';
-/**
- * THIS COMPONENT IS NOT DONE YET,
- * IT IS STILL BEING BUILT.
- */
 /**
  * ListForm
  * ListForm Component
@@ -18,45 +15,77 @@ import './ListForm.css';
 const ListForm = ({recipelist = false, setState}) => {
   const { usrData, setUsrData } = useContext(UserContext);
   const headers = { _token: `Bearer ${usrData.token}`};
-  // const listUrl = `/users/${usrData.userId}/${urlEndpt}`;
+
+  const recipeOpts = { method: "get", url: `/recipes`, data: {}, params: {}, headers };
+  const [ recipeData ] = useAxios(recipeOpts);
+
   const OccOpts = { method: "get", url: `/occasions`, data: {}, params: {}, headers };
   const [ occasionData ] = useAxios(OccOpts);
-  // console.log("occasionData", occasionData);
+
   const [ listUrl, setListUrl ] = useState(null);
   const [ isRecipeList, setIsRecipeList ] = useToggleState(false);
-  // const [ reqBody, setReqBody ] = useState(null);
-
   const [ isSubmitted, setIsSubmitted ] = useToggleState(false);
+
   const initialState = {
     shoplistName: "", recipelistName: "",
-    occasionId: ""
+    occasionId: "", recipeId: ""
   };
+
   const [ formData, setFormData ] = useState(initialState);
-  // console.log("listData", listData);
+  const [ formReqMade, setFormReqMade ] = useToggleState(false);
+  const [ formErrMsg, setFormErrMsg ] = useState(null);
+  const [ succMsg, setSuccMsg ] = useState(null);
+  const [ isFormReqSucc, setIsFormReqSucc ] = useToggleState(false);
 
   const setReqUrl = (shop=true) => {
     const userId = usrData.userId;
-    if (!shop) setListUrl(`/users/${userId}/recipelists`);
-    if (!shop) setIsRecipeList();
-    else setListUrl(`/users/${userId}/shoppinglists`);
-    // console.log("listUrl", listUrl);
-    setIsSubmitted();
+    // Check for occasion id from recipelist form data.
+    const occId = formData.occasionId;
+    if (!shop && occId === "") {
+      setFormErrMsg("Must select occasion!");
+      setFormReqMade();
+      setTimeout(setFormReqMade, 3000);
+      setTimeout(() => setFormErrMsg(null), 3000);
+    } else {
+      if (!shop) setListUrl(`/users/${userId}/recipelists`);
+      if (!shop) setIsRecipeList();
+      else setListUrl(`/users/${userId}/shoppinglists`);
+      setIsSubmitted();
+    }
   }
 
   useEffect(() => {
     const createList = async () => {
-      const data = isRecipeList ?
-          { occasion_id: +formData.occasionId, list_name: formData.recipelistName }
-          : { recipe_id: "", list_name: formData.shoplistName }
-      // console.log("data", data);
-      // console.log("listUrl", listUrl);
-      // console.log("isRecipeList", isRecipeList);
-      const listReq = await SavourApi.request("post", listUrl, data, {}, headers);
-      // console.log("listReq", listReq);
-      setState();
-      setTimeout(setIsSubmitted, 3000);
-      if (isRecipeList) setTimeout(setIsRecipeList, 3000);
-      setTimeout(() => setListUrl(null), 3000);
+      try {
+
+        const data = isRecipeList ?
+            { occasion_id: +formData.occasionId, list_name: formData.recipelistName }
+            : { recipe_id: +formData.recipeId, list_name: formData.shoplistName }
+        const listReq = await SavourApi.request("post", listUrl, data, {}, headers);
+        setSuccMsg("Created list!");
+        setFormReqMade();
+        setIsFormReqSucc();
+        setState(() => ({ msg: "Action sent!" }));
+        setTimeout(setIsSubmitted, 3000);
+        if (isRecipeList) setTimeout(setIsRecipeList, 3000);
+        setTimeout(setFormReqMade, 3000);
+        setTimeout(setIsFormReqSucc, 3000);
+        setTimeout(() => setSuccMsg(null), 3000);
+        setTimeout(() => setListUrl(null), 3000);
+      } catch(err) {
+        const error = err.response.data.error.message;
+        const isErrObj = typeof err === "object";
+        const isErrorObj = typeof error === "object";
+        const errMsg = isErrObj ? "Error!" : err;
+        const errorMsg = isErrorObj ? "Error!" : error;
+        setFormErrMsg(() => errMsg || errorMsg);
+        setFormReqMade();
+        setTimeout(setIsSubmitted, 3000);
+        if (isRecipeList) setTimeout(setIsRecipeList, 3000);
+        setTimeout(setFormReqMade, 3000);
+        setTimeout(() => setFormErrMsg(null), 3000);
+        setTimeout(() => setListUrl(null), 3000);
+      }
     }
 
     if (isSubmitted) createList();
@@ -73,29 +102,10 @@ const ListForm = ({recipelist = false, setState}) => {
 
   const handleSubmit = async (evt) => {
     evt.preventDefault();
-    // Create array of props formData requires.
-    // const reqProps = [
-    //   "username", "first_name", "last_name",
-    //   "email", "phone", "password"
-    // ];
-    // Check if props are missing.
-    // const isValMsn = reqProps.some(val => (
-    //   formData[val] === ""
-    // ));
-    // If props are missing set invalidForm.
-    // if (isValMsn) {
-    //   setFormErrMsg(() => "All fields must be complete!");
-    //   setInvalidForm();
-    //   setTimeout(setInvalidForm, 3000);
-    // }
-    // Set isSubmitted to true if all props exist.
-    // else setIsSubmitted();
-    // setIsSubmitted();
   }
 
   return (
     <>
-    {/* <h1 className="RecipeDetails-h1">Add Recipe To A List</h1> */}
     <div className="ListForm-div">
     {/* <div className="RecipeDetails-float-div-full"> */}
     { !recipelist
@@ -111,19 +121,34 @@ const ListForm = ({recipelist = false, setState}) => {
             onChange={handleChange}
             value={formData.shoplistName} />
         </div>
+        <div className="ListForm-form-field">
+          <label htmlFor="recipeId">Recipes</label>
+          <select
+            id="recipeId"
+            name="recipeId"
+            onChange={handleChange}
+            value={formData.recipeId}>
+            <option key="select-a-recipe" value="">Select a Recipe</option>
+            { recipeData &&
+              recipeData.map(recipe => (
+                <option key={`${recipe.id}`} value={`${recipe.id}`}>{recipe.name}</option>
+              ))
+            }
+          </select>
+        </div>
         <div className="ListForm-form-submit">
-          <div className="ListForm-msg-div">
-            {/* { formReqMade && isShopList &&
+          <button onClick={setReqUrl}>CREATE LIST</button>
+        </div>
+        <div className="ListForm-msg-div">
+            { formReqMade &&
               <Message msgObj={
                 {
-                  class: reqMadeSucc ? "success" : "fail",
-                  msg: reqMadeSucc ? succMsg : formErrMsg
+                  class: isFormReqSucc ? "success" : "fail",
+                  msg: isFormReqSucc ? succMsg : formErrMsg
                 }
               } />
-            } */}
+            }
           </div>
-            <button onClick={setReqUrl}>ADD TO LIST</button>
-        </div>
         </form>
       :
         <form onSubmit={handleSubmit} className="ListForm-form">
@@ -136,6 +161,8 @@ const ListForm = ({recipelist = false, setState}) => {
             placeholder="Type a recipelist name"
             onChange={handleChange}
             value={formData.recipelistName}></input>
+        </div>
+        <div className="ListForm-form-field">
           <label htmlFor="occasionId">Recipelist Occasions</label>
           <select
             id="occasionId"
@@ -151,18 +178,18 @@ const ListForm = ({recipelist = false, setState}) => {
           </select>
         </div>
         <div className="ListForm-form-submit">
-          <div className="ListForm-msg-div">
-            {/* { formReqMade && !isShopList &&
+          <button onClick={() => setReqUrl(false)}>CREATE LIST</button>
+        </div>
+        <div className="ListForm-msg-div">
+            { formReqMade &&
               <Message msgObj={
                 {
-                  class: reqMadeSucc ? "success" : "fail",
-                  msg: reqMadeSucc ? succMsg : formErrMsg
+                  class: isFormReqSucc ? "success" : "fail",
+                  msg: isFormReqSucc ? succMsg : formErrMsg
                 }
               } />
-            } */}
+            }
           </div>
-            <button onClick={() => setReqUrl(false)}>ADD TO LIST</button>
-        </div>
         </form>
       }
     </div>

@@ -54,6 +54,19 @@
   transition: .5s ease-in-out background-color;
 }
 
+.ListDetails-icons-center-div {
+  /* float: none; */
+  display: block;
+  width: 100%;
+  margin: 0px auto;
+}
+
+.ListDetails-icon-center {
+  margin: 10px 10px;
+  font-size: 30px;
+  transition: .5s ease-in-out background-color;
+}
+
 .ListDetails-icons:hover, .ListDetails-li-icon:hover {
   color: rgb(150, 160, 167);
 }

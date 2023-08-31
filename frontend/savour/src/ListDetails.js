@@ -90,7 +90,8 @@ const ListDetails = ({urlEndpt, recipelist = false}) => {
     const deleteList = async () => {
       try {
         const listReq = await SavourApi.request("delete", listUrl, {}, {}, headers);
-        const msg = "Deleted list! Redirecting to shoppinglists!";
+        const msgListName = recipelist ? "recipelists" : "shoppinglists";
+        const msg = `Deleted list! Redirecting to ${msgListName}!`;
         setSuccMsg(() => msg);
         setIsLstDltActionCmplt();
         setIsRmvSucc();
@@ -98,7 +99,7 @@ const ListDetails = ({urlEndpt, recipelist = false}) => {
         setTimeout(setIsRmvSucc, 3000);
         setTimeout(() => setSuccMsg(null), 3000);
         setTimeout(setIsListDltBtn, 3000);
-        setTimeout(() => history.push("/shoppinglists"), 3000);
+        setTimeout(() => history.push(`/${urlEndpt}`), 3000);
       } catch (err) {
         const error = err.response.data.error.message;
         setFormErrMsg(() => error || "Error");
@@ -126,6 +127,24 @@ const ListDetails = ({urlEndpt, recipelist = false}) => {
           <RecipeContainer
             showHide={true}
             recipeArray={listData.recipes} />
+          <div className="ListDetails-icons-center-div">
+          <h2 className="ListDetails-subtitle">Delete Recipelist</h2>
+          <FontAwesomeIcon
+            onClick={deleteList}
+            className="ListDetails-icon-center"
+            icon={faRectangleXmark} />
+          <div className="ListDetails-msg">
+            {
+              isLstDltActionCmplt &&
+                <Message msgObj={
+                  {
+                    class: isRmvSucc ? "success" : "fail",
+                    msg: isRmvSucc ? succMsg : formErrMsg
+                  }
+                } />
+            }
+          </div>
+          </div>
         </div>
       </div>
       :

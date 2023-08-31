@@ -19,7 +19,7 @@ const ListNamesDiv = ({urlEndpt, listTypeForH1 = "Shoppinglists's", recipelist =
   const headers = { _token: `Bearer ${usrData.token}`};
   const listUrl = `/users/${usrData.userId}/${urlEndpt}`;
   const [ listData, setListData ] = useState(null);
-  const [ updatedListUrl, setUpdatedListUrl ] = useToggleState(false);
+  const [ updatedList, setUpdatedList ] = useState(null);
   // console.log("listData", listData);
 
   useEffect(() => {
@@ -29,7 +29,7 @@ const ListNamesDiv = ({urlEndpt, listTypeForH1 = "Shoppinglists's", recipelist =
     }
 
     getLists();
-  }, [listUrl, updatedListUrl])
+  }, [listUrl, updatedList])
 
   return (
     <>
@@ -53,22 +53,10 @@ const ListNamesDiv = ({urlEndpt, listTypeForH1 = "Shoppinglists's", recipelist =
     <h1 className="RecipeDetails-h1">Create a List</h1>
     <div className="RecipeDetails-div">
       { !recipelist ?
-        <Link exact="true" to="/recipes">
-          <p>Browse Recipes to add one to a shoppinglist!</p>
-        </Link>
+        <ListForm setState={setUpdatedList} />
       :
-        <ListForm recipelist={true} setState={setUpdatedListUrl} />
+        <ListForm recipelist={true} setState={setUpdatedList} />
       }
-      {/* <div className="RecipeDetails-float-div-full">
-        <h2 className="RecipeDetails-subtitle">Add Recipe to Shoppinglist</h2>
-        { usrHasShopList !== null && usrHasShopList
-          ?
-            <Link exact="true" to="/shoppinglists">
-              <p>Recipe has Shoplist already! Go To Shopping Lists!</p>
-            </Link>
-      </div>
-
-      {/* RECIPE LISTS FORMS */}
     </div>
     </>
   );
