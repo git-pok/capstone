@@ -1,6 +1,6 @@
-.CreateListForm-form {
+.AddToListForm-form {
   display: flex;
-  align-items: center;
+  flex-direction: column;
   justify-content: center;
   flex-wrap: wrap;
   width: 70%;
@@ -10,11 +10,11 @@
   border-radius: 10px;
 }
 
-.CreateListForm-form-field {
+.AddToListForm-form-field {
   display: block;
 }
 
-.CreateListForm-form-field label {
+.AddToListForm-form-field label {
   display: block;
   width: 260px;
   height: 30px;
@@ -22,20 +22,20 @@
   color: rgb(221, 230, 237);
 }
   
-.CreateListForm-form-field input, select {
+.AddToListForm-form-field input, select {
   width: 260px;
   height: 30px;
   margin-bottom: 30px;
   background-color: aliceblue;
 }
 
-.CreateListForm-form-submit {
+.AddToListForm-form-submit {
   display: block;
   width: 100%;
   margin-top: 10px;
 }
 
-.CreateListForm-form-submit button {
+.AddToListForm-form-submit button {
   display: block;
   width: 260px;
   height: 30px;
@@ -47,26 +47,28 @@
   transition: .5s ease-in-out background-color;
 }
   
-.CreateListForm-form button:hover {
+.AddToListForm-form button:hover {
   border-color: rgb(39, 55, 77);
   background-color: rgb(39, 55, 77);
   color: rgb(221, 230, 237);
 }
 
-.CreateListForm-msg-div div {
-  /* display: block; */
-  width: 100%;
+.AddToListForm-msg-div div {
+  display: block;
+  width: 50%;
   height: 100%;
+  margin: 0px auto;
+  padding: 5px 5px;
 }
 
 @media only screen and (max-width: 1302px) and (min-width: 400px) {
-  .CreateListForm-div {
+  .AddToListForm-div {
     flex-direction: column;
     align-items: center;
     flex-wrap: nowrap;
   }
 
-  .CreateListForm-list-div {
+  .AddToListForm-list-div {
     width: 60%;
   }
 }

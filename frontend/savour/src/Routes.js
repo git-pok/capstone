@@ -45,8 +45,8 @@ const Routes = () => {
       }
       { userToken &&
         <Route exact path="/recipes/:id">
-          {/* <RecipeDetails /> */}
-          <RecipeDetailsII />
+          <RecipeDetails />
+          {/* <RecipeDetailsII /> */}
         </Route>
       }
       { userToken &&

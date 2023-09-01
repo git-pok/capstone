@@ -8,6 +8,7 @@ import {
 import Message from './Message.js';
 import CreateListForm from './CreateListForm.js';
 import ListForm from './ListForm.js';
+import AddToListForm from './AddToListForm.js';
 import SavourApi from './models/SavourApi.js';
 // import useLocalStorage from './hooks/useLocalStorage.js';
 import useToggleState from './hooks/useToggleState.js';
@@ -83,44 +84,6 @@ const RecipeDetails = () => {
     setIsSubmitted();
   }
 
-  const addShopOrRecipe = async (recipeId, lstName, shop = true) => {
-    const isOccId = formData.occasionId !== "";
-    if ((lstName === "") || (!shop && lstName !== "" && !isOccId)) {
-      if (shop) setIsShopList();
-      const msg = !shop && !isOccId ? "Select an occasion!" : "Type a list name!";
-      setFormErrMsg(() => msg);
-      setInvalidForm();
-      setFormReqMade();
-      setTimeout(setFormReqMade, 3000);
-      setTimeout(setInvalidForm, 3000);
-      setTimeout(() => setFormErrMsg(null), 3000);
-      if (shop) setTimeout(setIsShopList, 3000);
-    } else {
-      setRecipeDtlsId(recipeId);
-      const sbmtdListName = shop ? formData.listName : formData.recipelistName;
-      setLstName(() => sbmtdListName);
-      // Set isCreateListButton to true.
-      setIsCreateListButton();
-      if (shop) setIsShopList();
-      if (!shop) setOccId(() => +formData.occasionId);
-    }
-  }
-
-  const addRecipe = async (recipeId) => {
-    const listId = formData.recipelistId;
-    if (listId === "") {
-      setFormErrMsg(() => "Select a list to add recipe to!");
-      setInvalidForm();
-      setFormReqMade();
-      setTimeout(setFormReqMade, 3000);
-      setTimeout(setInvalidForm, 3000);
-      setTimeout(() => setFormErrMsg(null), 3000);
-    } else {
-      setRecipeDtlsId(recipeId);
-      setIsAddRecpBtn();
-    }
-  }
-
   useEffect(() => {
     const favOrSav = async () => {
       try {
@@ -168,85 +131,8 @@ const RecipeDetails = () => {
       }
     }
 
-    const shopOrRecipeList = async () => {
-      try {
-        const endPt = isShopList ? "shoppinglists" : "recipelists";
-        const url = `/users/${usrData.userId}/${endPt}`;
-
-        const data = { list_name: lstName };
-        if (isShopList) data.recipe_id = recipeDtlsId;
-        else data.occasion_id = occId;
-        const req = await SavourApi.request("post", url, data, {}, headers);
-
-        setSuccMsg(() => "Created list!");
-        setFormReqMade();
-        setReqMadeSucc();
-        setTimeout(setFormReqMade, 3000);
-        setTimeout(setReqMadeSucc, 3000);
-        // Set isCreateListButton to false.
-        setTimeout(setIsCreateListButton, 3000);
-        setTimeout(() => setRecipeDtlsId(null), 3000);
-        setTimeout(() => setLstName(null), 3000);
-        setTimeout(() => setSuccMsg(null), 3000);
-        if (isShopList) setTimeout(setIsShopList, 3000);
-        setTimeout(() => setOccId(null), 3000);
-        setTimeout(() => setFormData(initialState), 3000);
-        // Update list data so form components update.
-        const lstReqState = isShopList ? setShoplists : setRecipelists;
-        const lstReqUrl = isShopList ? shopListUrl : recpListUrl;
-        const lstReq = await SavourApi.request("get", lstReqUrl, {}, {}, headers);
-        setTimeout(() => lstReqState(() => lstReq.data), 3000);
-      } catch(err) {
-        const error = err.response.data.error.message;
-        setFormErrMsg(() => error || "Error");
-        setInvalidForm();
-        setFormReqMade();
-        setTimeout(setInvalidForm, 3000);
-        setTimeout(setFormReqMade, 3000);
-        // Set isCreateListButton to false.
-        setTimeout(setIsCreateListButton, 3000);
-        setTimeout(() => setRecipeDtlsId(null), 3000);
-        setTimeout(() => setLstName(null), 3000);
-        if (isShopList) setTimeout(setIsShopList, 3000);
-        setTimeout(() => setOccId(null), 3000);
-        setTimeout(() => setFormData(initialState), 3000);
-      }
-    }
-
-    const addRecipelistRecipe = async () => {
-      try {
-        const url = `/users/${usrData.userId}/recipelists/${formData.recipelistId}`;
-        const data = { recipe_id: recipeDtlsId };
-        const req = await SavourApi.request("post", url, data, {}, headers);
-        setSuccMsg(() => "Added Recipe!");
-        setFormReqMade();
-        setReqMadeSucc();
-        setTimeout(setFormReqMade, 3000);
-        setTimeout(setReqMadeSucc, 3000);
-        setTimeout(() => setRecipeDtlsId(null), 3000);
-        setTimeout(() => setSuccMsg(null), 3000);
-        setTimeout(setIsAddRecpBtn, 3000);
-        setTimeout(() => setFormData(initialState), 3000);
-        const lstReq = await SavourApi.request("get", recpListUrl, {}, {}, headers);
-        setRecipelists(() => lstReq.data);
-      } catch(err) {
-        const errorCode = err.response.data.error.message.code;
-        const error = errorCode === "23505" ? "Already added recipe!" : "Error";
-        setFormErrMsg(() => error);
-        setInvalidForm();
-        setFormReqMade();
-        setTimeout(setInvalidForm, 3000);
-        setTimeout(setFormReqMade, 3000);
-        setTimeout(() => setRecipeDtlsId(null), 3000);
-        setTimeout(setIsAddRecpBtn, 3000);
-        setTimeout(() => setFormData(initialState), 3000);
-      }
-    }
-
     if (isSubmitted) favOrSav();
-    if (isCreateListButton) shopOrRecipeList();
-    if (isAddRecpBtn) addRecipelistRecipe();
-  }, [isSubmitted, isCreateListButton, isAddRecpBtn]);
+  }, [isSubmitted]);
 
   const handleChange = (evt) => {
     const { name, value } = evt.target;
@@ -356,43 +242,9 @@ const RecipeDetails = () => {
                     <h2 className="RecipeDetailsII-subtitle">Create a Recipelist</h2>
                 }
                 { recipelists && recipelists.length > 0
-                  ?
-                    <ListForm recipelist={true} />
-                    // <ListForm recipelist={true} />
-                  //   <form onSubmit={handleSubmit} className="RecipeDetailsII-form">
-                  //   <div className="RecipeDetailsII-form-field">
-                  //     <label htmlFor="recipelistRecipe">Recipelist Name</label>
-                  //     <label htmlFor="reclistRecAdd">Recipelists</label>
-                  //     <select
-                  //       id="reclistRecAdd"
-                  //       name="recipelistId"
-                  //       onChange={handleChange}
-                  //       value={formData.recipelistId}>
-                  //       <option key="recipelistId" value="">Select a Recipelist</option>
-                  //       { recipelists &&
-                  //         recipelists.map(recipelist => (
-                  //           <option key={`${recipelist.id}`} value={`${recipelist.id}`}>{recipelist.list_name}</option>
-                  //         ))
-                  //       }
-                  //     </select>
-                  //   </div>
-                  //   <div className="RecipeDetailsII-form-submit">
-                  //     <div className="RecipeDetailsII-msg-div">
-                  //       { formReqMade && !isShopList &&
-                  //         <Message msgObj={
-                  //           {
-                  //             class: reqMadeSucc ? "success" : "fail",
-                  //             msg: reqMadeSucc ? succMsg : formErrMsg
-                  //           }
-                  //         } />
-                  //       }
-                  //     </div>
-                  //       <button
-                  //         onClick={
-                  //           () => addRecipe(recipeData[0].id)
-                  //         }>ADD TO LIST</button>
-                  //   </div>
-                  // </form>
+                ?
+                  // <ListForm recipelist={true} />
+                  <AddToListForm recipelist={true} />
                 :
                   <CreateListForm recipelist={true} setState={setRecipelists} />
                 }

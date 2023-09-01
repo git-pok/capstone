@@ -7,6 +7,10 @@ import {
         } from '@fortawesome/free-solid-svg-icons'
 import Message from './Message.js';
 import SavourApi from './models/SavourApi.js';
+
+import CreateListForm from './CreateListForm.js';
+import AddToListForm from './AddToListForm.js';
+
 // import useLocalStorage from './hooks/useLocalStorage.js';
 import useToggleState from './hooks/useToggleState.js';
 import useAxios from './hooks/useAxios.js';
@@ -45,10 +49,10 @@ const RecipeDetails = () => {
   // Recipelists occasions options and request data.
   const OccOpts = {method: "get", url: `/occasions`, data: {}, params: {}, headers};
   const [ occasionData ] = useAxios(OccOpts);
-  const [ isCreateListButton, setIsCreateListButton ] = useToggleState(false);
-  const [ isShopList, setIsShopList ] = useToggleState(false);
-  const [ lstName, setLstName ] = useState(null);
-  const [ isAddRecpBtn, setIsAddRecpBtn ] = useToggleState(false);
+  // const [ isCreateListButton, setIsCreateListButton ] = useToggleState(false);
+  // const [ isShopList, setIsShopList ] = useToggleState(false);
+  // const [ lstName, setLstName ] = useState(null);
+  // const [ isAddRecpBtn, setIsAddRecpBtn ] = useToggleState(false);
 
   const isReveiws = recipeData ? recipeData[0].reviews.length > 0 : null;
   const [ favSavSucc, setFavSavSucc ] = useToggleState(false);
@@ -60,12 +64,12 @@ const RecipeDetails = () => {
   /**
    * FORM LOGIC
   */
-  const initialState = {
-    listName: "", recipelistName: "",
-    occasionId: "", recipelistId: ""
-  };
+  // const initialState = {
+  //   listName: "", recipelistName: "",
+  //   occasionId: "", recipelistId: ""
+  // };
 
-  const [ formData, setFormData ] = useState(initialState);
+  // const [ formData, setFormData ] = useState(initialState);
   const [ formReqMade, setFormReqMade ] = useToggleState(false);
   const [ reqMadeSucc, setReqMadeSucc ] = useToggleState(false);
   /**
@@ -78,43 +82,43 @@ const RecipeDetails = () => {
     setIsSubmitted();
   }
 
-  const addShopOrRecipe = async (recipeId, lstName, shop = true) => {
-    const isOccId = formData.occasionId !== "";
-    if ((lstName === "") || (!shop && lstName !== "" && !isOccId)) {
-      if (shop) setIsShopList();
-      const msg = !shop && !isOccId ? "Select an occasion!" : "Type a list name!";
-      setFormErrMsg(() => msg);
-      setInvalidForm();
-      setFormReqMade();
-      setTimeout(setFormReqMade, 3000);
-      setTimeout(setInvalidForm, 3000);
-      setTimeout(() => setFormErrMsg(null), 3000);
-      if (shop) setTimeout(setIsShopList, 3000);
-    } else {
-      setRecipeDtlsId(recipeId);
-      const sbmtdListName = shop ? formData.listName : formData.recipelistName;
-      setLstName(() => sbmtdListName);
-      // Set isCreateListButton to true.
-      setIsCreateListButton();
-      if (shop) setIsShopList();
-      if (!shop) setOccId(() => +formData.occasionId);
-    }
-  }
+  // const addShopOrRecipe = async (recipeId, lstName, shop = true) => {
+  //   const isOccId = formData.occasionId !== "";
+  //   if ((lstName === "") || (!shop && lstName !== "" && !isOccId)) {
+  //     if (shop) setIsShopList();
+  //     const msg = !shop && !isOccId ? "Select an occasion!" : "Type a list name!";
+  //     setFormErrMsg(() => msg);
+  //     setInvalidForm();
+  //     setFormReqMade();
+  //     setTimeout(setFormReqMade, 3000);
+  //     setTimeout(setInvalidForm, 3000);
+  //     setTimeout(() => setFormErrMsg(null), 3000);
+  //     if (shop) setTimeout(setIsShopList, 3000);
+  //   } else {
+  //     setRecipeDtlsId(recipeId);
+  //     const sbmtdListName = shop ? formData.listName : formData.recipelistName;
+  //     setLstName(() => sbmtdListName);
+  //     // Set isCreateListButton to true.
+  //     setIsCreateListButton();
+  //     if (shop) setIsShopList();
+  //     if (!shop) setOccId(() => +formData.occasionId);
+  //   }
+  // }
 
-  const addRecipe = async (recipeId) => {
-    const listId = formData.recipelistId;
-    if (listId === "") {
-      setFormErrMsg(() => "Select a list to add recipe to!");
-      setInvalidForm();
-      setFormReqMade();
-      setTimeout(setFormReqMade, 3000);
-      setTimeout(setInvalidForm, 3000);
-      setTimeout(() => setFormErrMsg(null), 3000);
-    } else {
-      setRecipeDtlsId(recipeId);
-      setIsAddRecpBtn();
-    }
-  }
+  // const addRecipe = async (recipeId) => {
+  //   const listId = formData.recipelistId;
+  //   if (listId === "") {
+  //     setFormErrMsg(() => "Select a list to add recipe to!");
+  //     setInvalidForm();
+  //     setFormReqMade();
+  //     setTimeout(setFormReqMade, 3000);
+  //     setTimeout(setInvalidForm, 3000);
+  //     setTimeout(() => setFormErrMsg(null), 3000);
+  //   } else {
+  //     setRecipeDtlsId(recipeId);
+  //     setIsAddRecpBtn();
+  //   }
+  // }
 
   useEffect(() => {
     const favOrSav = async () => {
@@ -163,98 +167,98 @@ const RecipeDetails = () => {
       }
     }
 
-    const shopOrRecipeList = async () => {
-      try {
-        const endPt = isShopList ? "shoppinglists" : "recipelists";
-        const url = `/users/${usrData.userId}/${endPt}`;
+    // const shopOrRecipeList = async () => {
+    //   try {
+    //     const endPt = isShopList ? "shoppinglists" : "recipelists";
+    //     const url = `/users/${usrData.userId}/${endPt}`;
 
-        const data = { list_name: lstName };
-        if (isShopList) data.recipe_id = recipeDtlsId;
-        else data.occasion_id = occId;
-        const req = await SavourApi.request("post", url, data, {}, headers);
+    //     const data = { list_name: lstName };
+    //     if (isShopList) data.recipe_id = recipeDtlsId;
+    //     else data.occasion_id = occId;
+    //     const req = await SavourApi.request("post", url, data, {}, headers);
 
-        setSuccMsg(() => "Created list!");
-        setFormReqMade();
-        setReqMadeSucc();
-        setTimeout(setFormReqMade, 3000);
-        setTimeout(setReqMadeSucc, 3000);
-        // Set isCreateListButton to false.
-        setTimeout(setIsCreateListButton, 3000);
-        setTimeout(() => setRecipeDtlsId(null), 3000);
-        setTimeout(() => setLstName(null), 3000);
-        setTimeout(() => setSuccMsg(null), 3000);
-        if (isShopList) setTimeout(setIsShopList, 3000);
-        setTimeout(() => setOccId(null), 3000);
-        setTimeout(() => setFormData(initialState), 3000);
-        // Update list data so form components update.
-        const lstReqState = isShopList ? setShoplists : setRecipelists;
-        const lstReqUrl = isShopList ? shopListUrl : recpListUrl;
-        const lstReq = await SavourApi.request("get", lstReqUrl, {}, {}, headers);
-        setTimeout(() => lstReqState(() => lstReq.data), 3000);
-      } catch(err) {
-        const error = err.response.data.error.message;
-        setFormErrMsg(() => error || "Error");
-        setInvalidForm();
-        setFormReqMade();
-        setTimeout(setInvalidForm, 3000);
-        setTimeout(setFormReqMade, 3000);
-        // Set isCreateListButton to false.
-        setTimeout(setIsCreateListButton, 3000);
-        setTimeout(() => setRecipeDtlsId(null), 3000);
-        setTimeout(() => setLstName(null), 3000);
-        if (isShopList) setTimeout(setIsShopList, 3000);
-        setTimeout(() => setOccId(null), 3000);
-        setTimeout(() => setFormData(initialState), 3000);
-      }
-    }
+    //     setSuccMsg(() => "Created list!");
+    //     setFormReqMade();
+    //     setReqMadeSucc();
+    //     setTimeout(setFormReqMade, 3000);
+    //     setTimeout(setReqMadeSucc, 3000);
+    //     // Set isCreateListButton to false.
+    //     setTimeout(setIsCreateListButton, 3000);
+    //     setTimeout(() => setRecipeDtlsId(null), 3000);
+    //     setTimeout(() => setLstName(null), 3000);
+    //     setTimeout(() => setSuccMsg(null), 3000);
+    //     if (isShopList) setTimeout(setIsShopList, 3000);
+    //     setTimeout(() => setOccId(null), 3000);
+    //     setTimeout(() => setFormData(initialState), 3000);
+    //     // Update list data so form components update.
+    //     const lstReqState = isShopList ? setShoplists : setRecipelists;
+    //     const lstReqUrl = isShopList ? shopListUrl : recpListUrl;
+    //     const lstReq = await SavourApi.request("get", lstReqUrl, {}, {}, headers);
+    //     setTimeout(() => lstReqState(() => lstReq.data), 3000);
+    //   } catch(err) {
+    //     const error = err.response.data.error.message;
+    //     setFormErrMsg(() => error || "Error");
+    //     setInvalidForm();
+    //     setFormReqMade();
+    //     setTimeout(setInvalidForm, 3000);
+    //     setTimeout(setFormReqMade, 3000);
+    //     // Set isCreateListButton to false.
+    //     setTimeout(setIsCreateListButton, 3000);
+    //     setTimeout(() => setRecipeDtlsId(null), 3000);
+    //     setTimeout(() => setLstName(null), 3000);
+    //     if (isShopList) setTimeout(setIsShopList, 3000);
+    //     setTimeout(() => setOccId(null), 3000);
+    //     setTimeout(() => setFormData(initialState), 3000);
+    //   }
+    // }
 
-    const addRecipelistRecipe = async () => {
-      try {
-        const url = `/users/${usrData.userId}/recipelists/${formData.recipelistId}`;
-        const data = { recipe_id: recipeDtlsId };
-        const req = await SavourApi.request("post", url, data, {}, headers);
-        setSuccMsg(() => "Added Recipe!");
-        setFormReqMade();
-        setReqMadeSucc();
-        setTimeout(setFormReqMade, 3000);
-        setTimeout(setReqMadeSucc, 3000);
-        setTimeout(() => setRecipeDtlsId(null), 3000);
-        setTimeout(() => setSuccMsg(null), 3000);
-        setTimeout(setIsAddRecpBtn, 3000);
-        setTimeout(() => setFormData(initialState), 3000);
-        const lstReq = await SavourApi.request("get", recpListUrl, {}, {}, headers);
-        setRecipelists(() => lstReq.data);
-      } catch(err) {
-        const errorCode = err.response.data.error.message.code;
-        const error = errorCode === "23505" ? "Already added recipe!" : "Error";
-        setFormErrMsg(() => error);
-        setInvalidForm();
-        setFormReqMade();
-        setTimeout(setInvalidForm, 3000);
-        setTimeout(setFormReqMade, 3000);
-        setTimeout(() => setRecipeDtlsId(null), 3000);
-        setTimeout(setIsAddRecpBtn, 3000);
-        setTimeout(() => setFormData(initialState), 3000);
-      }
-    }
+    // const addRecipelistRecipe = async () => {
+    //   try {
+    //     const url = `/users/${usrData.userId}/recipelists/${formData.recipelistId}`;
+    //     const data = { recipe_id: recipeDtlsId };
+    //     const req = await SavourApi.request("post", url, data, {}, headers);
+    //     setSuccMsg(() => "Added Recipe!");
+    //     setFormReqMade();
+    //     setReqMadeSucc();
+    //     setTimeout(setFormReqMade, 3000);
+    //     setTimeout(setReqMadeSucc, 3000);
+    //     setTimeout(() => setRecipeDtlsId(null), 3000);
+    //     setTimeout(() => setSuccMsg(null), 3000);
+    //     setTimeout(setIsAddRecpBtn, 3000);
+    //     setTimeout(() => setFormData(initialState), 3000);
+    //     const lstReq = await SavourApi.request("get", recpListUrl, {}, {}, headers);
+    //     setRecipelists(() => lstReq.data);
+    //   } catch(err) {
+    //     const errorCode = err.response.data.error.message.code;
+    //     const error = errorCode === "23505" ? "Already added recipe!" : "Error";
+    //     setFormErrMsg(() => error);
+    //     setInvalidForm();
+    //     setFormReqMade();
+    //     setTimeout(setInvalidForm, 3000);
+    //     setTimeout(setFormReqMade, 3000);
+    //     setTimeout(() => setRecipeDtlsId(null), 3000);
+    //     setTimeout(setIsAddRecpBtn, 3000);
+    //     setTimeout(() => setFormData(initialState), 3000);
+    //   }
+    // }
 
     if (isSubmitted) favOrSav();
-    if (isCreateListButton) shopOrRecipeList();
-    if (isAddRecpBtn) addRecipelistRecipe();
-  }, [isSubmitted, isCreateListButton, isAddRecpBtn]);
+    // if (isCreateListButton) shopOrRecipeList();
+    // if (isAddRecpBtn) addRecipelistRecipe();
+  }, [isSubmitted]);
 
-  const handleChange = (evt) => {
-    const { name, value } = evt.target;
+  // const handleChange = (evt) => {
+  //   const { name, value } = evt.target;
 
-    setFormData(data => ({
-      ...data,
-      [name]: value
-    }))
-  }
+  //   setFormData(data => ({
+  //     ...data,
+  //     [name]: value
+  //   }))
+  // }
 
-  const handleSubmit = async (evt) => {
-    evt.preventDefault();
-  }
+  // const handleSubmit = async (evt) => {
+  //   evt.preventDefault();
+  // }
 
   return (
     <>
@@ -338,31 +342,32 @@ const RecipeDetails = () => {
                     <p>Recipe has Shoplist already! Go To Shopping Lists!</p>
                   </Link>
                 :
-                  <form onSubmit={handleSubmit} className="RecipeDetails-form">
-                    <div className="RecipeDetails-form-field">
-                      <label htmlFor="listName">List Name</label>
-                      <input
-                        id="listName"
-                        type="text"
-                        name="listName"
-                        placeholder="Type a list name"
-                        onChange={handleChange}
-                        value={formData.listName} />
-                    </div>
-                    <div className="RecipeDetails-form-submit">
-                      <div className="RecipeDetails-msg-div">
-                        { formReqMade && isShopList &&
-                          <Message msgObj={
-                            {
-                              class: reqMadeSucc ? "success" : "fail",
-                              msg: reqMadeSucc ? succMsg : formErrMsg
-                            }
-                          } />
-                        }
-                      </div>
-                      <button onClick={() => addShopOrRecipe(recipeData[0].id, formData.listName)}>CREATE LIST</button>
-                    </div>
-                  </form>
+                  <CreateListForm recipeId={recipeId} setState={setShoplists} />
+                  // <form onSubmit={handleSubmit} className="RecipeDetails-form">
+                  //   <div className="RecipeDetails-form-field">
+                  //     <label htmlFor="listName">List Name</label>
+                  //     <input
+                  //       id="listName"
+                  //       type="text"
+                  //       name="listName"
+                  //       placeholder="Type a list name"
+                  //       onChange={handleChange}
+                  //       value={formData.listName} />
+                  //   </div>
+                  //   <div className="RecipeDetails-form-submit">
+                  //     <div className="RecipeDetails-msg-div">
+                  //       { formReqMade && isShopList &&
+                  //         <Message msgObj={
+                  //           {
+                  //             class: reqMadeSucc ? "success" : "fail",
+                  //             msg: reqMadeSucc ? succMsg : formErrMsg
+                  //           }
+                  //         } />
+                  //       }
+                  //     </div>
+                  //     <button onClick={() => addShopOrRecipe(recipeData[0].id, formData.listName)}>CREATE LIST</button>
+                  //   </div>
+                  // </form>
                 }
             </div>
 
@@ -376,82 +381,84 @@ const RecipeDetails = () => {
                 }
                 { recipelists && recipelists.length > 0
                   ?
-                    <form onSubmit={handleSubmit} className="RecipeDetails-form">
-                    <div className="RecipeDetails-form-field">
-                      <label htmlFor="recipelistRecipe">Recipelist Name</label>
-                      <label htmlFor="reclistRecAdd">Recipelists</label>
-                      <select
-                        id="reclistRecAdd"
-                        name="recipelistId"
-                        onChange={handleChange}
-                        value={formData.recipelistId}>
-                        <option key="recipelistId" value="">Select a Recipelist</option>
-                        { recipelists &&
-                          recipelists.map(recipelist => (
-                            <option key={`${recipelist.id}`} value={`${recipelist.id}`}>{recipelist.list_name}</option>
-                          ))
-                        }
-                      </select>
-                    </div>
-                    <div className="RecipeDetails-form-submit">
-                      <div className="RecipeDetails-msg-div">
-                        { formReqMade && !isShopList &&
-                          <Message msgObj={
-                            {
-                              class: reqMadeSucc ? "success" : "fail",
-                              msg: reqMadeSucc ? succMsg : formErrMsg
-                            }
-                          } />
-                        }
-                      </div>
-                        <button
-                          onClick={
-                            () => addRecipe(recipeData[0].id)
-                          }>ADD TO LIST</button>
-                    </div>
-                  </form>
+                    <AddToListForm recipelist={true} />
+                  //   <form onSubmit={handleSubmit} className="RecipeDetails-form">
+                  //   <div className="RecipeDetails-form-field">
+                  //     <label htmlFor="recipelistRecipe">Recipelist Name</label>
+                  //     <label htmlFor="reclistRecAdd">Recipelists</label>
+                  //     <select
+                  //       id="reclistRecAdd"
+                  //       name="recipelistId"
+                  //       onChange={handleChange}
+                  //       value={formData.recipelistId}>
+                  //       <option key="recipelistId" value="">Select a Recipelist</option>
+                  //       { recipelists &&
+                  //         recipelists.map(recipelist => (
+                  //           <option key={`${recipelist.id}`} value={`${recipelist.id}`}>{recipelist.list_name}</option>
+                  //         ))
+                  //       }
+                  //     </select>
+                  //   </div>
+                  //   <div className="RecipeDetails-form-submit">
+                  //     <div className="RecipeDetails-msg-div">
+                  //       { formReqMade && !isShopList &&
+                  //         <Message msgObj={
+                  //           {
+                  //             class: reqMadeSucc ? "success" : "fail",
+                  //             msg: reqMadeSucc ? succMsg : formErrMsg
+                  //           }
+                  //         } />
+                  //       }
+                  //     </div>
+                  //       <button
+                  //         onClick={
+                  //           () => addRecipe(recipeData[0].id)
+                  //         }>ADD TO LIST</button>
+                  //   </div>
+                  // </form>
                 :
-                    <form onSubmit={handleSubmit} className="RecipeDetails-form">
-                    <div className="RecipeDetails-form-field">
-                      <label htmlFor="recipelistName">List Name</label>
-                      <input
-                        id="recipelistName"
-                        type="text"
-                        name="recipelistName"
-                        placeholder="Type a recipelist name"
-                        onChange={handleChange}
-                        value={formData.recipelistName}></input>
-                      <label htmlFor="occasionId">Recipelist Occasions</label>
-                      <select
-                        id="occasionId"
-                        name="occasionId"
-                        onChange={handleChange}
-                        value={formData.occasionId}>
-                        <option key="select-an-occ" value="">Select an Occasion</option>
-                        { occasionData &&
-                          occasionData.map(occasion => (
-                            <option key={`${occasion.id}`} value={`${occasion.id}`}>{occasion.occasion}</option>
-                          ))
-                        }
-                      </select>
-                    </div>
-                    <div className="RecipeDetails-form-submit">
-                      <div className="RecipeDetails-msg-div">
-                        { formReqMade && !isShopList &&
-                          <Message msgObj={
-                            {
-                              class: reqMadeSucc ? "success" : "fail",
-                              msg: reqMadeSucc ? succMsg : formErrMsg
-                            }
-                          } />
-                        }
-                      </div>
-                        <button
-                          onClick={
-                            () => addShopOrRecipe(recipeData[0].id, formData.recipelistName, false)
-                          }>CREATE LIST</button>
-                    </div>
-                  </form>
+                  <CreateListForm recipelist={true} setState={setRecipelists} />
+                  //   <form onSubmit={handleSubmit} className="RecipeDetails-form">
+                  //   <div className="RecipeDetails-form-field">
+                  //     <label htmlFor="recipelistName">List Name</label>
+                  //     <input
+                  //       id="recipelistName"
+                  //       type="text"
+                  //       name="recipelistName"
+                  //       placeholder="Type a recipelist name"
+                  //       onChange={handleChange}
+                  //       value={formData.recipelistName}></input>
+                  //     <label htmlFor="occasionId">Recipelist Occasions</label>
+                  //     <select
+                  //       id="occasionId"
+                  //       name="occasionId"
+                  //       onChange={handleChange}
+                  //       value={formData.occasionId}>
+                  //       <option key="select-an-occ" value="">Select an Occasion</option>
+                  //       { occasionData &&
+                  //         occasionData.map(occasion => (
+                  //           <option key={`${occasion.id}`} value={`${occasion.id}`}>{occasion.occasion}</option>
+                  //         ))
+                  //       }
+                  //     </select>
+                  //   </div>
+                  //   <div className="RecipeDetails-form-submit">
+                  //     <div className="RecipeDetails-msg-div">
+                  //       { formReqMade && !isShopList &&
+                  //         <Message msgObj={
+                  //           {
+                  //             class: reqMadeSucc ? "success" : "fail",
+                  //             msg: reqMadeSucc ? succMsg : formErrMsg
+                  //           }
+                  //         } />
+                  //       }
+                  //     </div>
+                  //       <button
+                  //         onClick={
+                  //           () => addShopOrRecipe(recipeData[0].id, formData.recipelistName, false)
+                  //         }>CREATE LIST</button>
+                  //   </div>
+                  // </form>
                 }
             </div>
           </div>

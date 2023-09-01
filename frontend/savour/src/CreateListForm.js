@@ -64,15 +64,18 @@ const CreateListForm = ({recipelist = false, recipeId, setState}) => {
         const listReq = await SavourApi.request("post", listUrl, data, {}, headers);
         console.log("listReq", listReq.data);
         setSuccMsg("Created list!");
+        console.log("succMsg", succMsg);
         setFormReqMade();
         setIsFormReqSucc();
-        setState(() => !isRecipeList ? [...listReq.data] : [{...listReq.data}]);
+        // setState(() => !isRecipeList ? [...listReq.data] : [{...listReq.data}]);
         setTimeout(setIsSubmitted, 3000);
         if (isRecipeList) setTimeout(setIsRecipeList, 3000);
         setTimeout(setFormReqMade, 3000);
         setTimeout(setIsFormReqSucc, 3000);
+        // setTimeout(setState(() => !isRecipeList ? [...listReq.data] : [{...listReq.data}]), 3000);
         setTimeout(() => setSuccMsg(null), 3000);
         setTimeout(() => setListUrl(null), 3000);
+        setTimeout(() => setState(() => !isRecipeList ? [...listReq.data] : [{...listReq.data}]), 3000);
       } catch(err) {
         console.log("ERROR", err);
         const error = err.response.data.error.message;
@@ -108,7 +111,7 @@ const CreateListForm = ({recipelist = false, recipeId, setState}) => {
 
   return (
     <>
-    <div className="CreateListForm-div">
+    {/* <div className="CreateListForm-div"> */}
     {/* Shoppinglist form to create shoppinglist. */}
     { !recipelist
     // {/* Shoppinglist form to create shoppinglist. */}
@@ -179,7 +182,7 @@ const CreateListForm = ({recipelist = false, recipeId, setState}) => {
           </div>
         </form>
     }
-    </div>
+    {/* </div> */}
     </>
   );
 }
