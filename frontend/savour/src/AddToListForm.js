@@ -12,7 +12,7 @@ import './AddToListForm.css';
  * Props: recipelist, setState
  * Renders: renders form to create shop or recipe list.
 */
-const AddToListForm = ({recipelist = false, setState}) => {
+const AddToListForm = ({recipelist = false, setState=false, setToggleState=false}) => {
   const { usrData, setUsrData } = useContext(UserContext);
   const headers = { _token: `Bearer ${usrData.token}`};
 
@@ -78,7 +78,9 @@ const AddToListForm = ({recipelist = false, setState}) => {
         setFormReqMade();
         setIsFormReqSucc();
         const reReq = await SavourApi.request("get", listReReqUrl, {}, {}, headers);
+        // console.log("$*$*$*$*$*$*$* reReq", reReq);
         if (setState) setTimeout(setState(() => [...reReq.data]), 3000);
+        if (setToggleState) setTimeout(setToggleState, 3000);
         setTimeout(setIsSubmitted, 3000);
         if (isRecipeList) setTimeout(setIsRecipeList, 3000);
         setTimeout(setFormReqMade, 3000);

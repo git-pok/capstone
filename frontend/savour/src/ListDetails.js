@@ -4,7 +4,7 @@ import UserContext from './context/UserContext.js';
 import SavourApi from './models/SavourApi.js';
 import RecipeContainer from './RecipeContainer.js';
 import Message from './Message.js';
-import AddRecipelistRecipe from './AddRecipelistRecipe.js';
+import AddToListForm from './AddToListForm.js';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
           faSquarePlus, faSquareMinus, faRectangleXmark
@@ -25,7 +25,7 @@ const ListDetails = ({urlEndpt, recipelist = false}) => {
   const { id: listId } = useParams();
   const history = useHistory();
   const listUrl = `/users/${usrData.userId}/${urlEndpt}/${listId}`;
-
+  const [ activateGetLists, setActivateGetLists ] = useToggleState(false);
   const [ listData, setListData ] = useState(null);
   const [ isIngrAddBtn, setIsIngrAddBtn ] = useToggleState(false);
   const [ isIngrRmvBtn, setIsIngrRmvBtn ] = useToggleState(false);
@@ -58,6 +58,7 @@ const ListDetails = ({urlEndpt, recipelist = false}) => {
       try {
         const listReq = await SavourApi.request("get", listUrl, {}, {}, headers);
         setListData(() => listReq.data);
+        if (activateGetLists) setTimeout(setActivateGetLists, 3000);
       } catch(err) {
         console.log(`Error!\n${err}`);
       }
@@ -114,7 +115,7 @@ const ListDetails = ({urlEndpt, recipelist = false}) => {
     if (listUrl || updateListMsg) getLists();
     if (isIngrAddBtn || isIngrRmvBtn) addToList();
     if (isListDltBtn) deleteList();
-  }, [listUrl, updateListMsg, isIngrAddBtn, isIngrRmvBtn, isListDltBtn])
+  }, [listUrl, activateGetLists, updateListMsg, isIngrAddBtn, isIngrRmvBtn, isListDltBtn])
 
   return (
     <>
@@ -165,7 +166,8 @@ const ListDetails = ({urlEndpt, recipelist = false}) => {
       <div className="ListDetails">
         <h1 className="ListDetails-h1">Add Recipes to List</h1>
         <div className="ListDetails-div">
-          <AddRecipelistRecipe setState={setUpdateListMsg} />
+          <AddToListForm recipelist={true} setToggleState={setActivateGetLists} />
+          {/* <AddRecipelistRecipe setState={setUpdateListMsg} /> */}
         </div>
       </div>
     }
