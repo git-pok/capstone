@@ -61,7 +61,13 @@ const RegisterForm = () => {
 
       } catch (err) {
         console.log("ERROR", err);
-        setFormErrMsg(() => "Error");
+        const error = err.response.data.error.message;
+        const isErrObj = typeof err.message === "object";
+        const isErrorObj = typeof error === "object";
+        const errMsg = isErrObj ? null : err.message;
+        const errorMsg = isErrorObj ? null : error;
+        setFormErrMsg(() => errorMsg || errMsg || "Error!");
+        // setFormErrMsg(() => "Error");
         setInvalidForm();
         setTimeout(setInvalidForm, 3000);
         // Set isSubmitted to false.

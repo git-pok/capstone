@@ -6,6 +6,7 @@ import LoginForm from './LoginForm.js';
 import Home from './Home.js';
 import Recipes from './Recipes.js';
 import RecipeDetails from './RecipeDetails.js';
+import RecipeDetailsII from './RecipeDetailsII.js';
 import PageNotFound from './PageNotFound.js';
 import Profile from './Profile.js';
 import ListNamesDiv from './ListNamesDiv.js';
@@ -44,7 +45,8 @@ const Routes = () => {
       }
       { userToken &&
         <Route exact path="/recipes/:id">
-          <RecipeDetails />
+          {/* <RecipeDetails /> */}
+          <RecipeDetailsII />
         </Route>
       }
       { userToken &&

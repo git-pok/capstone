@@ -1,0 +1,81 @@
+.CreateListForm-form {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  width: 70%;
+  margin: 10px auto 40px auto;
+  padding: 50px 0px;
+  background-color: rgb(39, 55, 77);
+  border-radius: 10px;
+}
+
+.CreateListForm-form-field {
+  display: block;
+}
+  
+.CreateListForm-form-h1 {
+  text-align: center;
+  display: block;
+  font-size: 60px;
+  margin: 0px 0px;
+  padding-top: 120px;
+  color:  rgb(221, 230, 237);
+}
+
+.CreateListForm-form-field label {
+  display: block;
+  width: 260px;
+  height: 30px;
+  margin-right: 30px;
+  color: rgb(221, 230, 237);
+}
+  
+.CreateListForm-form-field input, select {
+  width: 260px;
+  height: 30px;
+  margin-bottom: 30px;
+  background-color: aliceblue;
+}
+
+.CreateListForm-form-submit {
+  display: block;
+  width: 100%;
+  margin-top: 10px;
+}
+
+.CreateListForm-form-submit button {
+  display: block;
+  width: 260px;
+  height: 30px;
+  margin: 0px auto;
+  margin-top: 10px;
+  border: 3px inset rgb(221, 230, 237);
+  background-color: rgb(221, 230, 237);
+  color: rgb(39, 55, 77);
+  transition: .5s ease-in-out background-color;
+}
+  
+.CreateListForm-form button:hover {
+  border-color: rgb(39, 55, 77);
+  background-color: rgb(39, 55, 77);
+  color: rgb(221, 230, 237);
+}
+
+.CreateListForm-msg-div div {
+  /* display: block; */
+  width: 100%;
+  height: 100%;
+}
+
+@media only screen and (max-width: 1302px) and (min-width: 400px) {
+  .CreateListForm-div {
+    flex-direction: column;
+    align-items: center;
+    flex-wrap: nowrap;
+  }
+
+  .CreateListForm-list-div {
+    width: 60%;
+  }
+}

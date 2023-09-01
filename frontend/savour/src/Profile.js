@@ -189,15 +189,6 @@ const Profile = () => {
                 onClick={deleteTrue}
                 icon={faUserXmark} />
             <div className="Profile-msg">
-            {/* {
-              lkdDslkdOrFavd &&
-                <Message msgObj={
-                  {
-                    class: likDisFavSucc ? "success" : "fail",
-                    msg: likDisFavSucc ? succMsg : formErrMsg
-                  }
-                } />
-            } */}
             </div>
             <div className="Profile-msg-div">
             {
@@ -257,7 +248,7 @@ const Profile = () => {
             <div className="Profile-form-field">
               <label htmlFor="password">Password</label>
               <input
-                type="text"
+                type="password"
                 id="password"
                 onChange={handleChange}
                 value={formData.password}

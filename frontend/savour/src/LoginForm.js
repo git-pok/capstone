@@ -52,7 +52,11 @@ const LoginForm = () => {
         console.log("ERROR", err);
         // Define variable for API error.
         const error = err.response.data.error.message;
-        setFormErrMsg(() => error || "Error");
+        const isErrObj = typeof err.message === "object";
+        const isErrorObj = typeof error === "object";
+        const errMsg = isErrObj ? null : err.message;
+        const errorMsg = isErrorObj ? null : error;
+        setFormErrMsg(() => errorMsg || errMsg || "Error!");
         setInvalidForm();
         setTimeout(setInvalidForm, 3000);
         // Set isSubmitted to false.
