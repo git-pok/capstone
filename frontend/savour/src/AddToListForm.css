@@ -1,6 +1,6 @@
 .AddToListForm-form {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   justify-content: center;
   flex-wrap: wrap;
   width: 70%;
@@ -12,21 +12,26 @@
 
 .AddToListForm-form-field {
   display: block;
+  width: 46%;
+  margin: 10px 10px;
 }
 
 .AddToListForm-form-field label {
   display: block;
-  width: 260px;
+  width: 100%;
   height: 30px;
   margin: 0px auto;
   color: rgb(221, 230, 237);
 }
-  
-.AddToListForm-form-field input, select {
-  width: 260px;
-  height: 30px;
-  margin-bottom: 30px;
-  background-color: aliceblue;
+
+.AddToListForm-form-field input, .AddToListForm-form-field select {
+  box-sizing: border-box;
+  width: 100%;
+  height: 40px;
+  padding: 0px 0px;
+  margin: 0px auto 30px auto;
+  border: 6px solid rgb(255, 255, 255);
+  border-radius: 05px;
 }
 
 .AddToListForm-form-submit {
@@ -61,14 +66,19 @@
   padding: 5px 5px;
 }
 
-@media only screen and (max-width: 1302px) and (min-width: 400px) {
+@media only screen and (max-width: 1384px) and (min-width: 400px) {
   .AddToListForm-div {
     flex-direction: column;
     align-items: center;
     flex-wrap: nowrap;
   }
 
-  .AddToListForm-list-div {
-    width: 60%;
+  .AddToListForm-form-field {
+    width: 70%;
+  }
+
+  .AddToListForm-form-submit button {
+    width: 50%;
+    height: 100%;
   }
 }

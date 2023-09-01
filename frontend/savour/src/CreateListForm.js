@@ -62,6 +62,10 @@ const CreateListForm = ({recipelist = false, recipeId, setState}) => {
             : { recipe_id: +recipeId, list_name: formData.shoplistName }
         console.log("DATA", data);
         const listReq = await SavourApi.request("post", listUrl, data, {}, headers);
+        // NEW LOGIC
+        const listReReq = await SavourApi.request("get", listUrl, {}, {}, headers);
+        console.log("listReReq", listReReq);
+        // NEW LOGIC END
         console.log("listReq", listReq.data);
         setSuccMsg("Created list!");
         console.log("succMsg", succMsg);
@@ -75,7 +79,8 @@ const CreateListForm = ({recipelist = false, recipeId, setState}) => {
         // setTimeout(setState(() => !isRecipeList ? [...listReq.data] : [{...listReq.data}]), 3000);
         setTimeout(() => setSuccMsg(null), 3000);
         setTimeout(() => setListUrl(null), 3000);
-        setTimeout(() => setState(() => !isRecipeList ? [...listReq.data] : [{...listReq.data}]), 3000);
+        // setTimeout(() => setState(() => !isRecipeList ? [...listReq.data] : [{...listReq.data}]), 3000);
+        setTimeout(() => setState(() => [...listReReq.data], 3000));
       } catch(err) {
         console.log("ERROR", err);
         const error = err.response.data.error.message;
@@ -111,7 +116,6 @@ const CreateListForm = ({recipelist = false, recipeId, setState}) => {
 
   return (
     <>
-    {/* <div className="CreateListForm-div"> */}
     {/* Shoppinglist form to create shoppinglist. */}
     { !recipelist
     // {/* Shoppinglist form to create shoppinglist. */}
@@ -153,6 +157,8 @@ const CreateListForm = ({recipelist = false, recipeId, setState}) => {
               placeholder="Type a recipelist name"
               onChange={handleChange}
               value={formData.recipelistName}></input>
+          </div>
+          <div className="CreateListForm-form-field">
             <label htmlFor="occasionId">Recipelist Occasions</label>
             <select
               id="occasionId"
@@ -182,7 +188,6 @@ const CreateListForm = ({recipelist = false, recipeId, setState}) => {
           </div>
         </form>
     }
-    {/* </div> */}
     </>
   );
 }

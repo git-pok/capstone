@@ -2,6 +2,8 @@ import { useContext, useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import useAxios from './hooks/useAxios.js';
 import ListForm from './ListForm.js';
+import CreateListForm from './CreateListForm.js';
+import AddToListForm from './AddToListForm.js';
 import UserContext from './context/UserContext.js';
 import SavourApi from './models/SavourApi.js';
 import useToggleState from './hooks/useToggleState.js';
@@ -20,7 +22,7 @@ const ListNamesDiv = ({urlEndpt, listTypeForH1 = "Shoppinglists's", recipelist =
   const listUrl = `/users/${usrData.userId}/${urlEndpt}`;
   const [ listData, setListData ] = useState(null);
   const [ updatedList, setUpdatedList ] = useState(null);
-  // console.log("listData", listData);
+  console.log("listData", listData);
 
   useEffect(() => {
     const getLists = async () => {
@@ -50,12 +52,16 @@ const ListNamesDiv = ({urlEndpt, listTypeForH1 = "Shoppinglists's", recipelist =
       </div>
     </div>
 
-    <h1 className="RecipeDetails-h1">Create a List</h1>
-    <div className="RecipeDetails-div">
+    <h1 className="ListNamesDiv-h1">Create a List</h1>
+    <div className="ListNamesDiv-div">
       { !recipelist ?
-        <ListForm setState={setUpdatedList} />
+        // <ListForm setState={setUpdatedList} />
+        <AddToListForm setState={setListData} />
       :
-        <ListForm recipelist={true} setState={setUpdatedList} />
+        // <p>HELLO</p>
+        <CreateListForm recipelist={true} setState={setListData} />
+        // <AddToListForm recipelist={true} setActState={setUpdatedList} />
+        // <ListForm recipelist={true} setState={setUpdatedList} />
       }
     </div>
     </>

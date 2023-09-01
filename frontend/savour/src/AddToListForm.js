@@ -12,7 +12,7 @@ import './AddToListForm.css';
  * Props: recipelist, setState
  * Renders: renders form to create shop or recipe list.
 */
-const AddToListForm = ({recipelist = false, setActState}) => {
+const AddToListForm = ({recipelist = false, setState}) => {
   const { usrData, setUsrData } = useContext(UserContext);
   const headers = { _token: `Bearer ${usrData.token}`};
 
@@ -26,7 +26,8 @@ const AddToListForm = ({recipelist = false, setActState}) => {
   // const shopLstOpts = {method: "get", url: shoplistUrl, data: {}, params: {}, headers};
   // const [ shoplists, setShoplists ] = useAxios(shopLstOpts);
   // console.log("shoplists", shoplists);
-
+  const listReReqUrlEndPt = recipelist ? "recipelists" : "shoppinglists";
+  const listReReqUrl = `/users/${usrData.userId}/${listReReqUrlEndPt}`;
   const recipelistUrl = `/users/${usrData.userId}/recipelists`;
   const recpLstOpts = {method: "get", url: recipelistUrl, data: {}, params: {}, headers};
   const [ recipelists, setRecipelists ] = useAxios(recpLstOpts);
@@ -66,20 +67,18 @@ const AddToListForm = ({recipelist = false, setActState}) => {
   useEffect(() => {
     const createList = async () => {
       try {
-
         const data = isRecipeList ?
             { recipe_id: +formData.recipeId }
             : { recipe_id: +formData.recipeId, list_name: formData.shoplistName }
         
         console.log("data", data);
         const listReq = await SavourApi.request("post", listUrl, data, {}, headers);
-        console.log("listReq", listReq);
         setSuccMsg(isRecipeList ? "Added item to list!" : "Created list for recipe!");
         // setSuccMsg(isRecipeList ? "Added item to list!" : "Created list for recipe!");
         setFormReqMade();
         setIsFormReqSucc();
-        // setState(() => !isRecipeList ? [...listReq.data] : [{...listReq.data}]);
-        if (setActState) setActState(() => ({ msg: "Action sent!" }));
+        const reReq = await SavourApi.request("get", listReReqUrl, {}, {}, headers);
+        if (setState) setTimeout(setState(() => [...reReq.data]), 3000);
         setTimeout(setIsSubmitted, 3000);
         if (isRecipeList) setTimeout(setIsRecipeList, 3000);
         setTimeout(setFormReqMade, 3000);
@@ -121,7 +120,6 @@ const AddToListForm = ({recipelist = false, setActState}) => {
 
   return (
     <>
-    {/* <div className="AddToListForm-div"> */}
     { !recipelist
       ?
         <form onSubmit={handleSubmit} className="AddToListForm-form">
@@ -214,7 +212,6 @@ const AddToListForm = ({recipelist = false, setActState}) => {
           </div>
         </form>
     }
-    {/* </div> */}
     </>
   );
 }
