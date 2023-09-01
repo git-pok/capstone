@@ -63,70 +63,92 @@ describe("/GET /recipes/:id", () => {
             "reviews": [],
             "ingredients": [
                 {
+                    "id": 39,
                     "qty": "400",
                     "unit": "g",
                     "ingredient": "can  chickpeas, rinsed and drained",
-                    "ingredient_id": 39
+                    "ingredient_id": 39,
+                    "unit_id": 1
                 },
                 {
+                    "id": 40,
                     "qty": "1",
                     "unit": "no unit",
                     "ingredient": "small red onion, roughly chopped",
-                    "ingredient_id": 40
+                    "ingredient_id": 40,
+                    "unit_id": 25
                 },
                 {
+                    "id": 41,
                     "qty": "1",
                     "unit": "no unit",
                     "ingredient": "garlic clove, chopped",
-                    "ingredient_id": 41
+                    "ingredient_id": 41,
+                    "unit_id": 25
                 },
                 {
+                    "id": 42,
                     "qty": "",
                     "unit": "no unit",
                     "ingredient": "handful of flat-leaf parsley  or curly parsley",
-                    "ingredient_id": 42
+                    "ingredient_id": 42,
+                    "unit_id": 25
                 },
                 {
+                    "id": 43,
                     "qty": "1",
                     "unit": "tsp",
                     "ingredient": "ground cumin",
-                    "ingredient_id": 43
+                    "ingredient_id": 43,
+                    "unit_id": 2
                 },
                 {
+                    "id": 44,
                     "qty": "1",
                     "unit": "tsp",
                     "ingredient": "ground coriander",
-                    "ingredient_id": 44
+                    "ingredient_id": 44,
+                    "unit_id": 2
                 },
                 {
+                    "id": 45,
                     "qty": "½",
                     "unit": "tsp",
                     "ingredient": "harissa paste  or chilli powder",
-                    "ingredient_id": 45
+                    "ingredient_id": 45,
+                    "unit_id": 2
                 },
                 {
+                    "id": 46,
                     "qty": "2",
                     "unit": "tbsp",
                     "ingredient": "plain flour",
-                    "ingredient_id": 46
+                    "ingredient_id": 46,
+                    "unit_id": 3
                 },
                 {
+                    "id": 47,
                     "qty": "2",
                     "unit": "tbsp",
                     "ingredient": "sunflower oil",
-                    "ingredient_id": 47
+                    "ingredient_id": 47,
+                    "unit_id": 3
                 },
                 {
+                    "id": 48,
                     "qty": "",
                     "unit": "no unit",
                     "ingredient": "toasted pitta bread, to serve",
-                    "ingredient_id": 48
+                    "ingredient_id": 48,
+                    "unit_id": 25
                 },
                 {
+                    "id": 49,
                     "qty": "200",
                     "unit": "g",
                     "ingredient": "tub tomato salsa, to serve",
-                    "ingredient_id": 49
+                    "ingredient_id": 49,
+                    "unit_id": 1
                 }
             ]
         }]);
@@ -159,34 +181,44 @@ describe("/GET /recipes/:id", () => {
 		    "reviews": [],
             "ingredients": [
                 {
+                    "id": 53,
                     "qty": "2",
                     "unit": "no unit",
                     "ingredient": "medium eggs",
-                    "ingredient_id": 53
+                    "ingredient_id": 53,
+                    "unit_id": 25
                 },
                 {
+                    "id": 54,
                     "qty": "1",
                     "unit": "no unit",
                     "ingredient": "ripe avocado",
-                    "ingredient_id": 54
+                    "ingredient_id": 54,
+                    "unit_id": 25
                 },
                 {
+                    "id": 55,
                     "qty": "",
                     "unit": "no unit",
                     "ingredient": "juice 1 lime",
-                    "ingredient_id": 55
+                    "ingredient_id": 55,
+                    "unit_id": 25
                 },
                 {
+                    "id": 56,
                     "qty": "2",
                     "unit": "no unit",
                     "ingredient": "slices rye bread",
-                    "ingredient_id": 56
+                    "ingredient_id": 56,
+                    "unit_id": 25
                 },
                 {
+                    "id": 57,
                     "qty": "2",
                     "unit": "tsp",
                     "ingredient": "hot chilli sauce - we used sriracha",
-                    "ingredient_id": 57
+                    "ingredient_id": 57,
+                    "unit_id": 2
                 }
             ]
         }]);

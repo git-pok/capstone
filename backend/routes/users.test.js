@@ -406,118 +406,156 @@ describe("/GET /users/:id/favorite-recipes/:recipe_id", () => {
 		        ],
 		        "ingredients": [
 			        {
+						"id": 989,
 						"qty": "2",
 						"unit": "no unit",
 						"ingredient": "dried ancho chillies",
-						"ingredient_id": 732
+						"ingredient_id": 732,
+						"unit_id": 25
 					},
 					{
+						"id": 990,
 						"qty": "2",
 						"unit": "tsp",
 						"ingredient": "black peppercorns",
-						"ingredient_id": 733
+						"ingredient_id": 733,
+						"unit_id": 2
 					},
 					{
+						"id": 991,
 						"qty": "2",
 						"unit": "tbsp",
 						"ingredient": "cumin seeds",
-						"ingredient_id": 36
+						"ingredient_id": 36,
+						"unit_id": 3
 					},
 					{
+						"id": 992,
 						"qty": "2",
 						"unit": "tbsp",
 						"ingredient": "coriander seeds",
-						"ingredient_id": 734
+						"ingredient_id": 734,
+						"unit_id": 3
 					},
 					{
+						"id": 993,
 						"qty": "2",
 						"unit": "tsp",
 						"ingredient": "smoked paprika",
-						"ingredient_id": 267
+						"ingredient_id": 267,
+						"unit_id": 2
 					},
 					{
+						"id": 994,
 						"qty": "1",
 						"unit": "tbsp",
 						"ingredient": "dried oregano",
-						"ingredient_id": 322
+						"ingredient_id": 322,
+						"unit_id": 3
 					},
 					{
+						"id": 995,
 						"qty": "3",
 						"unit": "tbsp",
 						"ingredient": "vegetable oil",
-						"ingredient_id": 642
+						"ingredient_id": 642,
+						"unit_id": 3
 					},
 					{
+						"id": 996,
 						"qty": "1½",
 						"unit": "kg",
 						"ingredient": "braising steak, cut into 4cm cubes – meat from the brisket, short rib, blade or chuck steak are all good",
-						"ingredient_id": 735
+						"ingredient_id": 735,
+						"unit_id": 6
 					},
 					{
+						"id": 997,
 						"qty": "2",
 						"unit": "no unit",
 						"ingredient": "onions, finely chopped",
-						"ingredient_id": 736
+						"ingredient_id": 736,
+						"unit_id": 25
 					},
 					{
+						"id": 998,
 						"qty": "6",
 						"unit": "no unit",
 						"ingredient": "garlic cloves, minced",
-						"ingredient_id": 737
+						"ingredient_id": 737,
+						"unit_id": 25
 					},
 					{
+						"id": 999,
 						"qty": "2",
 						"unit": "tbsp",
 						"ingredient": "tomato purée",
-						"ingredient_id": 87
+						"ingredient_id": 87,
+						"unit_id": 3
 					},
 					{
+						"id": 1000,
 						"qty": "1",
 						"unit": "tbsp",
 						"ingredient": "smooth peanut butter",
-						"ingredient_id": 738
+						"ingredient_id": 738,
+						"unit_id": 3
 					},
 					{
+						"id": 1001,
 						"qty": "½",
 						"unit": "tsp",
 						"ingredient": "instant espresso powder",
-						"ingredient_id": 739
+						"ingredient_id": 739,
+						"unit_id": 2
 					},
 					{
+						"id": 1002,
 						"qty": "2",
 						"unit": "tbsp",
 						"ingredient": "apple cider vinegar",
-						"ingredient_id": 459
+						"ingredient_id": 459,
+						"unit_id": 3
 					},
 					{
+						"id": 1003,
 						"qty": "1",
 						"unit": "l",
 						"ingredient": "beef or chicken stock",
-						"ingredient_id": 740
+						"ingredient_id": 740,
+						"unit_id": 5
 					},
 					{
+						"id": 1004,
 						"qty": "2",
 						"unit": "no unit",
 						"ingredient": "bay leaves",
-						"ingredient_id": 429
+						"ingredient_id": 429,
+						"unit_id": 25
 					},
 					{
+						"id": 1005,
 						"qty": "",
 						"unit": "no unit",
 						"ingredient": "small piece of cinnamon stick",
-						"ingredient_id": 741
+						"ingredient_id": 741,
+						"unit_id": 25
 					},
 					{
+						"id": 1006,
 						"qty": "2",
 						"unit": "tbsp",
 						"ingredient": "semolina, polenta or Mexican masa flour",
-						"ingredient_id": 742
+						"ingredient_id": 742,
+						"unit_id": 3
 					},
 					{
+						"id": 1007,
 						"qty": "25",
 						"unit": "g",
 						"ingredient": "dark chocolate (70-80% cocoa solids)",
-						"ingredient_id": 743
+						"ingredient_id": 743,
+						"unit_id": 1
 					}
 		        ]
 	        }
@@ -548,34 +586,44 @@ describe("/GET /users/:id/favorite-recipes/:recipe_id", () => {
 		        "reviews": [],
 		        "ingredients": [
 			        {
+						"id": 53,
 						"qty": "2",
 						"unit": "no unit",
 						"ingredient": "medium eggs",
-						"ingredient_id": 53
+						"ingredient_id": 53,
+						"unit_id": 25
 					},
 					{
+						"id": 54,
 						"qty": "1",
 						"unit": "no unit",
 						"ingredient": "ripe avocado",
-						"ingredient_id": 54
+						"ingredient_id": 54,
+						"unit_id": 25
 					},
 					{
+						"id": 55,
 						"qty": "",
 						"unit": "no unit",
 						"ingredient": "juice 1 lime",
-						"ingredient_id": 55
+						"ingredient_id": 55,
+						"unit_id": 25
 					},
 					{
+						"id": 56,
 						"qty": "2",
 						"unit": "no unit",
 						"ingredient": "slices rye bread",
-						"ingredient_id": 56
+						"ingredient_id": 56,
+						"unit_id": 25
 					},
 					{
+						"id": 57,
 						"qty": "2",
 						"unit": "tsp",
 						"ingredient": "hot chilli sauce - we used sriracha",
-						"ingredient_id": 57
+						"ingredient_id": 57,
+						"unit_id": 2
 					}
 		        ]
 	        }
@@ -770,34 +818,44 @@ describe("/GET /users/:id/saved-recipes/:recipe_id", () => {
 		        "reviews": [],
 		        "ingredients": [
 			        {
+						"id": 3617,
 						"qty": "1",
 						"unit": "tbsp",
 						"ingredient": "olive oil",
-						"ingredient_id": 16
+						"ingredient_id": 16,
+						"unit_id": 3
 					},
 					{
+						"id": 3618,
 						"qty": "200",
 						"unit": "g",
 						"ingredient": "nettle leave",
-						"ingredient_id": 2269
+						"ingredient_id": 2269,
+						"unit_id": 1
 					},
 					{
+						"id": 3619,
 						"qty": "200",
 						"unit": "ml",
 						"ingredient": "tub crème fraîche",
-						"ingredient_id": 2270
+						"ingredient_id": 2270,
+						"unit_id": 4
 					},
 					{
+						"id": 3620,
 						"qty": "1",
 						"unit": "tsp",
 						"ingredient": "wholegrain mustard",
-						"ingredient_id": 1107
+						"ingredient_id": 1107,
+						"unit_id": 2
 					},
 					{
+						"id": 3621,
 						"qty": "140",
 						"unit": "g",
 						"ingredient": "British blue cheese, such as Blue Vinney",
-						"ingredient_id": 2271
+						"ingredient_id": 2271,
+						"unit_id": 1
 					}
 		        ]
 	        }
@@ -1157,34 +1215,44 @@ describe("/GET /users/:id/recipelists/:list_id/:recipe_id", () => {
 	            		// "reviews": [],
 	            		"ingredients": [
 		            		{
+								"id": 3904,
 								"qty": "8",
 								"unit": "no unit",
 								"ingredient": "ripe figs",
-								"ingredient_id": 2289
+								"ingredient_id": 2289,
+								"unit_id": 25
 							},
 							{
+								"id": 3905,
 								"qty": "",
 								"unit": "no unit",
 								"ingredient": "large  knob of butter",
-								"ingredient_id": 2422
+								"ingredient_id": 2422,
+								"unit_id": 25
 							},
 							{
+								"id": 3906,
 								"qty": "4",
 								"unit": "tbsp",
 								"ingredient": "clear honey",
-								"ingredient_id": 135
+								"ingredient_id": 135,
+								"unit_id": 3
 							},
 							{
+								"id": 3907,
 								"qty": "",
 								"unit": "no unit",
 								"ingredient": "handful  shelled pistachio  nuts or almonds",
-								"ingredient_id": 2423
+								"ingredient_id": 2423,
+								"unit_id": 25
 							},
 							{
+								"id": 3908,
 								"qty": "1",
 								"unit": "tsp",
 								"ingredient": "ground cinnamon  or mixed spice",
-								"ingredient_id": 2424
+								"ingredient_id": 2424,
+								"unit_id": 2
 							}
 						]
 					}
@@ -1249,7 +1317,8 @@ describe("/GET /users/:id/shoppinglists", () => {
         expect(req.body).toEqual([
             {
 				"id": expect.any(Number),
-				"list_name": "User 1 Shoplist for Recipe 120"
+				"list_name": "User 1 Shoplist for Recipe 120",
+				"recipe_id": 120
 			}
         ]);
     });
@@ -1261,7 +1330,8 @@ describe("/GET /users/:id/shoppinglists", () => {
         expect(req.body).toEqual([
             {
 				"id": expect.any(Number),
-				"list_name": "User 2 Shoplist for Recipe 320"
+				"list_name": "User 2 Shoplist for Recipe 320",
+				"recipe_id": 320
 			}
         ]);
     });
@@ -1286,11 +1356,13 @@ describe("/POST /users/:id/shoppinglists", () => {
         expect(req.body).toEqual([
 			{
 				"id": expect.any(Number),
-				"list_name": "Test Shoppinglist"
+				"list_name": "Test Shoppinglist",
+				"recipe_id": 5
 			},
 			{
 				"id": expect.any(Number),
-				"list_name": "User 1 Shoplist for Recipe 120"
+				"list_name": "User 1 Shoplist for Recipe 120",
+				"recipe_id": 120
 			}
 		]);
     });
@@ -1337,94 +1409,124 @@ describe("/GET /users/:id/shoppinglists/:list_id", () => {
 				"recipe_author": "sarah cook",
 				"recipes_ingredients": [
 					{
+						"id": 1262,
 						"qty": "2",
 						"unit": "no unit",
 						"ingredient": "onions, chopped",
-						"ingredient_id": 316
+						"ingredient_id": 316,
+						"unit_id": 25
 					},
 					{
+						"id": 1263,
 						"qty": "2",
 						"unit": "no unit",
 						"ingredient": "celery sticks, finely chopped",
-						"ingredient_id": 783
+						"ingredient_id": 783,
+						"unit_id": 25
 					},
 					{
+						"id": 1264,
 						"qty": "2",
 						"unit": "no unit",
 						"ingredient": "yellow or orange peppers, finely chopped",
-						"ingredient_id": 891
+						"ingredient_id": 891,
+						"unit_id": 25
 					},
 					{
+						"id": 1265,
 						"qty": "2",
 						"unit": "tbsp",
 						"ingredient": "sunflower oil or rapeseed oil",
-						"ingredient_id": 892
+						"ingredient_id": 892,
+						"unit_id": 3
 					},
 					{
+						"id": 1266,
 						"qty": "2x460",
 						"unit": "g",
 						"ingredient": "jars roasted red peppers",
-						"ingredient_id": 893
+						"ingredient_id": 893,
+						"unit_id": 1
 					},
 					{
+						"id": 1267,
 						"qty": "2",
 						"unit": "tsp",
 						"ingredient": "chipotle paste",
-						"ingredient_id": 338
+						"ingredient_id": 338,
+						"unit_id": 2
 					},
 					{
+						"id": 1268,
 						"qty": "2",
 						"unit": "tbsp",
 						"ingredient": "red wine vinegar",
-						"ingredient_id": 260
+						"ingredient_id": 260,
+						"unit_id": 3
 					},
 					{
+						"id": 1269,
 						"qty": "1",
 						"unit": "tbsp",
 						"ingredient": "cocoa powder",
-						"ingredient_id": 894
+						"ingredient_id": 894,
+						"unit_id": 3
 					},
 					{
+						"id": 1270,
 						"qty": "1",
 						"unit": "tbsp",
 						"ingredient": "dried oregano",
-						"ingredient_id": 322
+						"ingredient_id": 322,
+						"unit_id": 3
 					},
 					{
+						"id": 1271,
 						"qty": "1",
 						"unit": "tbsp",
 						"ingredient": "sweet smoked paprika",
-						"ingredient_id": 815
+						"ingredient_id": 815,
+						"unit_id": 3
 					},
 					{
+						"id": 1272,
 						"qty": "2",
 						"unit": "tbsp",
 						"ingredient": "ground cumin",
-						"ingredient_id": 43
+						"ingredient_id": 43,
+						"unit_id": 3
 					},
 					{
+						"id": 1273,
 						"qty": "1",
 						"unit": "tsp",
 						"ingredient": "ground cinnamon",
-						"ingredient_id": 523
+						"ingredient_id": 523,
+						"unit_id": 2
 					},
 					{
+						"id": 1274,
 						"qty": "2x400",
 						"unit": "g",
 						"ingredient": "cans chopped tomatoes",
-						"ingredient_id": 664
+						"ingredient_id": 664,
+						"unit_id": 1
 					},
 					{
+						"id": 1275,
 						"qty": "400",
 						"unit": "g",
 						"ingredient": "can refried beans",
-						"ingredient_id": 895
+						"ingredient_id": 895,
+						"unit_id": 1
 					},
 					{
+						"id": 1276,
 						"qty": "3x400",
 						"unit": "g",
 						"ingredient": "cans kidney beans, drained and rinsed",
-						"ingredient_id": 896
+						"ingredient_id": 896,
+						"unit_id": 1
 					}
 				],
 				"list_items": [
@@ -1456,58 +1558,76 @@ describe("/GET /users/:id/shoppinglists/:list_id", () => {
 				"recipe_author": "esther clark",
 				"recipes_ingredients": [
 					{
+						"id": 2933,
 						"qty": "40",
 						"unit": "g",
 						"ingredient": "blanched hazelnuts",
-						"ingredient_id": 1853
+						"ingredient_id": 1853,
+						"unit_id": 1
 					},
 					{
+						"id": 2934,
 						"qty": "250",
 						"unit": "g",
 						"ingredient": "broad beans, podded and skins removed from the beans",
-						"ingredient_id": 1854
+						"ingredient_id": 1854,
+						"unit_id": 1
 					},
 					{
+						"id": 2935,
 						"qty": "200",
 						"unit": "g",
 						"ingredient": "fresh peas",
-						"ingredient_id": 1855
+						"ingredient_id": 1855,
+						"unit_id": 1
 					},
 					{
+						"id": 2936,
 						"qty": "4",
 						"unit": "tbsp",
 						"ingredient": "extra virgin olive oil, plus a drizzle to serve",
-						"ingredient_id": 1856
+						"ingredient_id": 1856,
+						"unit_id": 3
 					},
 					{
+						"id": 2937,
 						"qty": "2",
 						"unit": "no unit",
 						"ingredient": "banana shallots, peeled and thinly sliced",
-						"ingredient_id": 1857
+						"ingredient_id": 1857,
+						"unit_id": 25
 					},
 					{
+						"id": 2938,
 						"qty": "1⁄2",
 						"unit": "no unit",
 						"ingredient": "small bunch of mint, finely chopped, plus extra leaves to serve",
-						"ingredient_id": 1858
+						"ingredient_id": 1858,
+						"unit_id": 25
 					},
 					{
+						"id": 2939,
 						"qty": "½",
 						"unit": "no unit",
 						"ingredient": "small bunch of flat-leaf parsley, finely chopped",
-						"ingredient_id": 1859
+						"ingredient_id": 1859,
+						"unit_id": 25
 					},
 					{
+						"id": 2940,
 						"qty": "1",
 						"unit": "no unit",
 						"ingredient": "lemon, zested and juiced",
-						"ingredient_id": 97
+						"ingredient_id": 97,
+						"unit_id": 25
 					},
 					{
+						"id": 2941,
 						"qty": "150",
 						"unit": "g",
 						"ingredient": "log goat's cheese  with rind, sliced into 5mm rounds",
-						"ingredient_id": 1860
+						"ingredient_id": 1860,
+						"unit_id": 1
 					}
 				],
 				"list_items": [
@@ -1570,7 +1690,7 @@ describe("/POST /:id/shoppinglists/:list_id/items", () => {
     test("add an item to a shoppinglist", async () => {
         const req = await request(app).post(`/users/${usr1IdTest}/shoppinglists/${shopList1IdTest}/items`)
             .send({
-				"qty": 1,
+				"qty": "1",
                 "unit_id": 6,
 				"ingredient_id": 135
             })
@@ -1582,94 +1702,124 @@ describe("/POST /:id/shoppinglists/:list_id/items", () => {
 			"recipe_author": "sarah cook",
 			"recipes_ingredients": [
 				{
+					"id": 1262,
 					"qty": "2",
 					"unit": "no unit",
 					"ingredient": "onions, chopped",
-					"ingredient_id": 316
+					"ingredient_id": 316,
+					"unit_id": 25
 				},
 				{
+					"id": 1263,
 					"qty": "2",
 					"unit": "no unit",
 					"ingredient": "celery sticks, finely chopped",
-					"ingredient_id": 783
+					"ingredient_id": 783,
+					"unit_id": 25
 				},
 				{
+					"id": 1264,
 					"qty": "2",
 					"unit": "no unit",
 					"ingredient": "yellow or orange peppers, finely chopped",
-					"ingredient_id": 891
+					"ingredient_id": 891,
+					"unit_id": 25
 				},
 				{
+					"id": 1265,
 					"qty": "2",
 					"unit": "tbsp",
 					"ingredient": "sunflower oil or rapeseed oil",
-					"ingredient_id": 892
+					"ingredient_id": 892,
+					"unit_id": 3
 				},
 				{
+					"id": 1266,
 					"qty": "2x460",
 					"unit": "g",
 					"ingredient": "jars roasted red peppers",
-					"ingredient_id": 893
+					"ingredient_id": 893,
+					"unit_id": 1
 				},
 				{
+					"id": 1267,
 					"qty": "2",
 					"unit": "tsp",
 					"ingredient": "chipotle paste",
-					"ingredient_id": 338
+					"ingredient_id": 338,
+					"unit_id": 2
 				},
 				{
+					"id": 1268,
 					"qty": "2",
 					"unit": "tbsp",
 					"ingredient": "red wine vinegar",
-					"ingredient_id": 260
+					"ingredient_id": 260,
+					"unit_id": 3
 				},
 				{
+					"id": 1269,
 					"qty": "1",
 					"unit": "tbsp",
 					"ingredient": "cocoa powder",
-					"ingredient_id": 894
+					"ingredient_id": 894,
+					"unit_id": 3
 				},
 				{
+					"id": 1270,
 					"qty": "1",
 					"unit": "tbsp",
 					"ingredient": "dried oregano",
-					"ingredient_id": 322
+					"ingredient_id": 322,
+					"unit_id": 3
 				},
 				{
+					"id": 1271,
 					"qty": "1",
 					"unit": "tbsp",
 					"ingredient": "sweet smoked paprika",
-					"ingredient_id": 815
+					"ingredient_id": 815,
+					"unit_id": 3
 				},
 				{
+					"id": 1272,
 					"qty": "2",
 					"unit": "tbsp",
 					"ingredient": "ground cumin",
-					"ingredient_id": 43
+					"ingredient_id": 43,
+					"unit_id": 3
 				},
 				{
+					"id": 1273,
 					"qty": "1",
 					"unit": "tsp",
 					"ingredient": "ground cinnamon",
-					"ingredient_id": 523
+					"ingredient_id": 523,
+					"unit_id": 2
 				},
 				{
+					"id": 1274,
 					"qty": "2x400",
 					"unit": "g",
 					"ingredient": "cans chopped tomatoes",
-					"ingredient_id": 664
+					"ingredient_id": 664,
+					"unit_id": 1
 				},
 				{
+					"id": 1275,
 					"qty": "400",
 					"unit": "g",
 					"ingredient": "can refried beans",
-					"ingredient_id": 895
+					"ingredient_id": 895,
+					"unit_id": 1
 				},
 				{
+					"id": 1276,
 					"qty": "3x400",
 					"unit": "g",
 					"ingredient": "cans kidney beans, drained and rinsed",
-					"ingredient_id": 896
+					"ingredient_id": 896,
+					"unit_id": 1
 				}
 			],
 			"list_items": [
@@ -1698,6 +1848,17 @@ describe("/POST /:id/shoppinglists/:list_id/items", () => {
 	test("400 error for invalid schema", async () => {
         const req = await request(app).post(`/users/${usr1IdTest}/shoppinglists/${shopList1IdTest}/items`)
             .send({
+                "unit_id": 6,
+				"ingredient_id": 135
+            })
+			.set("_token", `Bearer ${usr1TokenTest}`);
+        expect(req.statusCode).toBe(400);
+    });
+
+	test("400 error for invalid schema", async () => {
+        const req = await request(app).post(`/users/${usr1IdTest}/shoppinglists/${shopList1IdTest}/items`)
+            .send({
+				"qty": 6,
                 "unit_id": 6,
 				"ingredient_id": 135
             })

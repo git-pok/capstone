@@ -57,22 +57,28 @@ describe("Recipe.getRecipeIngrdts", () => {
         expect(recipeIngrdts).toEqual(
             [
                 {
+                    "id": 15333,
                     "qty": "410",
                     "unit": "g",
                     "ingredient": "can  peach halves",
-                    "ingredient_id": 7316
+                    "ingredient_id": 7316,
+                    "unit_id": 1
                 },
                 {
+                    "id": 15334,
                     "qty": "100",
                     "unit": "g",
                     "ingredient": "frozen raspberry, plus a few for garnish",
-                    "ingredient_id": 7317
+                    "ingredient_id": 7317,
+                    "unit_id": 1
                 },
                 {
+                    "id": 15335,
                     "qty": "100",
                     "unit": "ml",
                     "ingredient": "orange juice",
-                    "ingredient_id": 143
+                    "ingredient_id": 143,
+                    "unit_id": 4
                 }
             ]
         )
@@ -204,40 +210,52 @@ describe("Recipe.recipeOrRecipes", () => {
             "reviews": [],
             "ingredients": [
                 {
+                    "id": 2126,
                     "qty": "40",
                     "unit": "g",
                     "ingredient": "grated carrot",
-                    "ingredient_id": 1361
+                    "ingredient_id": 1361,
+                    "unit_id": 1
                 },
                 {
+                    "id": 2127,
                     "qty": "",
                     "unit": "no unit",
                     "ingredient": "a big pinch of mixed spice",
-                    "ingredient_id": 1362
+                    "ingredient_id": 1362,
+                    "unit_id": 25
                 },
                 {
+                    "id": 2128,
                     "qty": "¼",
                     "unit": "tsp",
                     "ingredient": "cinnamon",
-                    "ingredient_id": 698
+                    "ingredient_id": 698,
+                    "unit_id": 2
                 },
                 {
+                    "id": 2129,
                     "qty": "50",
                     "unit": "g",
                     "ingredient": "rolled porridge oats",
-                    "ingredient_id": 1363
+                    "ingredient_id": 1363,
+                    "unit_id": 1
                 },
                 {
+                    "id": 2130,
                     "qty": "1",
                     "unit": "tsp",
                     "ingredient": "honey",
-                    "ingredient_id": 337
+                    "ingredient_id": 337,
+                    "unit_id": 2
                 },
                 {
+                    "id": 2131,
                     "qty": "1",
                     "unit": "tsp",
                     "ingredient": "sultanas",
-                    "ingredient_id": 1364
+                    "ingredient_id": 1364,
+                    "unit_id": 2
                 }
             ]
         }]);
