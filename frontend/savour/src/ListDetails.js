@@ -102,7 +102,7 @@ const ListDetails = ({urlEndpt, recipelist = false}) => {
         setTimeout(setIsRmvSucc, 3000);
         setTimeout(() => setSuccMsg(null), 3000);
         setTimeout(setIsListDltBtn, 3000);
-        setTimeout(() => history.push(`/${urlEndpt}`), 3000);
+        setTimeout(() => history.push(`/${urlEndpt}`), 1500);
       } catch (err) {
         const error = err.response.data.error.message;
         setFormErrMsg(() => error || "Error");

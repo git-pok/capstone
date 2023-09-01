@@ -61,14 +61,10 @@ const CreateListForm = ({recipelist = false, recipeId, setState}) => {
             { occasion_id: +formData.occasionId, list_name: formData.recipelistName }
             : { recipe_id: +recipeId, list_name: formData.shoplistName }
         console.log("DATA", data);
+        console.log("CREATE LIST FORM");
         const listReq = await SavourApi.request("post", listUrl, data, {}, headers);
-        // NEW LOGIC
-        const listReReq = await SavourApi.request("get", listUrl, {}, {}, headers);
-        console.log("listReReq", listReReq);
-        // NEW LOGIC END
-        console.log("listReq", listReq.data);
+        // console.log("listReq", listReq);
         setSuccMsg("Created list!");
-        console.log("succMsg", succMsg);
         setFormReqMade();
         setIsFormReqSucc();
         // setState(() => !isRecipeList ? [...listReq.data] : [{...listReq.data}]);
@@ -79,7 +75,12 @@ const CreateListForm = ({recipelist = false, recipeId, setState}) => {
         // setTimeout(setState(() => !isRecipeList ? [...listReq.data] : [{...listReq.data}]), 3000);
         setTimeout(() => setSuccMsg(null), 3000);
         setTimeout(() => setListUrl(null), 3000);
-        if (setState) setTimeout(() => setState(() => !isRecipeList ? [...listReq.data] : [{...listReq.data}]), 3000);
+        // NEW LOGIC
+        const listReReq = await SavourApi.request("get", listUrl, {}, {}, headers);
+        // console.log("listReReq", listReReq);
+        // NEW LOGIC END
+        // if (setState) setTimeout(() => setState(() => !isRecipeList ? [...listReq.data] : [{...listReq.data}]), 3000);
+        if (setState) setTimeout(() => setState(() => [...listReReq.data]), 3000);
         // setTimeout(() => setState(() => [...listReReq.data], 3000));
       } catch(err) {
         console.log("ERROR", err);
