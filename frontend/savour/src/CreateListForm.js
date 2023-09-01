@@ -79,8 +79,8 @@ const CreateListForm = ({recipelist = false, recipeId, setState}) => {
         // setTimeout(setState(() => !isRecipeList ? [...listReq.data] : [{...listReq.data}]), 3000);
         setTimeout(() => setSuccMsg(null), 3000);
         setTimeout(() => setListUrl(null), 3000);
-        // setTimeout(() => setState(() => !isRecipeList ? [...listReq.data] : [{...listReq.data}]), 3000);
-        setTimeout(() => setState(() => [...listReReq.data], 3000));
+        if (setState) setTimeout(() => setState(() => !isRecipeList ? [...listReq.data] : [{...listReq.data}]), 3000);
+        // setTimeout(() => setState(() => [...listReReq.data], 3000));
       } catch(err) {
         console.log("ERROR", err);
         const error = err.response.data.error.message;
@@ -132,8 +132,6 @@ const CreateListForm = ({recipelist = false, recipeId, setState}) => {
               value={formData.shoplistName} />
           </div>
           <div className="CreateListForm-form-submit">
-            <button onClick={setReqUrl}>CREATE LIST</button>
-          </div>
           <div className="CreateListForm-msg-div">
             { formReqMade &&
               <Message msgObj={
@@ -143,6 +141,8 @@ const CreateListForm = ({recipelist = false, recipeId, setState}) => {
                 }
               } />
             }
+          </div>
+            <button onClick={setReqUrl}>CREATE LIST</button>
           </div>
         </form>
       :
@@ -174,8 +174,6 @@ const CreateListForm = ({recipelist = false, recipeId, setState}) => {
             </select>
           </div>
           <div className="CreateListForm-form-submit">
-            <button onClick={() => setReqUrl(false)}>CREATE LIST</button>
-          </div>
           <div className="CreateListForm-msg-div">
             { formReqMade &&
               <Message msgObj={
@@ -185,6 +183,8 @@ const CreateListForm = ({recipelist = false, recipeId, setState}) => {
                 }
               } />
             }
+          </div>
+            <button onClick={() => setReqUrl(false)}>CREATE LIST</button>
           </div>
         </form>
     }

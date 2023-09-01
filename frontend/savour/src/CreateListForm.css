@@ -58,12 +58,15 @@
   color: rgb(221, 230, 237);
 }
 
-.CreateListForm-msg-div div {
+.CreateListForm-msg-div {
   display: block;
   width: 50%;
-  height: 100%;
   margin: 0px auto;
-  padding: 5px 5px;
+  padding: 0px 0px;
+}
+
+.CreateListForm-msg-div div {
+  margin: 0px auto;
 }
 
 @media only screen and (max-width: 1384px) and (min-width: 400px) {

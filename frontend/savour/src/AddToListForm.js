@@ -77,9 +77,9 @@ const AddToListForm = ({recipelist = false, setState=false, setToggleState=false
         // setSuccMsg(isRecipeList ? "Added item to list!" : "Created list for recipe!");
         setFormReqMade();
         setIsFormReqSucc();
-        const reReq = await SavourApi.request("get", listReReqUrl, {}, {}, headers);
+        // const reReq = await SavourApi.request("get", listReReqUrl, {}, {}, headers);
         // console.log("$*$*$*$*$*$*$* reReq", reReq);
-        if (setState) setTimeout(setState(() => [...reReq.data]), 3000);
+        // if (setState) setTimeout(setState(() => [...reReq.data]), 3000);
         if (setToggleState) setTimeout(setToggleState, 3000);
         setTimeout(setIsSubmitted, 3000);
         if (isRecipeList) setTimeout(setIsRecipeList, 3000);
@@ -151,8 +151,6 @@ const AddToListForm = ({recipelist = false, setState=false, setToggleState=false
           </select>
         </div>
         <div className="AddToListForm-form-submit">
-          <button onClick={setReqUrl}>CREATE LIST</button>
-        </div>
         <div className="AddToListForm-msg-div">
           { formReqMade &&
             <Message msgObj={
@@ -162,6 +160,8 @@ const AddToListForm = ({recipelist = false, setState=false, setToggleState=false
               }
             } />
           }
+        </div>
+          <button onClick={setReqUrl}>CREATE LIST</button>
         </div>
         </form>
       :
