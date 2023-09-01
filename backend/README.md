@@ -7,11 +7,11 @@ These are for developer purposes. They will not work when trying to login with t
 ## Running Tests
 Make sure the Postgresql server is running, but the app server does not have to be running. Then navigate to the directory the test file is in, and run:
 ```
-npm run test filen_name
+npm run test file_name
 ```
-Or, from the backend directory run:
+Or, from the command line, in the directory, backend, run:
 ```
-npm run test
+npm test
 ```
 
 # API and App Keys
