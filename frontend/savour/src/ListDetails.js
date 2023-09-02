@@ -157,6 +157,24 @@ const ListDetails = ({urlEndpt, recipelist = false}) => {
       <div className="ListDetails">
         <div className="ListDetails-div">
           <p>No recipes</p>
+          <div className="ListDetails-icons-center-div">
+            <h2 className="ListDetails-subtitle">Delete Recipelist</h2>
+            <FontAwesomeIcon
+              onClick={deleteList}
+              className="ListDetails-icon-center"
+              icon={faRectangleXmark} />
+            <div className="ListDetails-msg">
+              {
+                isLstDltActionCmplt &&
+                <Message msgObj={
+                  {
+                    class: isRmvSucc ? "success" : "fail",
+                    msg: isRmvSucc ? succMsg : formErrMsg
+                  }
+                } />
+              }
+            </div>
+          </div>
         </div>
       </div>
     :
