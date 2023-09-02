@@ -5,6 +5,7 @@ import SavourApi from './models/SavourApi.js';
 import RecipeContainer from './RecipeContainer.js';
 import Message from './Message.js';
 import AddToListForm from './AddToListForm.js';
+import DeleteFromRecipelistForm from './DeleteFromRecipelistForm.js';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
           faSquarePlus, faSquareMinus, faRectangleXmark
@@ -189,6 +190,17 @@ const ListDetails = ({urlEndpt, recipelist = false}) => {
         </div>
       </div>
     }
+    {/* DELETE RECIPELIST FROM RECIPELISTS */}
+    { listData && recipelist &&
+      <div className="ListDetails">
+        <h1 className="ListDetails-h1">Delete Recipes from List</h1>
+        <div className="ListDetails-div">
+          <DeleteFromRecipelistForm recipelistId={listId} setState={setListData} />
+        </div>
+      </div>
+    }
+    {/* DELETE RECIPELIST FROM RECIPELISTS END */}
+    {/* DELETE RECIPE FROM RECIPELIST */}
     { listData && !recipelist ?
         <div className="ListDetails-split-div">
           <div className="ListDetails-split-ul-div">
