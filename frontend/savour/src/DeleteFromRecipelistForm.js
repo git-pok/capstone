@@ -113,9 +113,7 @@ const DeleteFromRecipelistForm = ({ recipelistId, setState }) => {
           </select>
         </div>
         <div className="DeleteFromRecipelistForm-form-submit">
-          <button onClick={setReqUrl}>DELETE</button>
-        </div>
-        <div className="DeleteFromRecipelistForm-msg-div">
+          <div className="DeleteFromRecipelistForm-msg-div">
             { formReqMade &&
               <Message msgObj={
                 {
@@ -125,6 +123,8 @@ const DeleteFromRecipelistForm = ({ recipelistId, setState }) => {
               } />
             }
           </div>
+          <button onClick={setReqUrl}>DELETE</button>
+        </div>
         </form>
       }
     </>

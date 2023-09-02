@@ -60,7 +60,7 @@
 
 .DeleteFromRecipelistForm-msg-div {
   display: block;
-  width: 50%;
+  width: 100%;
   margin: 0px auto;
   padding: 0px 0px;
 }
@@ -82,5 +82,6 @@
 
   .DeleteFromRecipelistForm-form-submit button {
     width: 50%;
+    /* height: 100%; */
   }
 }
