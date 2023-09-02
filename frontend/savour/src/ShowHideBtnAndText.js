@@ -13,7 +13,7 @@ const ShowHideBtnAndText = ({paragraphArr}) => {
   }
   return (
     <>
-    <button onClick={click}>SEE MORE</button>
+    <button className="ShowHideBtnAndText-button" onClick={click}>SEE MORE</button>
       {
         paragraphArr && paragraphArr.map((val, idx) => (
           isClicked && <p key={idx} className="ShowHideBtnAndText-p">{val.text}</p>

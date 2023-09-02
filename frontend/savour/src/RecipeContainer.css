@@ -6,7 +6,8 @@
     height: 100%;
     padding: 10px 10px;
     margin: 40px 20px;
-    background-color: rgba(188, 191, 211, 0.233);
+    /* background-color: rgba(188, 191, 211, 0.233); */
+    background-color: rgb(216, 216, 216);
     border-radius: 10px;
 }
 
@@ -36,5 +37,9 @@
 }
 
 .RecipeContainer-recipe a:link:hover {
-    color: rgb(150, 160, 167);
+    color: #96a0a7;
+}
+
+.RecipeContainer button {
+    background-color: rgba(186, 184, 108);
 }

@@ -11,6 +11,7 @@ import {
           faSquarePlus, faSquareMinus, faRectangleXmark
         } from '@fortawesome/free-solid-svg-icons';
 import useToggleState from './hooks/useToggleState.js';
+import image from './img/food.jpg';
 // import image from './img/ambient-kitchen.jpg';
 import './ListDetails.css';
 
@@ -41,7 +42,6 @@ const ListDetails = ({urlEndpt, recipelist = false}) => {
   const [ shoplistItems, setShoplistItems ] = useState(null);
   const [ updateListMsg, setUpdateListMsg ] = useState(null);
 
-  console.log("LIST DATA", listData);
   const addOrRmvItem = (itemsObj, add=true) => {
     if (add) setIsIngrAddBtn();
     else setIsIngrRmvBtn();
@@ -118,8 +118,17 @@ const ListDetails = ({urlEndpt, recipelist = false}) => {
     if (isListDltBtn) deleteList();
   }, [listUrl, activateGetLists, isIngrAddBtn, isIngrRmvBtn, isListDltBtn])
 
+  // image styles.
+  const styles = {
+    backgroundImage: `url(${image})`,
+    backgroundSize: "cover",
+    backgroundAttachment: "fixed",
+    backgroundRepeat: "repeat"
+  }
+
   return (
     <>
+    {/* <div className="ListDetails-bg-img" style={styles}> */}
     { !recipelist ?
         <h1 className="ListDetails-h1">{`${listData && listData.list_name} List`}</h1>
       :
@@ -301,6 +310,7 @@ const ListDetails = ({urlEndpt, recipelist = false}) => {
     :
       null
     }
+    {/* </div> */}
     </>
   );
 }

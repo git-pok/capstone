@@ -3,3 +3,17 @@
     margin: 5px auto 5px auto;
     text-align: left;
 }
+
+.ShowHideBtnAndText-button {
+    background-color: rgb(75, 58, 38);
+    color: rgb(255, 255, 255);
+    border: 3px inset rgb(75, 58, 38);
+    transition: .5s ease-in-out background-color;
+}
+
+.ShowHideBtnAndText-button:hover {
+    background-color: rgb(255, 255, 255);
+    color: rgb(75, 58, 38);
+    border: 3px inset rgb(255, 255, 255);
+    transition: .5s ease-in-out background-color;
+}

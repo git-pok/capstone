@@ -4,7 +4,6 @@ import UserContext from './context/UserContext.js';
 import SavourApi from './models/SavourApi.js';
 import useToggleState from './hooks/useToggleState.js';
 import Message from './Message.js';
-// import image from './img/ambient-kitchen.jpg';
 import './DeleteFromRecipelistForm.css';
 /**
  * DeleteFromRecipelistForm
