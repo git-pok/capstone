@@ -40,8 +40,7 @@ const ListDetails = ({urlEndpt, recipelist = false}) => {
   const [ succMsg, setSuccMsg ] = useState(null);
   const [ shoplistItems, setShoplistItems ] = useState(null);
   const [ updateListMsg, setUpdateListMsg ] = useState(null);
-  console.log("LIST DATA RECIPES", listData);
-  
+
   const addOrRmvItem = (itemsObj, add=true) => {
     if (add) setIsIngrAddBtn();
     else setIsIngrRmvBtn();
@@ -113,10 +112,10 @@ const ListDetails = ({urlEndpt, recipelist = false}) => {
       }
     }
 
-    if (listUrl || updateListMsg) getLists();
+    if (listUrl) getLists();
     if (isIngrAddBtn || isIngrRmvBtn) addToList();
     if (isListDltBtn) deleteList();
-  }, [listUrl, activateGetLists, updateListMsg, isIngrAddBtn, isIngrRmvBtn, isListDltBtn])
+  }, [listUrl, activateGetLists, isIngrAddBtn, isIngrRmvBtn, isListDltBtn])
 
   return (
     <>
@@ -190,10 +189,10 @@ const ListDetails = ({urlEndpt, recipelist = false}) => {
         </div>
       </div>
     }
-    {/* DELETE RECIPELIST FROM RECIPELISTS */}
+    {/* DELETE RECIPE FROM RECIPELISTS */}
     { listData && recipelist &&
       <div className="ListDetails">
-        <h1 className="ListDetails-h1">Delete Recipes from List</h1>
+        <h1 className="ListDetails-h1">Delete Recipe from List</h1>
         <div className="ListDetails-div">
           <DeleteFromRecipelistForm recipelistId={listId} setState={setListData} />
         </div>
