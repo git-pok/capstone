@@ -41,6 +41,7 @@ const ListDetails = ({urlEndpt, recipelist = false}) => {
   const [ shoplistItems, setShoplistItems ] = useState(null);
   const [ updateListMsg, setUpdateListMsg ] = useState(null);
 
+  console.log("LIST DATA", listData);
   const addOrRmvItem = (itemsObj, add=true) => {
     if (add) setIsIngrAddBtn();
     else setIsIngrRmvBtn();
@@ -194,7 +195,10 @@ const ListDetails = ({urlEndpt, recipelist = false}) => {
       <div className="ListDetails">
         <h1 className="ListDetails-h1">Delete Recipe from List</h1>
         <div className="ListDetails-div">
-          <DeleteFromRecipelistForm recipelistId={listId} setState={setListData} />
+          <DeleteFromRecipelistForm
+            recipelistId={listId}
+            setState={setListData}
+            list={listData} />
         </div>
       </div>
     }

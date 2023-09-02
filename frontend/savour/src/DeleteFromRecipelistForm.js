@@ -12,13 +12,12 @@ import './DeleteFromRecipelistForm.css';
  * Props: recipelist, setState
  * Renders: renders form to create shop or recipe list.
 */
-const DeleteFromRecipelistForm = ({ recipelistId, setState }) => {
+const DeleteFromRecipelistForm = ({ recipelistId, setState, list }) => {
   const { usrData, setUsrData } = useContext(UserContext);
   const headers = { _token: `Bearer ${usrData.token}`};
   const recipeListUrl = `/users/${usrData.userId}/recipelists/${recipelistId}`;
   const recipelistOpts = { method: "get", url: recipeListUrl, data: {}, params: {}, headers };
   const [ recipelistData, setRecipelistData ] = useAxios(recipelistOpts);
-
   const [ listUrl, setListUrl ] = useState(null);
   const [ isSubmitted, setIsSubmitted ] = useToggleState(false);
 
@@ -105,8 +104,9 @@ const DeleteFromRecipelistForm = ({ recipelistId, setState }) => {
             onChange={handleChange}
             value={formData.recipeId}>
             <option key="select-a-recipe" value="">Select a Recipe</option>
-            { recipelistData &&
-              recipelistData.recipes.map(recipe => (
+            {/* { recipelistData && */}
+            { list &&
+              list.recipes.map(recipe => (
                 <option key={`${recipe.id}`} value={`${recipe.id}`}>{recipe.name}</option>
               ))
             }
