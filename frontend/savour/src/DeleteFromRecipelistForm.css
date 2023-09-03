@@ -48,16 +48,16 @@
   height: 30px;
   margin: 0px auto;
   margin-top: 10px;
-  border: 3px inset rgb(221, 230, 237);
-  background-color: rgb(221, 230, 237);
-  color: rgb(39, 55, 77);
+  border: 3px inset rgb(99, 168, 46);
+  background-color: rgb(99, 168, 46);
+  color: rgb(0, 0, 0);
   transition: .5s ease-in-out background-color;
 }
 
 .DeleteFromRecipelistForm-form button:hover {
-  border-color: rgb(39, 55, 77);
-  background-color: rgb(39, 55, 77);
-  color: rgb(221, 230, 237);
+  border-color: rgb(255, 255, 255);
+  background-color: rgb(255, 255, 255);
+  color: rgb(0, 0, 0);
 }
 
 .DeleteFromRecipelistForm-msg-div {

@@ -48,7 +48,8 @@
   padding: 30px 30px;
   box-sizing: content-box;
   border-radius: 10px;
-  background-color: rgba(188, 191, 211, 0.233);
+  /* background-color: rgba(188, 191, 211, 0.233); */
+  background-color: rgb(216, 216, 216);
 }
 
 .RecipeDetails-float-div {
@@ -95,7 +96,8 @@
   box-sizing: border-box;
   margin: 0px auto 70px auto;
   border-radius: 10px;
-  background-color: rgba(188, 191, 211, 0.233);
+  /* background-color: rgba(188, 191, 211, 0.233); */
+  background-color: rgb(216, 216, 216);
 }
 
 .RecipeDetails-subtitle {

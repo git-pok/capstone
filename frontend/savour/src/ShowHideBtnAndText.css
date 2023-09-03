@@ -5,15 +5,15 @@
 }
 
 .ShowHideBtnAndText-button {
-    background-color: rgb(75, 58, 38);
-    color: rgb(255, 255, 255);
-    border: 3px inset rgb(75, 58, 38);
+    background-color: rgb(99, 168, 46);
+    color: rgb(0, 0, 0);
+    border: 3px inset rgb(99, 168, 46);
     transition: .5s ease-in-out background-color;
 }
 
 .ShowHideBtnAndText-button:hover {
     background-color: rgb(255, 255, 255);
-    color: rgb(75, 58, 38);
+    color: rgb(0, 0, 0);
     border: 3px inset rgb(255, 255, 255);
     transition: .5s ease-in-out background-color;
 }
