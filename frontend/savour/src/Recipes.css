@@ -9,7 +9,11 @@
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
-  margin-bottom: 70px;
+  /* margin-bottom: 70px; */
+  background-color: rgb(216, 216, 216);
+  width: 70%;
+  margin: 0px auto 70px auto;
+  border-radius: 10px;
 }
 
 .Recipes-h1 {
