@@ -23,8 +23,7 @@
   padding: 30px 30px;
   box-sizing: content-box;
   border-radius: 10px;
-  /* background-color: rgba(188, 191, 211, 0.233); */
-  background-color: rgba(186, 184, 108);
+  background-color: rgba(186, 183, 108, 0.371);
 }
 
 .ListDetails-split-ul-div {
@@ -111,7 +110,8 @@
   padding: 30px 30px;
   box-sizing: content-box;
   border-radius: 10px;
-  background-color: rgba(188, 191, 211, 0.233);
+  /* background-color: rgba(188, 191, 211, 0.233); */
+  background-color: rgba(186, 183, 108, 0.371);
 }
 
 .ListDetails-split-content-div {

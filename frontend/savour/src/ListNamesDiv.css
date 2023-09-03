@@ -31,7 +31,8 @@
   padding: 30px 30px;
   box-sizing: content-box;
   border-radius: 10px;
-  background-color: rgba(188, 191, 211, 0.233);
+  /* background-color: rgba(188, 191, 211, 0.233); */
+  background-color: rgb(216, 216, 216);
 }
 
 .ListNamesDiv-list-div {
@@ -40,12 +41,14 @@
   border-radius: 10px;
   margin: 20px 20px;
   padding: 10px 10px;
-  background-color: rgb(39, 55, 77);
+  /* background-color: rgb(39, 55, 77); */
+  background-color: rgba(186, 183, 108, 0.371);
 }
 
 .ListNamesDiv-list-div a {
   text-decoration: none;
-  color: rgb(255, 255, 255);
+  /* color: rgb(255, 255, 255); */
+  color: rgb(0, 0, 0);
 }
 
 .ListNamesDiv-list-div a:hover {
