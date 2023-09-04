@@ -5,9 +5,9 @@
 }
 
 .ShowHideBtnAndText-button {
-    background-color: rgb(99, 168, 46);
+    background-color: rgb(223, 216, 85);
     color: rgb(0, 0, 0);
-    border: 3px inset rgb(99, 168, 46);
+    border: 3px inset rgb(223, 216, 85);
     transition: .5s ease-in-out background-color;
 }
 

@@ -1,11 +1,16 @@
 .Navbar {
     width: 100vw;
     height: 80px;
-    /* background-color: rgb(39, 55, 77); */
-    background-color: rgba(186, 183, 108, 0.371);
+    background-color: rgb(78, 42, 42);
     display: flex;
     align-items: center;
 }
+/* COLOR PALETTE COLORS */
+/* .colorPalette {
+    background-color: rgb(78, 42, 42);
+    background-color: rgb(223, 216, 85);
+} */
+/* END OF COLOR PALETTE COLORS */
 
 .Navbar a {
     height: 28px;
@@ -15,7 +20,7 @@
     text-decoration: none;
     font-size: 17px;
     text-align: center;
-    color: rgb(0, 0, 0);
+    color: rgb(255, 255, 255);
     transition: .5s ease-in-out background-color;
 }
 
@@ -24,9 +29,9 @@
     border: 2px inset rgb(221, 230, 237);
     background-color: rgb(216, 216, 216);
 }
-  
+
 .Navbar a:hover {
-    background-color: rgb(99, 168, 46);
+    background-color: rgb(223, 216, 85);
     color: rgb(0, 0, 0);
     border-radius: 5px;
 }
@@ -37,11 +42,11 @@
     align-items: center;
     width: 30vw;
 }
-  
+
 .Navbar-left-links span {
     width: 20vw;
     margin-left: 30px;
-    color: rgb(0, 0, 0);
+    color: rgb(255, 255, 255);
 }
   
 .Navbar-right-links {

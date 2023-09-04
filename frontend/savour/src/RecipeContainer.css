@@ -6,8 +6,7 @@
     height: 100%;
     padding: 10px 10px;
     margin: 40px 20px;
-    /* background-color: rgba(188, 191, 211, 0.233); */
-    background-color: rgba(186, 183, 108, 0.371);
+    background-color: rgb(78, 42, 42);
     border-radius: 10px;
 }
 
@@ -27,6 +26,7 @@
     display: block;
     margin: 5px auto 5px auto;
     text-align: center;
+    color: rgb(255, 255, 255);
 }
 
 .RecipeContainer-recipe a:link {
@@ -34,6 +34,7 @@
     margin: 5px auto 5px auto;
     text-align: left;
     text-decoration: none;
+    color: rgb(255, 255, 255);
 }
 
 .RecipeContainer-recipe a:link:hover {
@@ -41,5 +42,5 @@
 }
 
 .RecipeContainer button {
-    background-color: rgba(186, 184, 108);
+    /* background-color: rgba(186, 184, 108); */
 }
