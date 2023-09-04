@@ -34,13 +34,15 @@
     margin: 5px auto 5px auto;
     text-align: left;
     text-decoration: none;
+    /* color: rgb(251, 4, 4); */
     color: rgb(255, 255, 255);
 }
 
-.RecipeContainer-recipe a:link:hover {
-    color: #96a0a7;
+.RecipeContainer-recipe a:hover h3 {
+    /* color: #96a0a7; */
+    color: rgb(223, 216, 85);
 }
 
-.RecipeContainer button {
-    /* background-color: rgba(186, 184, 108); */
-}
+/* .RecipeContainer button {
+    background-color: rgba(186, 184, 108);
+} */
