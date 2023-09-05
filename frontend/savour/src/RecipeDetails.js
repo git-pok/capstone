@@ -235,16 +235,20 @@ const RecipeDetails = () => {
             <button
               onClick={setIsRvwBtn}
               className="ReviewForm-form-button">VIEW REVIEWS</button>
-            { isReveiws && isRvwBtn && recipeRvwData.map((rvw, idx) => (
-                <div className="RecipeDetails-no-float-div" key={`div-${rvw.user_id}`}>
-                  <p key={`stars-${rvw.user_id}`}>{rvw.stars}</p>
-                  <p key={`review-${rvw.user_id}`}>{rvw.review}</p>
+            { isRvwBtn &&
+              <div className="RecipeDetails-div">
+              { isReveiws ?
+                recipeRvwData.map((rvw, idx) => (
+                  <div className="RecipeDetails-no-float-div" key={`div-${rvw.user_id}`}>
+                    <p key={`stars-${rvw.user_id}`}>{rvw.stars}</p>
+                    <p key={`review-${rvw.user_id}`}>{rvw.review}</p>
+                  </div>
+                ))
+              :
+                <div className="RecipeDetails-no-float-div">
+                  <p>No reviews!</p>
                 </div>
-              ))
-            }
-            { !isReveiws && isRvwBtn &&
-              <div className="RecipeDetails-no-float-div">
-                <p>No reviews!</p>
+              }
               </div>
             }
       </div>
