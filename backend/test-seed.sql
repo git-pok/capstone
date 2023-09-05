@@ -26630,7 +26630,7 @@ CREATE TABLE recipelists (
     user_id INTEGER REFERENCES users (id) ON DELETE CASCADE,
     occasion_id INTEGER REFERENCES occasions (id),
     list_name VARCHAR (30) NOT NULL,
-    UNIQUE (user_id, list_name)
+    UNIQUE (user_id, list_name, occasion_id)
 );
 
 
@@ -26672,7 +26672,7 @@ CREATE TABLE shoppinglists (
 CREATE TABLE shoppinglists_items (
     id SERIAL PRIMARY KEY,
     list_id INTEGER REFERENCES shoppinglists (id) ON DELETE CASCADE,
-    qty INTEGER,
+    qty TEXT,
     unit_id INTEGER REFERENCES units (id),
     ingredient_id INTEGER REFERENCES ingredients (id)
 );

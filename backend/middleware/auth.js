@@ -81,7 +81,30 @@ function isCurrUser(req, res, next) {
     }
 }
 
+/**
+ * isBodyCurrUser
+ * Authorizes a user.
+ * Searches for user object,
+ * and compares a sent user id to the payload id.
+ */
+function isBodyCurrUser(req, res, next) {
+    try {
+        const payload = res.user[0] || [];
+        // Destructures different payload key names.
+        const { userId = false } = payload;
+        // Destructures request body.
+        const { user_id = false } = req.body;
+        if (userId && user_id === userId) return next();
+        else {
+            const error = new ExpressError(400, "Must be current user!");
+            return next(error);
+        }
+    } catch(err) {
+        throw new ExpressError(400, `${err}`);
+    }
+}
+
 module.exports = {
     authenticateToken, isLoggedIn,
-    isCurrUser
+    isCurrUser, isBodyCurrUser
 };

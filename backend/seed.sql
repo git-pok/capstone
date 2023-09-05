@@ -26623,7 +26623,7 @@ CREATE TABLE recipelists (
     user_id INTEGER REFERENCES users (id) ON DELETE CASCADE,
     occasion_id INTEGER REFERENCES occasions (id),
     list_name VARCHAR (30) NOT NULL,
-    UNIQUE (user_id, list_name)
+    UNIQUE (user_id, list_name, occasion_id)
 );
 
 INSERT INTO recipelists

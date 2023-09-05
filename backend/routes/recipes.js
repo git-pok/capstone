@@ -3,9 +3,10 @@ const ExpressError = require("../models/error.js");
 const router = new express.Router();
 const Recipe = require("../models/recipes.js");
 const User = require("../models/users.js");
-const { isLoggedIn, isCurrUser } = require("../middleware/auth.js");
+const { isLoggedIn, isCurrUser, isBodyCurrUser } = require("../middleware/auth.js");
 const { isFilter } = require("../helpers/recipes.js");
 const { rowExists } = require("../helpers/sql.js");
+const reviewsSchema = require("../schemas/reviews.json");
 /**
  * "/:id"
  * route type: GET
@@ -37,6 +38,48 @@ router.get("/", isLoggedIn, async (req, res, next) => {
         // const recipes = filterExists ? await Recipe.recipesFilter(qry) : await Recipe.getRecipes();
         return res.status(200).json(
             recipes
+        );
+    } catch (err) {
+        return next(err);
+    }
+});
+
+/**
+ * "/:id/reviews"
+ * route type: GET
+ * Authorization: logged in
+ * Returns recipe reviews.
+ */
+router.get("/:id/reviews", isLoggedIn, async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        const recipeRvws = await Recipe.getRecipeReviews(+id);
+
+        return res.status(200).json(
+            recipeRvws
+        );
+    } catch (err) {
+        return next(err);
+    }
+});
+
+/**
+ * "/:id/reviews"
+ * route type: POST
+ * Authorization: logged in
+ * Posts and returns recipe review.
+ */
+router.post("/:id/reviews", isLoggedIn, isBodyCurrUser, async (req, res, next) => {
+    try {
+        const { id: recipe_id } = req.params;
+        const { user_id, stars, review } = req.body;
+        // Check if recipe exists.
+        await rowExists("recipe", "id", "recipes", [["id", +recipe_id]]);
+        const data = { user_id, stars, review, recipe_id: +recipe_id };
+        const returning = await User.insertRow("reviews", data, reviewsSchema, ["stars", "review"]);
+
+        return res.status(200).json(
+            returning.rows
         );
     } catch (err) {
         return next(err);
