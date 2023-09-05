@@ -25,8 +25,12 @@
   transition: .5s ease-in-out background-color;
 }
 
-.Profile-icons:hover {
+/* .Profile-icons:hover {
   color: rgb(150, 160, 167);
+} */
+
+.hover-red:hover {
+  color: red;
 }
 
 .Profile-h1 {

@@ -7,6 +7,7 @@ import useLocalStorage from './hooks/useLocalStorage.js';
 import UserContext from './context/UserContext.js';
 import useToggleState from './hooks/useToggleState';
 import SavourApi from './models/SavourApi.js';
+import image from './img/flour.jpg';
 
 const SavourApp = () => {
   console.log("SavourApp RAN");

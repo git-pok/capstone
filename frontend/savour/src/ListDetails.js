@@ -118,17 +118,8 @@ const ListDetails = ({urlEndpt, recipelist = false}) => {
     if (isListDltBtn) deleteList();
   }, [listUrl, activateGetLists, isIngrAddBtn, isIngrRmvBtn, isListDltBtn])
 
-  // image styles.
-  const styles = {
-    backgroundImage: `url(${image})`,
-    backgroundSize: "cover",
-    backgroundAttachment: "fixed",
-    backgroundRepeat: "repeat"
-  }
-
   return (
     <>
-    {/* <div className="ListDetails-bg-img" style={styles}> */}
     { !recipelist ?
         <h1 className="ListDetails-h1">{`${listData && listData.list_name} List`}</h1>
       :
@@ -144,7 +135,7 @@ const ListDetails = ({urlEndpt, recipelist = false}) => {
           <h2 className="ListDetails-subtitle">Delete Recipelist</h2>
           <FontAwesomeIcon
             onClick={deleteList}
-            className="ListDetails-icon-center"
+            className="ListDetails-icon-center hover-red"
             icon={faRectangleXmark} />
             <div className="ListDetails-msg">
               {
@@ -171,7 +162,7 @@ const ListDetails = ({urlEndpt, recipelist = false}) => {
             <h2 className="ListDetails-subtitle">Delete Recipelist</h2>
             <FontAwesomeIcon
               onClick={deleteList}
-              className="ListDetails-icon-center"
+              className="ListDetails-icon-center hover-red"
               icon={faRectangleXmark} />
             <div className="ListDetails-msg">
               {
@@ -222,7 +213,7 @@ const ListDetails = ({urlEndpt, recipelist = false}) => {
                 <div key={`div-${ingrd.id}`} className="ListDetails-li-icon-div">
                   <li>{ingrd.qty}{ingrd.unit !== "no unit" ? ingrd.unit : null} {ingrd.ingredient}</li>
                   <FontAwesomeIcon
-                    className="ListDetails-li-icon"
+                    className="ListDetails-li-icon hover-green"
                     onClick={() => addOrRmvItem({qty: ingrd.qty, unit_id: ingrd.unit_id, ingredient_id: ingrd.ingredient_id})}
                     icon={faSquarePlus} />
                 </div>
@@ -253,7 +244,7 @@ const ListDetails = ({urlEndpt, recipelist = false}) => {
             <p className="ListDetails-short-text">{listData.recipe_author}</p>
             <h2 className="ListDetails-subtitle">Delete Shoppinglist</h2>
             <FontAwesomeIcon
-              className="ListDetails-icons"
+              className="ListDetails-icons hover-red"
               onClick={deleteList}
               icon={faRectangleXmark} />
             <div className="ListDetails-msg">
@@ -288,7 +279,7 @@ const ListDetails = ({urlEndpt, recipelist = false}) => {
                   <div key={`div-${item.id}`} className="ListDetails-li-icon-div">
                     <li key={`li-${item.id}`}>{item.qty || null}{item.unit !== "no unit" ? item.unit : null} {item.ingredient}</li>
                     <FontAwesomeIcon
-                      className="ListDetails-li-icon"
+                      className="ListDetails-li-icon hover-red"
                       onClick={() => addOrRmvItem({item_id: item.id}, false)}
                       icon={faSquareMinus} />
                   </div>
@@ -310,7 +301,6 @@ const ListDetails = ({urlEndpt, recipelist = false}) => {
     :
       null
     }
-    {/* </div> */}
     </>
   );
 }

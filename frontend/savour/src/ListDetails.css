@@ -63,6 +63,14 @@
   transition: .5s ease-in-out background-color;
 }
 
+.hover-green:hover {
+  color: green;
+}
+
+.hover-red:hover {
+  color: red;
+}
+
 .ListDetails-icons-center-div {
   /* float: none; */
   display: block;
@@ -76,9 +84,9 @@
   transition: .5s ease-in-out background-color;
 }
 
-.ListDetails-icons:hover, .ListDetails-li-icon:hover {
+/* .ListDetails-icons:hover, .ListDetails-li-icon:hover {
   color: rgb(150, 160, 167);
-}
+} */
 
 .ListDetails-ul li {
   width: 400px;

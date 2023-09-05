@@ -10,7 +10,7 @@ import RecipeContainer from './RecipeContainer.js';
 import RecipeFilter from './RecipeFilter.js';
 // import ShowHideText from './ShowHideText.js';
 // import image from './img/ambient-kitchen.jpg';
-import image from './img/flour.jpg';
+// import image from './img/flour.jpg';
 import './Recipes.css';
 
 /**
@@ -43,17 +43,8 @@ const Recipes = () => {
   const topFourPastaArr = pastaData !== null ? [{...pastaData[0]}, {...pastaData[1]}, {...pastaData[2]}, {...pastaData[3]}] : null;
   const topFourDessertArr = dessertData !== null ? [{...dessertData[0]}, {...dessertData[1]}, {...dessertData[2]}, {...dessertData[3]}] : null;
 
-  // image styles.
-  const styles = {
-    backgroundImage: `url(${image})`,
-    backgroundSize: "cover",
-    backgroundAttachment: "fixed",
-    backgroundRepeat: "repeat"
-  }
-
   return (
     <>
-    <div className="ListDetails-bg-img" style={styles}>
     <h1 className="Recipes-h1">Top Chicken Recipes</h1>
     <div className="Recipes">
       <div className="Recipes-div">
@@ -72,7 +63,6 @@ const Recipes = () => {
         <RecipeFilter setState={setRecipesData} />
         { recipesData && <RecipeContainer showHide={true} recipeArray={recipesData} /> }
       </div>
-    </div>
     </div>
     </>
   );

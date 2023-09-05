@@ -185,7 +185,7 @@ const Profile = () => {
             <h2 className="Profile-subtitle">Delete User</h2>
             <FontAwesomeIcon
                 // onClick={() => savOrFavRecipe(recipeData[0].id)}
-                className="Profile-icons"
+                className="Profile-icons hover-red"
                 onClick={deleteTrue}
                 icon={faUserXmark} />
             <div className="Profile-msg">
