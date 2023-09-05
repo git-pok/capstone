@@ -8,7 +8,7 @@ import Button from './Button.js';
 import useLocalStorage from './hooks/useLocalStorage.js';
 import UserContext from './context/UserContext.js';
 // import useToggleState from './hooks/useToggleState.js';
-import image from './img/cut-board.jpg';
+// import image from './img/cut-board.jpg';
 import './Home.css';
 
 /**
@@ -19,12 +19,7 @@ import './Home.css';
 const Home = () => {
 
   // const [ usrData, setUsrData ] = useLocalStorage("userData", null);
-  // image styles.
-  const styles = {
-    backgroundImage: `url(${image})`,
-    backgroundSize: "cover",
-    backgroundRepeat: "no-repeat"
-  }
+
   const pgh1 = `Savour is a recipe app that is built to
     give the user access to recipes and tools to support recipes.
     With savour, a user may search/like/dislike/try/save/share a recipe,
@@ -41,7 +36,8 @@ const Home = () => {
     fitness & lifestyle, lunch.`
   return (
     <>
-    <div style={styles} className="Home-bg-img">
+    {/* <div style={styles} className="Home-bg-img"> */}
+    <div className="Home-bg-img">
     <h1 className="Home-h1">Welcome to Savour – The recipe app</h1>
     <div className="Home-p">
       <h2 className="Home-subtitle">What is Savour</h2>
