@@ -130,9 +130,9 @@ async function genTestUsers () {
         VALUES
             ($1, $2, $3, $4), ($5, $6, $7, $8), ($9, $10, $11, $12)`,
         [
-            shopList1Id, 20, 20, 506,
-            shopList1Id, 3, 3, 10,
-            shopList2Id, 20, 20, 506
+            shopList1Id, '20', 20, 506,
+            shopList1Id, '3', 3, 10,
+            shopList2Id, '20', 20, 506
         ]
     );
 

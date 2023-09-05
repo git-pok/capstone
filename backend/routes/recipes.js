@@ -76,9 +76,9 @@ router.post("/:id/reviews", isLoggedIn, isBodyCurrUser, async (req, res, next) =
         // Check if recipe exists.
         await rowExists("recipe", "id", "recipes", [["id", +recipe_id]]);
         const data = { user_id, stars, review, recipe_id: +recipe_id };
-        const returning = await User.insertRow("reviews", data, reviewsSchema, ["stars", "review"]);
+        const returning = await User.insertRow("reviews", data, reviewsSchema, ["stars", "review", "user_id"]);
 
-        return res.status(200).json(
+        return res.status(201).json(
             returning.rows
         );
     } catch (err) {

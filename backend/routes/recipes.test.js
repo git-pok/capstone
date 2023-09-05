@@ -291,6 +291,89 @@ describe("/GET /recipes", () => {
         expect(req.statusCode).toBe(400);
     });
 });
+
+describe("/GET /recipes/:id/reviews", () => {
+    test("get recipe reviews", async () => {
+        const req = await request(app).get(`/recipes/${100}/reviews`)
+            .set("_token", `Bearer ${usr1TokenTest}`);
+        expect(req.statusCode).toBe(200);
+        expect(req.body[0].stars).toEqual(5);
+        expect(req.body).toEqual([{
+            "stars": 5,
+		    "review": "Good.",
+		    "user_id": usr1IdTest
+        }]);
+    });
+
+    test("400 error for logged out user", async () => {
+        const req = await request(app).get(`/recipes/${100}/reviews`);
+        expect(req.statusCode).toBe(400);
+    });
+});
+
+describe("/POST /recipes/:id/reviews", () => {
+    test("create review", async () => {
+        const req = await request(app).post(`/recipes/${10}/reviews`)
+            .set("_token", `Bearer ${usr1TokenTest}`)
+            .send({
+                "user_id": usr1IdTest,
+	            "stars": 4,
+	            "review": "I didn't like the advacado!"
+            })
+        expect(req.statusCode).toBe(201);
+        expect(req.body[0].stars).toEqual(4);
+        expect(req.body).toEqual([{
+            "stars": 4,
+		    "review": "I didn't like the advacado!",
+		    "user_id": usr1IdTest
+        }]);
+    });
+
+    test("400 error for invalid stars schema type", async () => {
+        const req = await request(app).post(`/recipes/${10}/reviews`)
+            .set("_token", `Bearer ${usr1TokenTest}`)
+            .send({
+                "user_id": usr1IdTest,
+	            "stars": "4",
+	            "review": "I didn't like the advacado!"
+            })
+        expect(req.statusCode).toBe(400);
+    });
+
+    test("400 error for invalid review schema length", async () => {
+        const req = await request(app).post(`/recipes/${10}/reviews`)
+            .set("_token", `Bearer ${usr1TokenTest}`)
+            .send({
+                "user_id": usr1IdTest,
+	            "stars": "4",
+	            "review": ""
+            })
+        expect(req.statusCode).toBe(400);
+    });
+
+    test("400 error for not current user", async () => {
+        const req = await request(app).post(`/recipes/${10}/reviews`)
+            .set("_token", `Bearer ${usr1TokenTest}`)
+            .send({
+                "user_id": usr2IdTest,
+	            "stars": 4,
+	            "review": "I didn't like the advacado!"
+            })
+        expect(req.statusCode).toBe(400);
+    });
+
+    test("400 error for logged out user", async () => {
+        const req = await request(app).post(`/recipes/${10}/reviews`)
+            .set("_token", `Bearer`)
+            .send({
+                "user_id": usr1IdTest,
+	            "stars": 4,
+	            "review": "I didn't like the advacado!"
+            })
+        expect(req.statusCode).toBe(400);
+    });
+});
+
 /**
  * DID NOT USE LIKE ROUTES.
 */

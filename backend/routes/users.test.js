@@ -1532,13 +1532,13 @@ describe("/GET /users/:id/shoppinglists/:list_id", () => {
 				"list_items": [
                     {
 						"id": expect.any(Number),
-						"qty": 20,
+						"qty": "20",
 						"unit": "oz",
 						"ingredient": "boneless, skinless chicken breast"
 					},
 					{
 						"id": expect.any(Number),
-						"qty": 3,
+						"qty": "3",
 						"unit": "tbsp",
 						"ingredient": "garlic granules"
 					}
@@ -1633,7 +1633,7 @@ describe("/GET /users/:id/shoppinglists/:list_id", () => {
 				"list_items": [
 					{
 						"id": expect.any(Number),
-						"qty": 20,
+						"qty": "20",
 						"unit": "oz",
 						"ingredient": "boneless, skinless chicken breast"
 					}
@@ -1825,19 +1825,19 @@ describe("/POST /:id/shoppinglists/:list_id/items", () => {
 			"list_items": [
 				{
 					"id": expect.any(Number),
-					"qty": 20,
+					"qty": "20",
 					"unit": "oz",
 					"ingredient": "boneless, skinless chicken breast"
 				},
 				{
 					"id": expect.any(Number),
-					"qty": 3,
+					"qty": "3",
 					"unit": "tbsp",
 					"ingredient": "garlic granules"
 				},
 				{
 					"id": expect.any(Number),
-					"qty": 1,
+					"qty": "1",
 					"unit": "kg",
 					"ingredient": "clear honey"
 				}
@@ -1869,7 +1869,7 @@ describe("/POST /:id/shoppinglists/:list_id/items", () => {
 	test("400 error for not current user", async () => {
         const req = await request(app).post(`/users/${usr2IdTest}/shoppinglists/${shopList1IdTest}/items`)
             .send({
-				"qty": 1,
+				"qty": "1",
                 "unit_id": 6,
 				"ingredient_id": 135
             })
@@ -1880,7 +1880,7 @@ describe("/POST /:id/shoppinglists/:list_id/items", () => {
 	test("404 error for not found shoppinglist", async () => {
         const req = await request(app).post(`/users/${usr1IdTest}/shoppinglists/${shopList2IdTest}/items`)
             .send({
-				"qty": 1,
+				"qty": "1",
                 "unit_id": 6,
 				"ingredient_id": 135
             })
@@ -1891,7 +1891,7 @@ describe("/POST /:id/shoppinglists/:list_id/items", () => {
 	test("400 error for logged out user", async () => {
         const req = await request(app).post(`/users/${usr2IdTest}/shoppinglists/${shopList2IdTest + 1}/items`)
             .send({
-				"qty": 1,
+				"qty": "1",
                 "unit_id": 6,
 				"ingredient_id": 135
             })
