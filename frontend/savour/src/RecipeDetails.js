@@ -25,9 +25,6 @@ import './RecipeDetails.css';
 const RecipeDetails = () => {
   const { id } = useParams();
   const { usrData, setUsrData } = useContext(UserContext);
-  // WEB SPEECH API
-  const [ isPause, setIsPause ] = useToggleState(false);
-  // WEB SPEECH API END
 
   // Create request header.
   const headers = { _token: `Bearer ${usrData.token}`};
@@ -54,6 +51,16 @@ const RecipeDetails = () => {
   // Recipelists occasions options and request data.
   const OccOpts = {method: "get", url: `/occasions`, data: {}, params: {}, headers};
   const [ occasionData ] = useAxios(OccOpts);
+
+  /**
+   * WEB SPEECH API
+  */
+  const synth = window.speechSynthesis;
+  const speech = recipeData ? new SpeechSynthesisUtterance(recipeData[0].steps) : null;
+  const [ isPause, setIsPause ] = useToggleState(false);
+  /**
+   * WEB SPEECH API END
+  */
 
   const isReveiws = recipeRvwData ? recipeRvwData.length > 0 : null;
   const [ favSavSucc, setFavSavSucc ] = useToggleState(false);
@@ -121,15 +128,17 @@ const RecipeDetails = () => {
       }
     }
 
+    const resetRecipeSpeech = () => {
+      synth.cancel();
+    }
+
     if (isSubmitted) favOrSav();
-  }, [isSubmitted]);
+    if (recipeData) resetRecipeSpeech();
+  }, [isSubmitted, recipeData]);
 
   /**
    * WEB SPEECH
   */
-  const synth = window.speechSynthesis;
-  const speech = recipeData ? new SpeechSynthesisUtterance(recipeData[0].steps) : null;
-
   const speak = () => {
     if (isPause) {
       synth.resume();
