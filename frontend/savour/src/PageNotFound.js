@@ -4,8 +4,8 @@ import './PageNotFound.css';
 
 /**
  * PageNotFound
- * Creates div paragraphs.
  * Props: none
+ * Renders: page not found.
 */
 const PageNotFound = () => {
   return (

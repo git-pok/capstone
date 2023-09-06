@@ -7,9 +7,8 @@ import Message from './Message.js';
 import './ReviewForm.css';
 /**
  * ReviewForm
- * ReviewForm Component
- * Props: none
- * Renders: renders form to create review.
+ * Props: recipeId, setState
+ * Renders: form to create review.
 */
 const ReviewForm = ({ recipeId, setState }) => {
   const { usrData, setUsrData } = useContext(UserContext);
@@ -44,12 +43,10 @@ const ReviewForm = ({ recipeId, setState }) => {
   useEffect(() => {
     const createReview = async () => {
       try {
-        console.log("REVIEW LIST URL", listUrl);
         const stars = formData.stars;
         const review = formData.review;
         const data = { user_id: usrData.userId, stars: +stars, review };
         const rvwReq = await SavourApi.request("post", listUrl, data, {}, headers);
-        // console.log("listReq", listReq);
         setSuccMsg("Created review!");
         setFormReqMade();
         setIsFormReqSucc();
@@ -58,9 +55,7 @@ const ReviewForm = ({ recipeId, setState }) => {
         setTimeout(setIsFormReqSucc, 3000);
         setTimeout(() => setSuccMsg(null), 3000);
         setTimeout(() => setListUrl(null), 3000);
-        // NEW LOGIC
         const listReReq = await SavourApi.request("get", `/recipes/${recipeId}/reviews`, {}, {}, headers);
-        // NEW LOGIC END
         if (setState) setTimeout(() => setState(() => listReReq.data), 3000);
       } catch(err) {
         console.log("ERROR", err);

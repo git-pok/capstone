@@ -3,8 +3,9 @@ import './ShowHideBtnAndText.css';
 
 /**
  * ShowHideBtnAndText
- * Creates div with button and paragraphs.
  * Props: paragraphArr
+ * Renders: div with button and paragraphs
+ *    that shows/hides on click.
 */
 const ShowHideBtnAndText = ({paragraphArr}) => {
   const [ isClicked, setIsClicked ] = useToggleState(false);

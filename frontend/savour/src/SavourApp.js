@@ -7,10 +7,13 @@ import useLocalStorage from './hooks/useLocalStorage.js';
 import UserContext from './context/UserContext.js';
 import useToggleState from './hooks/useToggleState';
 import SavourApi from './models/SavourApi.js';
-import image from './img/flour.jpg';
 
+/**
+ * SavourApp
+ * Props: none
+ * Renders: savour app with navbar, routes, and context.
+*/
 const SavourApp = () => {
-  console.log("SavourApp RAN");
   const [ isLoggedOut, setIsLoggedOut ] = useToggleState(false);
   const [ usrData, setUsrData ] = useLocalStorage("userData", null);
   const history = useHistory();

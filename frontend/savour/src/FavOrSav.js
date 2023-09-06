@@ -8,9 +8,8 @@ import './FavOrSav.css';
 
 /**
  * FavOrSav
- * FavOrSav Component
  * Props: fav
- * Renders: lists favorite or saved recipes.
+ * Renders: html to display favorite or saved recipes.
 */
 const FavOrSav = ({fav=true}) => {
   const { usrData, setUsrData } = useContext(UserContext);

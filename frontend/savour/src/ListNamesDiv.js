@@ -6,22 +6,19 @@ import AddToListForm from './AddToListForm.js';
 import UserContext from './context/UserContext.js';
 import SavourApi from './models/SavourApi.js';
 import useToggleState from './hooks/useToggleState.js';
-// import image from './img/ambient-kitchen.jpg';
 import './ListNamesDiv.css';
 
 /**
  * ListNamesDiv
- * ListNamesDiv Component
  * Props: urlEndpt, listTypeForH1, recipelist
- * Renders: lists like shopping or recipe lists
+ * Renders: shopping or recipe lists.
 */
-const ListNamesDiv = ({urlEndpt, listTypeForH1 = "Shoppinglists's", recipelist = false}) => {
+const ListNamesDiv = ({urlEndpt, listTypeForH1="Shoppinglists's", recipelist=false}) => {
   const { usrData, setUsrData } = useContext(UserContext);
   const headers = { _token: `Bearer ${usrData.token}`};
   const listUrl = `/users/${usrData.userId}/${urlEndpt}`;
   const [ listData, setListData ] = useState(null);
   const [ updatedList, setUpdatedList ] = useState(null);
-  console.log("listData", listData);
 
   useEffect(() => {
     const getLists = async () => {
@@ -54,13 +51,9 @@ const ListNamesDiv = ({urlEndpt, listTypeForH1 = "Shoppinglists's", recipelist =
     <h1 className="ListNamesDiv-h1">Create a List</h1>
     <div className="ListNamesDiv-div">
       { !recipelist ?
-        // <ListForm setState={setUpdatedList} />
         <AddToListForm setState={setListData} />
       :
-        // <p>HELLO</p>
         <CreateListForm recipelist={true} setState={setListData} />
-        // <AddToListForm recipelist={true} setActState={setUpdatedList} />
-        // <ListForm recipelist={true} setState={setUpdatedList} />
       }
     </div>
     </>

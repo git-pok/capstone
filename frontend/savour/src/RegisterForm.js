@@ -11,8 +11,8 @@ import './RegisterForm.css';
 
 /**
  * RegisterForm
- * Register Form
  * Props: none
+ * Renders: register form.
 */
 const RegisterForm = () => {
   const initialState = {
@@ -54,9 +54,7 @@ const RegisterForm = () => {
         ));
         // Set isSubmitted to false.
         setIsSubmitted();
-        // console.log("formData", formData);
         setFormData(() => initialState);
-        // setFormCmplt();
         history.push("/");
 
       } catch (err) {
@@ -67,7 +65,6 @@ const RegisterForm = () => {
         const errMsg = isErrObj ? null : err.message;
         const errorMsg = isErrorObj ? null : error;
         setFormErrMsg(() => errorMsg || errMsg || "Error!");
-        // setFormErrMsg(() => "Error");
         setInvalidForm();
         setTimeout(setInvalidForm, 3000);
         // Set isSubmitted to false.
@@ -108,13 +105,14 @@ const RegisterForm = () => {
     // Set isSubmitted to true if all props exist.
     else setIsSubmitted();
   }
-  // if (formCmplt) return <Redirect exact to="/" />;
+  
   // image styles.
   const styles = {
     backgroundImage: `url(${image})`,
     backgroundSize: "cover",
     backgroundRepeat: "no-repeat"
   }
+
   return (
     <>
     <div className="RegisterForm-bg-img" style={styles}>

@@ -1,16 +1,15 @@
 import { useContext } from 'react';
 import { Link } from 'react-router-dom';
 import UserContext from './context/UserContext.js';
-// import useToggleState from './hooks/useToggleState.js';
 import ShowHideBtnAndText from './ShowHideBtnAndText.js';
 import './RecipeContainer.css';
 
 /**
  * RecipeContainer
- * Creates div with recipe content
  * Props: showHide, recipeArray
+ * Render: div with recipe content.
 */
-const RecipeContainer = ({ showHide = false, recipeArray = [] }) => {
+const RecipeContainer = ({ showHide=false, recipeArray=[] }) => {
   const { usrData, setUsrData } = useContext(UserContext);
 
   return (

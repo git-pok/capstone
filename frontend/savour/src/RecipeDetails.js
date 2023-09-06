@@ -12,18 +12,15 @@ import CreateListForm from './CreateListForm.js';
 import AddToListForm from './AddToListForm.js';
 import ReviewForm from './ReviewForm.js';
 
-// import useLocalStorage from './hooks/useLocalStorage.js';
 import useToggleState from './hooks/useToggleState.js';
 import useAxios from './hooks/useAxios.js';
 import UserContext from './context/UserContext.js';
-// import RecipeContainer from './RecipeContainer.js';
-// import image from './img/ambient-kitchen.jpg';
 import './RecipeDetails.css';
 
 /**
  * RecipeDetails
- * Recipe Details Component
  * Props: none
+ * Render: recipe details.
 */
 const RecipeDetails = () => {
   const { id } = useParams();
@@ -37,7 +34,6 @@ const RecipeDetails = () => {
   // Recipe review data.
   const rvwOpts = {method: "get", url: `/recipes/${id}/reviews`, data: {}, params: {}, headers};
   const [ recipeRvwData, setRecipeRvwData ] = useAxios(rvwOpts);
-  console.log("RECIPE REVIEWS", recipeRvwData);
   // Boolean to see if clicked button is fav or sav.
   const [ isFavButton, setIsFavButton ] = useState(false);
   const [ recipeDtlsId, setRecipeDtlsId ] = useState(null);
@@ -66,10 +62,8 @@ const RecipeDetails = () => {
 
   const [ formReqMade, setFormReqMade ] = useToggleState(false);
   const [ reqMadeSucc, setReqMadeSucc ] = useToggleState(false);
-  /**
-   * END OF FORM LOGIC
-  */
-  const savOrFavRecipe = async (recipeId, fav = true) => {
+
+  const savOrFavRecipe = async (recipeId, fav=true) => {
     setIsFavButton(fav);
     setRecipeDtlsId(recipeId);
     // Set isSubmitted to true.
@@ -199,7 +193,7 @@ const RecipeDetails = () => {
         {/* ADD RECIPE TO A SHOPPING OR RECIPE LIST */}
         <h1 className="RecipeDetails-h1">Add Recipe To A List</h1>
           <div className="RecipeDetails-div">
-            {/* SHOP LISTS FORMS */}
+            {/* SHOPLISTS FORMS */}
             <div className="RecipeDetails-float-div-full">
               <h2 className="RecipeDetails-subtitle">Add Recipe to Shoppinglist</h2>
                 { usrHasShopList !== null && usrHasShopList
@@ -212,7 +206,7 @@ const RecipeDetails = () => {
                 }
             </div>
 
-            {/* RECIPE LISTS FORMS */}
+            {/* RECIPELISTS FORMS */}
             <div className="RecipeDetails-float-div-full">
                 { recipelists && recipelists.length > 0
                   ?

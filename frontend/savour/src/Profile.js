@@ -17,17 +17,13 @@ import './Profile.css';
 
 /**
  * Profile
- * User Profile Component
+ * Props: none.
+ * Renders: user profile page.
 */
 const Profile = () => {
-  // const { id } = useParams();
-  // const [ usrData, setUsrData ] = useLocalStorage("userData", null);
   const { usrData, setUsrData, logOut } = useContext(UserContext);
-  console.log("USER EDIT USER TOKEN", usrData.token);
   const headers = { _token: `Bearer ${usrData.token}`};
-  console.log("USER EDIT USER DATA", usrData);
   const options = {method: "get", url: `/users/${usrData.userUsername}`, data: {}, params: {}, headers};
-  console.log("USER EDIT options", options);
   const [ userReqData, setUserReqData ] = useAxios(options);
   const [ userData, setUserData ] = useState(null);
   const [ formErrMsg, setFormErrMsg ] = useState(null);
@@ -46,7 +42,6 @@ const Profile = () => {
   };
 
   const [ formData, setFormData ] = useState(initialState);
-  console.log("LOGIN RAN");
 
   const deleteTrue = () => {
     setIsDelete();
@@ -66,12 +61,9 @@ const Profile = () => {
         formValsArr.forEach(arr => {
           if (arr[1] !== "") data[arr[0]] = arr[1];
         });
-        // console.log("data", data);
         const usrReq = await SavourApi.request("patch", `/users/${usrData.userUsername}`, data, {}, headers);
-        // console.log("usrReq Result", usrReq.data);
         const userArr = [ ...usrReq.data ];
         setUserReqData(() => userArr);
-        console.log("EditForm SUBMITTED!");
         setSuccMsg(() => "User edited!");
         setFormReqMade();
         setReqMadeSucc();
@@ -96,14 +88,13 @@ const Profile = () => {
     const deleteUser = async () => {
       try {
         const deleteUsrReq = await SavourApi.request("delete", `/users/${usrData.userUsername}`, {}, {}, headers);
-        console.log("DELETE SUBMITTED!");
         setSuccMsg(() => "User deleted! Logging out!");
         setDltReqMade();
         setReqMadeSucc();
         setTimeout(setDltReqMade, 3000);
         setTimeout(setReqMadeSucc, 3000);
         setTimeout(() => setSuccMsg(null), 3000);
-        setTimeout(logOut, 5000);
+        setTimeout(logOut, 4000);
         // Set isDelete to false.
         setIsDelete();
 
@@ -146,7 +137,6 @@ const Profile = () => {
     const isVal = reqProps.some(val => (
       formData[val] !== ""
     ));
-    // console.log("isVal", isVal);
     // If no props are present set invalidForm.
     if (!isVal) {
       setFormErrMsg(() => "Fill atleast 1 field!");
@@ -184,7 +174,6 @@ const Profile = () => {
 
             <h2 className="Profile-subtitle">Delete User</h2>
             <FontAwesomeIcon
-                // onClick={() => savOrFavRecipe(recipeData[0].id)}
                 className="Profile-icons hover-red"
                 onClick={deleteTrue}
                 icon={faUserXmark} />

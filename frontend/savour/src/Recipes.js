@@ -1,22 +1,14 @@
 import { useState, useEffect, useContext } from 'react';
-// import { Redirect } from 'react-router-dom';
-// import Message from './Message.js';
-// import SavourApi from './models/SavourApi.js';
-// import useLocalStorage from './hooks/useLocalStorage.js';
-// import useToggleState from './hooks/useToggleState.js';
 import useAxios from './hooks/useAxios.js';
 import UserContext from './context/UserContext.js';
 import RecipeContainer from './RecipeContainer.js';
 import RecipeFilter from './RecipeFilter.js';
-// import ShowHideText from './ShowHideText.js';
-// import image from './img/ambient-kitchen.jpg';
-// import image from './img/flour.jpg';
 import './Recipes.css';
 
 /**
  * Recipes
- * Recipes Component
  * Props: none
+ * Renders: recipes page.
 */
 const Recipes = () => {
   const { usrData, setUsrData } = useContext(UserContext);

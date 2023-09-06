@@ -9,11 +9,10 @@ import './Navbar.css';
  * Props: linkNames, logOut
 */
 const Navbar = ({ linkNames, logOut }) => {
-  // const [ usrDataLs, setUsrDataLs ] = useLocalStorage("userData", null);
   const { usrData, setUsrData } = useContext(UserContext);
   const userToken = usrData ? usrData.token : null;
-  console.log("LINK NAV usrData", usrData);
   const usrName = usrData ? usrData.userUsername.toUpperCase(): null;
+
   return (
     <nav className="Navbar">
       <div className="Navbar-left-links">

@@ -13,10 +13,12 @@ import ListDetails from './ListDetails.js';
 import FavOrSav from './FavOrSav.js';
 import UserContext from './context/UserContext.js';
 
+/**
+ * Routes
+ * Props: none
+ * Renders: urls and their components.
+*/
 const Routes = () => {
-  console.log("ROUTES RAN");
-
-  // const [ usrData, setUsrData ] = useLocalStorage("userData", null);
   const { usrData, setUsrData } = useContext(UserContext);
   const userToken = usrData ? usrData.token : null;
 
@@ -45,7 +47,6 @@ const Routes = () => {
       { userToken &&
         <Route exact path="/recipes/:id">
           <RecipeDetails />
-          {/* <RecipeDetailsII /> */}
         </Route>
       }
       { userToken &&

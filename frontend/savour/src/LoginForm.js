@@ -11,16 +11,14 @@ import './LoginForm.css';
 
 /**
  * LoginForm
- * Login Form
  * Props: none
+ * Renders: login form.
 */
 const LoginForm = () => {
   const initialState = {
       username: "", password: ""
   };
-  console.log("LOGIN RAN");
 
-  // const [ usrData, setUsrData ] = useLocalStorage("userData", null);
   const [ formErrMsg, setFormErrMsg ] = useState(null);
   const [ formData, setFormData ] = useState(initialState);
   const [ isSubmitted, setIsSubmitted ] = useToggleState(false);
@@ -42,10 +40,8 @@ const LoginForm = () => {
         setUsrData(data => (
           payload
         ));
-        console.log("LoginForm SUBMITTED!");
         // Set isSubmitted to false.
         setIsSubmitted();
-        // console.log("formData", formData);
         setFormData(() => initialState);
         history.push("/");
       } catch (err) {
@@ -96,16 +92,9 @@ const LoginForm = () => {
     // Set isSubmitted to true if all props exist.
     else setIsSubmitted();
   }
-  
-  // image styles.
-  const styles = {
-    backgroundImage: `url(${image})`,
-    backgroundSize: "cover",
-    backgroundRepeat: "no-repeat"
-  }
+
   return (
     <>
-    <div className="LoginForm-bg-img" style={styles}>
     <h1 className="LoginForm-h1">Login</h1>
     <form onSubmit={handleSubmit} className="LoginForm">
       <div className="LoginForm-field">
@@ -143,7 +132,6 @@ const LoginForm = () => {
         <button>SUBMIT</button>
       </div>
     </form>
-    </div>
     </>
   );
 }

@@ -1,4 +1,6 @@
 .RegisterForm-bg-img {
+  display: block;
+  float: left;
   width: 100vw;
   height: 100vh;
   margin: 0px 0px;

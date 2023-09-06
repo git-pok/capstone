@@ -3,7 +3,7 @@ import './Button.css';
 
 /**
  * Button
- * Creates button
+ * Creates a link button.
  * Props: buttonText, link
 */
 const Button = ({ buttonText, link }) => {

@@ -12,19 +12,19 @@ import {
         } from '@fortawesome/free-solid-svg-icons';
 import useToggleState from './hooks/useToggleState.js';
 import image from './img/food.jpg';
-// import image from './img/ambient-kitchen.jpg';
 import './ListDetails.css';
 
 /**
  * ListDetails
- * ListDetails Component
  * Props: urlEndpt, recipelist
- * Renders: detail components for shopping or recipe list.
+ * Renders: html for shopping or recipe list details.
 */
-const ListDetails = ({urlEndpt, recipelist = false}) => {
+const ListDetails = ({urlEndpt, recipelist=false}) => {
   const { usrData, setUsrData } = useContext(UserContext);
   const headers = { _token: `Bearer ${usrData.token}`};
+  // Destructure list id params.
   const { id: listId } = useParams();
+
   const history = useHistory();
   const listUrl = `/users/${usrData.userId}/${urlEndpt}/${listId}`;
   const [ activateGetLists, setActivateGetLists ] = useToggleState(false);
@@ -70,7 +70,6 @@ const ListDetails = ({urlEndpt, recipelist = false}) => {
         const url = `${listUrl}/items`;
         const method = isIngrRmvBtn ? "delete" : "post";
         const listReq = await SavourApi.request(method, url, shoplistItems, {}, headers);
-        // console.log("listReq LIST ADD", listReq.data);
         const msg = isIngrAddBtn ? "Added item to list!" : "Removed item from list!";
         setSuccMsg(() => msg);
         isIngrAddBtn ? setIsAddActionCmplt() : setIsRmvActionCmplt();
@@ -186,7 +185,6 @@ const ListDetails = ({urlEndpt, recipelist = false}) => {
         <h1 className="ListDetails-h1">Add Recipes to List</h1>
         <div className="ListDetails-div">
           <AddToListForm recipelist={true} setToggleState={setActivateGetLists} />
-          {/* <AddRecipelistRecipe setState={setUpdateListMsg} /> */}
         </div>
       </div>
     }
@@ -203,7 +201,7 @@ const ListDetails = ({urlEndpt, recipelist = false}) => {
       </div>
     }
     {/* DELETE RECIPELIST FROM RECIPELISTS END */}
-    {/* DELETE RECIPE FROM RECIPELIST */}
+    {/* SHOPPINGLIST DETAILS */}
     { listData && !recipelist ?
         <div className="ListDetails-split-div">
           <div className="ListDetails-split-ul-div">

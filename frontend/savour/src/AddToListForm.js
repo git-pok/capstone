@@ -12,26 +12,24 @@ import './AddToListForm.css';
  * Props: recipelist, setState
  * Renders: renders form to create shop or recipe list.
 */
-const AddToListForm = ({recipelist = false, setState=false, setToggleState=false}) => {
+const AddToListForm = ({recipelist=false, setState=false, setToggleState=false}) => {
+  // Destructure context.
   const { usrData, setUsrData } = useContext(UserContext);
+  // Create req header for authen.
   const headers = { _token: `Bearer ${usrData.token}`};
-
+  // Recipe request.
   const recipeOpts = { method: "get", url: `/recipes`, data: {}, params: {}, headers };
   const [ recipeData ] = useAxios(recipeOpts);
-
+  // Occasion request.
   const OccOpts = { method: "get", url: `/occasions`, data: {}, params: {}, headers };
   const [ occasionData ] = useAxios(OccOpts);
-
-  // const shoplistUrl = `/users/${usrData.userId}/shoppinglists`;
-  // const shopLstOpts = {method: "get", url: shoplistUrl, data: {}, params: {}, headers};
-  // const [ shoplists, setShoplists ] = useAxios(shopLstOpts);
-  // console.log("shoplists", shoplists);
+  // Url for form request.
   const listReReqUrlEndPt = recipelist ? "recipelists" : "shoppinglists";
   const listReReqUrl = `/users/${usrData.userId}/${listReReqUrlEndPt}`;
   const recipelistUrl = `/users/${usrData.userId}/recipelists`;
   const recpLstOpts = {method: "get", url: recipelistUrl, data: {}, params: {}, headers};
   const [ recipelists, setRecipelists ] = useAxios(recpLstOpts);
-  console.log("recipelists", recipelists);
+
   const [ listUrl, setListUrl ] = useState(null);
   const [ isRecipeList, setIsRecipeList ] = useToggleState(false);
   const [ isSubmitted, setIsSubmitted ] = useToggleState(false);
@@ -70,15 +68,13 @@ const AddToListForm = ({recipelist = false, setState=false, setToggleState=false
         const data = isRecipeList ?
             { recipe_id: +formData.recipeId }
             : { recipe_id: +formData.recipeId, list_name: formData.shoplistName }
-        
-        console.log("data", data);
+
         const listReq = await SavourApi.request("post", listUrl, data, {}, headers);
         setSuccMsg(isRecipeList ? "Added item to list!" : "Created list for recipe!");
-        // setSuccMsg(isRecipeList ? "Added item to list!" : "Created list for recipe!");
         setFormReqMade();
         setIsFormReqSucc();
         const reReq = await SavourApi.request("get", listReReqUrl, {}, {}, headers);
-        // console.log("$*$*$*$*$*$*$* reReq", reReq);
+
         if (setState) setTimeout(setState(() => [...reReq.data]), 3000);
         if (setToggleState) setTimeout(setToggleState, 3000);
         setTimeout(setIsSubmitted, 3000);

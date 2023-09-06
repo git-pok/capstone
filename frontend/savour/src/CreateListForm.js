@@ -8,11 +8,10 @@ import Message from './Message.js';
 import './CreateListForm.css';
 /**
  * CreateListForm
- * CreateListForm Component
- * Props: recipelist, setState
+ * Props: recipeId, setState, recipelist
  * Renders: renders form to create shop or recipe list.
 */
-const CreateListForm = ({recipelist = false, recipeId, setState}) => {
+const CreateListForm = ({recipeId, setState, recipelist=false}) => {
   const { usrData, setUsrData } = useContext(UserContext);
   const headers = { _token: `Bearer ${usrData.token}`};
 
@@ -60,28 +59,20 @@ const CreateListForm = ({recipelist = false, recipeId, setState}) => {
         const data = isRecipeList ?
             { occasion_id: +formData.occasionId, list_name: formData.recipelistName }
             : { recipe_id: +recipeId, list_name: formData.shoplistName }
-        console.log("DATA", data);
-        console.log("CREATE LIST FORM");
+
         const listReq = await SavourApi.request("post", listUrl, data, {}, headers);
-        // console.log("listReq", listReq);
         setSuccMsg("Created list!");
         setFormReqMade();
         setIsFormReqSucc();
-        // setState(() => !isRecipeList ? [...listReq.data] : [{...listReq.data}]);
         setTimeout(setIsSubmitted, 3000);
         if (isRecipeList) setTimeout(setIsRecipeList, 3000);
         setTimeout(setFormReqMade, 3000);
         setTimeout(setIsFormReqSucc, 3000);
-        // setTimeout(setState(() => !isRecipeList ? [...listReq.data] : [{...listReq.data}]), 3000);
         setTimeout(() => setSuccMsg(null), 3000);
         setTimeout(() => setListUrl(null), 3000);
-        // NEW LOGIC
+
         const listReReq = await SavourApi.request("get", listUrl, {}, {}, headers);
-        // console.log("listReReq", listReReq);
-        // NEW LOGIC END
-        // if (setState) setTimeout(() => setState(() => !isRecipeList ? [...listReq.data] : [{...listReq.data}]), 3000);
         if (setState) setTimeout(() => setState(() => [...listReReq.data]), 3000);
-        // setTimeout(() => setState(() => [...listReReq.data], 3000));
       } catch(err) {
         console.log("ERROR", err);
         const error = err.response.data.error.message;
@@ -119,7 +110,6 @@ const CreateListForm = ({recipelist = false, recipeId, setState}) => {
     <>
     {/* Shoppinglist form to create shoppinglist. */}
     { !recipelist
-    // {/* Shoppinglist form to create shoppinglist. */}
       ?
         <form onSubmit={handleSubmit} className="CreateListForm-form">
           <div className="CreateListForm-form-field">
