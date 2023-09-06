@@ -4,7 +4,7 @@ import SavourApi from './models/SavourApi.js';
 import useToggleState from './hooks/useToggleState.js';
 import UserContext from './context/UserContext.js';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faFilter, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons'
+import { faFilter, faSliders } from '@fortawesome/free-solid-svg-icons'
 import './RecipeFilter.css';
 
 /**
@@ -82,7 +82,7 @@ const RecipeFilter = ({ setState }) => {
   return (
     <>
       <FontAwesomeIcon
-      icon={faMagnifyingGlass}
+      icon={faSliders}
       className="RecipeFilter-filter-ico"
       onClick={toggleFilter} />
     <div className="RecipeFilter-filter">
