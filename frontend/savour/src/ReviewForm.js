@@ -1,4 +1,4 @@
-import { useContext, useState, useEffect } from 'react';
+import { useContext, useState, useEffect, memo } from 'react';
 import useAxios from './hooks/useAxios.js';
 import UserContext from './context/UserContext.js';
 import SavourApi from './models/SavourApi.js';
@@ -10,7 +10,7 @@ import './ReviewForm.css';
  * Props: recipeId, setState
  * Renders: form to create review.
 */
-const ReviewForm = ({ recipeId, setState }) => {
+const ReviewForm = memo(({ recipeId, setState }) => {
   const { usrData, setUsrData } = useContext(UserContext);
   const headers = { _token: `Bearer ${usrData.token}`};
   const [ isFormBtn, setIsFormBtn ] = useToggleState(false);
@@ -136,6 +136,6 @@ const ReviewForm = ({ recipeId, setState }) => {
       }
     </>
   );
-}
+})
 
 export default ReviewForm;

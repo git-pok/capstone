@@ -1,4 +1,4 @@
-import { useContext, useState, useEffect } from 'react';
+import { useContext, useState, useEffect, memo } from 'react';
 import useAxios from './hooks/useAxios.js';
 import UserContext from './context/UserContext.js';
 import SavourApi from './models/SavourApi.js';
@@ -10,7 +10,7 @@ import './DeleteFromRecipelistForm.css';
  * Props: recipelistId, setState, list
  * Renders: renders form to delete recipe from recipelist.
 */
-const DeleteFromRecipelistForm = ({ recipelistId, setState, list }) => {
+const DeleteFromRecipelistForm = memo(({ recipelistId, setState, list }) => {
   const { usrData, setUsrData } = useContext(UserContext);
   const headers = { _token: `Bearer ${usrData.token}`};
 
@@ -127,6 +127,6 @@ const DeleteFromRecipelistForm = ({ recipelistId, setState, list }) => {
       }
     </>
   );
-}
+})
 
 export default DeleteFromRecipelistForm;
