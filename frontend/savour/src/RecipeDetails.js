@@ -2,8 +2,8 @@ import { useState, useEffect, useContext } from 'react';
 import { useHistory, useParams, Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
-          faStar,
-          faFloppyDisk,
+          faStar, faFloppyDisk, faCirclePlay,
+          faCirclePause, faBackward
         } from '@fortawesome/free-solid-svg-icons'
 import Message from './Message.js';
 import SavourApi from './models/SavourApi.js';
@@ -25,6 +25,10 @@ import './RecipeDetails.css';
 const RecipeDetails = () => {
   const { id } = useParams();
   const { usrData, setUsrData } = useContext(UserContext);
+  // WEB SPEECH API
+  const [ isPause, setIsPause ] = useToggleState(false);
+  // WEB SPEECH API END
+
   // Create request header.
   const headers = { _token: `Bearer ${usrData.token}`};
   // Recipe options and request data.
@@ -120,6 +124,34 @@ const RecipeDetails = () => {
     if (isSubmitted) favOrSav();
   }, [isSubmitted]);
 
+  /**
+   * WEB SPEECH
+  */
+  const synth = window.speechSynthesis;
+  const speech = recipeData ? new SpeechSynthesisUtterance(recipeData[0].steps) : null;
+
+  const speak = () => {
+    if (isPause) {
+      synth.resume();
+      setIsPause();
+    }
+    speech && synth.speak(speech);
+  }
+
+  const pause = () => {
+    if (!isPause) {
+      synth.pause();
+      setIsPause();
+    }
+  }
+
+  const reset = () => {
+    synth.cancel();
+  }
+  /**
+   * WEB SPEECH END
+  */
+
   return (
     <>
     {/* RECIPE DETAILS */}
@@ -187,6 +219,20 @@ const RecipeDetails = () => {
           <div className="RecipeDetails-float-steps-div">
             <h2 className="RecipeDetails-subtitle">Steps</h2>
             <p className="RecipeDetails-p">{recipeData[0].steps}</p>
+            {/* WEB SPEECH */}
+            <FontAwesomeIcon
+                onClick={reset}
+                className="RecipeDetails-icons"
+                icon={faBackward} />
+            <FontAwesomeIcon
+                onClick={pause}
+                className="RecipeDetails-icons"
+                icon={faCirclePause} />
+            <FontAwesomeIcon
+                onClick={speak}
+                className="RecipeDetails-icons"
+                icon={faCirclePlay} />
+            {/* WEB SPEECH END */}
           </div>
         </div>
 
