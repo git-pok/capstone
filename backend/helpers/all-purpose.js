@@ -29,6 +29,32 @@ function defineProps (propsArr, obj, pure = true) {
     }
 }
 
+/**
+ * makeParagraphArr
+ * Defines array for every 4 sentences.
+ * Arguments: str
+ * Returns new nested array.
+ * makeParagraphArr();
+ */
+function makeParagraphArr (str) {
+    const sentenceArr = str.split(". ");
+    const sentencesArr = [];
+    const loopSentenceArr = [];
+    sentenceArr.forEach((str, idx) => {
+        if (idx !== 0 && idx % 5 === 0) {
+            loopSentenceArr.push(str + ".");
+            sentencesArr.push([...loopSentenceArr]);
+            loopSentenceArr.length = 0;
+        }
+        else if (idx + 1 === sentenceArr.length && idx % 5 !== 0) {
+            loopSentenceArr.push(str + ".");
+            sentencesArr.push([...loopSentenceArr]);
+        }
+        else loopSentenceArr.push(str);
+    });
+    return sentencesArr;
+}
+
 
 module.exports = {
     defineProps
