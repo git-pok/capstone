@@ -36,7 +36,8 @@ const AddToListForm = ({recipelist=false, setState=false, setToggleState=false, 
 
   const initialState = {
     shoplistName: "", recipelistName: "",
-    occasionId: "", recipelistId: "", recipeId: ""
+    occasionId: "", recipelistId: "",
+    recipeId: recipelistSelectRecipe !== false ? recipelistSelectRecipe.id : ""
   };
 
   const [ formData, setFormData ] = useState(initialState);
@@ -169,11 +170,7 @@ const AddToListForm = ({recipelist=false, setState=false, setToggleState=false, 
             name="recipelistId"
             onChange={handleChange}
             value={formData.recipelistId}>
-            { recipelistSelectRecipe === false ?
-              <option key="recipelistId" value="">Select a Recipelist</option>
-            :
-              <option key="recipelistId" value={recipelistSelectRecipe.id}>{recipelistSelectRecipe.name}</option>
-            }
+            <option key="recipelistId" value="">Select a Recipelist</option>
               { recipelists &&
                 recipelists.map(recipelist => (
                   <option key={`${recipelist.id}`} value={`${recipelist.id}`}>{recipelist.list_name}</option>
@@ -188,7 +185,11 @@ const AddToListForm = ({recipelist=false, setState=false, setToggleState=false, 
             name="recipeId"
             onChange={handleChange}
             value={formData.recipeId}>
-            <option key="recipeId" value="">Select a Recipe</option>
+            { recipeData && recipelistSelectRecipe === false ?
+              <option key="recipeId" value="">Select a Recipe</option>
+            :
+              <option key="recipeId" value={recipelistSelectRecipe.id}>{recipelistSelectRecipe.name}</option>
+            }
             { recipeData && recipeData.length &&
               recipeData.map(recipe => (
                 <option key={`${recipe.id}`} value={`${recipe.id}`}>{recipe.name}</option>
