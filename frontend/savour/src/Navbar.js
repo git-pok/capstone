@@ -1,6 +1,7 @@
 import { NavLink } from 'react-router-dom';
 import useLocalStorage from './hooks/useLocalStorage.js';
-import { useContext } from 'react';
+import useToggleState from './hooks/useToggleState.js';
+import { useContext, useState, useRef } from 'react';
 import UserContext from './context/UserContext.js';
 import './Navbar.css';
 /**
@@ -12,9 +13,23 @@ const Navbar = ({ linkNames, logOut }) => {
   const { usrData, setUsrData } = useContext(UserContext);
   const userToken = usrData ? usrData.token : null;
   const usrName = usrData ? usrData.userUsername.toUpperCase(): null;
+  const [ showMobileNav, setShowMobileNav ] = useToggleState(false);
+  const [ mobileNavClass, setMobileNavClass ] = useState("Navbar");
+
+  const toggleClass = () => {
+    if (!showMobileNav) setMobileNavClass("Navbar-show")
+    else setMobileNavClass("Navbar-hide");
+    setShowMobileNav();
+  }
 
   return (
-    <nav className="Navbar">
+    <>
+    <div
+      className="Navbar-mobile-menu"
+      onClick={toggleClass}>
+        <p>NAV MENU</p>
+    </div>
+    <nav className={mobileNavClass}>
       <div className="Navbar-left-links">
         <NavLink exact to="/">
           SAVOUR
@@ -50,6 +65,7 @@ const Navbar = ({ linkNames, logOut }) => {
         }
       </div>
     </nav>
+    </>
   );
 }
 
