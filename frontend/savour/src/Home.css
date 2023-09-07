@@ -36,3 +36,26 @@
   text-align: left;
   padding-top: 70px;
 }
+
+@media only screen and (max-width: 725px) and (min-width: 400px) {
+  .Home-h1 {
+    padding-top: 20px;
+  }
+  
+  .Home-p {
+    display: block;
+    width: 90%;
+    margin: 0px auto;
+    text-align: left;
+    padding-top: 70px;
+  }
+
+  .Home-button {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    margin: 0px auto;
+    text-align: left;
+    padding-top: 70px;
+  }
+}
