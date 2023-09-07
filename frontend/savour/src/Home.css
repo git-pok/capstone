@@ -23,9 +23,11 @@
 .Home-p {
   display: block;
   width: 700px;
-  margin: 0px auto;
+  margin: 70px auto 0px auto;
   text-align: left;
-  padding-top: 70px;
+  padding: 30px 30px;
+  background-color: rgb(216, 216, 216);
+  border-radius: 10px;
 }
 
 .Home-button {
@@ -43,11 +45,7 @@
   }
   
   .Home-p {
-    display: block;
     width: 90%;
-    margin: 0px auto;
-    text-align: left;
-    padding-top: 70px;
   }
 
   .Home-button {
