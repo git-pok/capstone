@@ -12,7 +12,7 @@ import './AddToListForm.css';
  * Props: recipelist, setState
  * Renders: renders form to create shop or recipe list.
 */
-const AddToListForm = ({recipelist=false, setState=false, setToggleState=false}) => {
+const AddToListForm = ({recipelist=false, setState=false, setToggleState=false, recipelistSelectRecipe=false}) => {
   // Destructure context.
   const { usrData, setUsrData } = useContext(UserContext);
   // Create req header for authen.
@@ -169,7 +169,11 @@ const AddToListForm = ({recipelist=false, setState=false, setToggleState=false})
             name="recipelistId"
             onChange={handleChange}
             value={formData.recipelistId}>
-            <option key="recipelistId" value="">Select a Recipelist</option>
+            { recipelistSelectRecipe === false ?
+              <option key="recipelistId" value="">Select a Recipelist</option>
+            :
+              <option key="recipelistId" value={recipelistSelectRecipe.id}>{recipelistSelectRecipe.name}</option>
+            }
               { recipelists &&
                 recipelists.map(recipelist => (
                   <option key={`${recipelist.id}`} value={`${recipelist.id}`}>{recipelist.list_name}</option>

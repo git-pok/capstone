@@ -309,8 +309,13 @@ const RecipeDetails = () => {
                 }
                 { recipelists && recipelists.length > 0
                   ?
-                    <AddToListForm recipelist={true} />
-                :
+                    <AddToListForm
+                      recipelist={true}
+                      recipelistSelectRecipe={{
+                        id: recipeData[0].id,
+                        name: recipeData[0].name
+                      }} />
+                  :
                   <CreateListForm recipelist={true} setState={setRecipelists} />
                 }
             </div>
