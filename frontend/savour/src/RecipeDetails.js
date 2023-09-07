@@ -62,6 +62,39 @@ const RecipeDetails = () => {
    * WEB SPEECH API END
   */
 
+  /**
+   * STEPS PARSE
+  */
+  /**
+ * makeParagraphArr
+ * Defines array for every 4 sentences.
+ * Arguments: str
+ * Returns new nested array.
+ * makeParagraphArr();
+ */
+  function makeParagraphArr (str) {
+    const sentenceArr = str.split(". ");
+    const sentencesArr = [];
+    const loopSentenceArr = [];
+    sentenceArr.forEach((str, idx) => {
+        if (idx !== 0 && idx % 5 === 0) {
+            loopSentenceArr.push(str + ".");
+            sentencesArr.push([...loopSentenceArr]);
+            loopSentenceArr.length = 0;
+        }
+        else if (idx + 1 === sentenceArr.length && idx % 5 !== 0) {
+            loopSentenceArr.push(str);
+            sentencesArr.push([...loopSentenceArr]);
+        }
+        else loopSentenceArr.push(str + ". ");
+    });
+    return sentencesArr;
+  }
+  const newSteps = recipeData ? makeParagraphArr (recipeData[0].steps) : null;
+  /**
+   * STEPS PARSE END
+  */
+
   const isReveiws = recipeRvwData ? recipeRvwData.length > 0 : null;
   const [ favSavSucc, setFavSavSucc ] = useToggleState(false);
   const [ favdOrSavd, setFavdOrSavd ] = useToggleState(false);
@@ -227,7 +260,12 @@ const RecipeDetails = () => {
           </div>
           <div className="RecipeDetails-float-steps-div">
             <h2 className="RecipeDetails-subtitle">Steps</h2>
-            <p className="RecipeDetails-p">{recipeData[0].steps}</p>
+            { newSteps &&
+              newSteps.map(arr => (
+                <p className="RecipeDetails-p">{arr}</p>
+              ))
+            }
+            {/* <p className="RecipeDetails-p">{recipeData[0].steps}</p> */}
             {/* WEB SPEECH */}
             <FontAwesomeIcon
                 onClick={reset}
