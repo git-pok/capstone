@@ -1,4 +1,6 @@
 .Home-bg-img {
+  display: block;
+  float: left;
   width: 100vw;
   height: 100vh;
   margin: 0px 0px;
@@ -17,7 +19,6 @@
   display: block;
   font-size: 26px;
   margin: 0px auto -20px auto;
-
 }
 
 .Home-p {
