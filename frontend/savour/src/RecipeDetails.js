@@ -58,6 +58,7 @@ const RecipeDetails = () => {
   const synth = window.speechSynthesis;
   const speech = recipeData ? new SpeechSynthesisUtterance(recipeData[0].steps) : null;
   const [ isPause, setIsPause ] = useToggleState(false);
+  const [ isPlay, setIsPlay ] = useToggleState(false);
   /**
    * WEB SPEECH API END
   */
@@ -178,10 +179,11 @@ const RecipeDetails = () => {
       setIsPause();
     }
     speech && synth.speak(speech);
+    if (!isPlay) setIsPlay();
   }
 
   const pause = () => {
-    if (!isPause) {
+    if (!isPause && isPlay) {
       synth.pause();
       setIsPause();
     }
@@ -189,6 +191,8 @@ const RecipeDetails = () => {
 
   const reset = () => {
     synth.cancel();
+    setIsPause(() => false);
+    setIsPlay(() => false);
   }
   /**
    * WEB SPEECH END
