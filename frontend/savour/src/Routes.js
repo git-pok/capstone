@@ -11,6 +11,7 @@ import Profile from './Profile.js';
 import ListNamesDiv from './ListNamesDiv.js';
 import ListDetails from './ListDetails.js';
 import FavOrSav from './FavOrSav.js';
+import ContactPage from './ContactPage.js';
 import UserContext from './context/UserContext.js';
 
 /**
@@ -94,7 +95,8 @@ const Routes = () => {
       }
       { userToken &&
         <Route exact path="/contact">
-          <h1>CONTACT PAGE</h1>
+          {/* <h1>CONTACT PAGE</h1> */}
+          <ContactPage />
         </Route>
       }
       { userToken &&

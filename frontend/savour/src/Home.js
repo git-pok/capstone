@@ -2,7 +2,6 @@ import CenterText from './CenterText.js';
 import Button from './Button.js';
 import useLocalStorage from './hooks/useLocalStorage.js';
 import UserContext from './context/UserContext.js';
-import image from './img/pasta.jpg';
 import './Home.css';
 
 /**
@@ -28,15 +27,14 @@ const Home = () => {
     fitness & lifestyle, lunch.`;
 
   // image styles.
-  const styles = {
-    backgroundImage: `url(${image})`,
-    backgroundSize: "cover",
-    backgroundRepeat: "no-repeat"
-  }
+  // const styles = {
+  //   backgroundImage: `url(${image})`,
+  //   backgroundSize: "cover",
+  //   backgroundRepeat: "no-repeat"
+  // }
 
   return (
     <>
-    <div className="Home-bg-img" style={styles}>
     <h1 className="Home-h1">Welcome to Savour – The recipe app</h1>
     <div className="Home-p">
       <h2 className="Home-subtitle">What is Savour</h2>
@@ -49,7 +47,6 @@ const Home = () => {
     <div className="Home-button">
       <Button buttonText="RECIPES" link="/recipes" />
       <Button buttonText="CONTACT" link="/contact" />
-    </div>
     </div>
     </>
   );
