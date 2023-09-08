@@ -2,7 +2,7 @@ import axios from 'axios';
 
 
 const BASE_URL = "http://localhost:3000";
-class Savour {
+class SavourApi {
     constructor (token = null) {
         this.token = token;
     }
@@ -30,4 +30,4 @@ class Savour {
     }
 }
 
-export default Savour;
+export default SavourApi;
