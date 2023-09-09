@@ -18,3 +18,14 @@ test("renders snapshot without crashing", () => {
 
   expect(asFragment()).toMatchSnapshot();
 });
+
+test("home page elements", () => {
+  const { debug, getByText } = render(
+                                  <MemoryRouter intitialEntries={["/"]}>
+                                    <Home />
+                                  </MemoryRouter>
+                                );
+
+  const welcome = getByText("Welcome to Savour – The recipe app");
+  expect(welcome).toBeInTheDocument();
+});

@@ -47,7 +47,9 @@ exports[`renders snapshot without crashing 1`] = `
     <div
       class="LoginForm-submit"
     >
-      <button>
+      <button
+        data-testid="sbmtBtn"
+      >
         SUBMIT
       </button>
     </div>

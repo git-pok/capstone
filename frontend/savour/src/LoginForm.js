@@ -129,7 +129,7 @@ const LoginForm = () => {
           }
         } />
       }
-        <button>SUBMIT</button>
+        <button data-testid="sbmtBtn">SUBMIT</button>
       </div>
     </form>
     </>
