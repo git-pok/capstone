@@ -46,3 +46,50 @@ exports[`renders snapshot without crashing 1`] = `
   </div>
 </DocumentFragment>
 `;
+
+exports[`renders snapshot without crashing 2`] = `
+<DocumentFragment>
+  <div
+    class="App"
+  >
+    <div
+      class="SavourApp"
+    >
+      <div
+        class="Navbar-mobile-menu"
+      >
+        <p>
+          NAV MENU
+        </p>
+      </div>
+      <nav
+        class="Navbar"
+      >
+        <div
+          class="Navbar-left-links"
+        >
+          <a
+            href="/"
+          >
+            SAVOUR
+          </a>
+        </div>
+        <div
+          class="Navbar-right-links"
+        >
+          <a
+            href="/login"
+          >
+            LOG IN
+          </a>
+          <a
+            href="/signup"
+          >
+            SIGN UP
+          </a>
+        </div>
+      </nav>
+    </div>
+  </div>
+</DocumentFragment>
+`;

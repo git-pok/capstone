@@ -10,3 +10,14 @@ test("renders snapshot without crashing", () => {
   const { asFragment } = render(<MemoryRouter><App /></MemoryRouter>);
   expect(asFragment()).toMatchSnapshot();
 });
+
+test("logged out home page text has SAVOUR", () => {
+  const { getByText } = render(
+                                  <MemoryRouter
+                                    intitialEntries={["/"]}>
+                                    <App />
+                                  </MemoryRouter>
+                                );
+
+  expect(getByText("SAVOUR")).toBeInTheDocument();
+});
