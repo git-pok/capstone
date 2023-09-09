@@ -8,3 +8,13 @@ test("renders PageNotFound without crashing", () => {
     <PageNotFound />
   </MemoryRouter>);
 });
+
+test("renders snapshot without crashing", () => {
+  const { asFragment } = render(
+                            <MemoryRouter>
+                              <PageNotFound />
+                            </MemoryRouter>
+                          );
+
+  expect(asFragment()).toMatchSnapshot();
+});

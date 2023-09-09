@@ -8,3 +8,13 @@ test("renders CenterText without crashing", () => {
     <ContactPage />
   </MemoryRouter>);
 });
+
+test("renders snapshot without crashing", () => {
+  const { asFragment } = render(
+                            <MemoryRouter>
+                              <ContactPage />
+                            </MemoryRouter>
+                          );
+
+  expect(asFragment()).toMatchSnapshot();
+});

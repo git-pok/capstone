@@ -15,3 +15,20 @@ test("renders ShowHideBtnAndText without crashing", () => {
     } />
   </MemoryRouter>);
 });
+
+test("renders snapshot without crashing", () => {
+  const { asFragment } = render(
+                            <MemoryRouter>
+                            <ShowHideBtnAndText
+                              paragraphArr={
+                                [
+                                  {
+                                    text: "Test"
+                                  }
+                                ]
+                            } />
+                            </MemoryRouter>
+                          );
+
+  expect(asFragment()).toMatchSnapshot();
+});

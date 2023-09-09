@@ -14,3 +14,19 @@ test("renders Message without crashing", () => {
       } />
   </MemoryRouter>);
 });
+
+test("renders snapshot without crashing", () => {
+  const { asFragment } = render(
+                            <MemoryRouter>
+                              <Message
+                                msgObj={
+                                  {
+                                    msg: "Test!",
+                                    class: "success"
+                                  }
+                              } />
+                            </MemoryRouter>
+                          );
+
+  expect(asFragment()).toMatchSnapshot();
+});

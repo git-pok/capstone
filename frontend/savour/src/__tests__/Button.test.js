@@ -10,3 +10,14 @@ test("renders Buttton without crashing", () => {
       link="/home" />
   </MemoryRouter>);
 });
+
+test("renders snapshot without crashing", () => {
+  const { asFragment } = render(
+                            <MemoryRouter>
+                              <Buttton
+                                buttonText="HOME"
+                                link="/home" />
+                            </MemoryRouter>
+                          );
+  expect(asFragment()).toMatchSnapshot();
+});

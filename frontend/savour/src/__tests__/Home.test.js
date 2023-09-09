@@ -8,3 +8,13 @@ test("renders Home without crashing", () => {
     <Home />
   </MemoryRouter>);
 });
+
+test("renders snapshot without crashing", () => {
+  const { asFragment } = render(
+                            <MemoryRouter>
+                              <Home />
+                            </MemoryRouter>
+                          );
+
+  expect(asFragment()).toMatchSnapshot();
+});
