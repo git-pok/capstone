@@ -27,14 +27,14 @@ test("renders CreateListForm without crashing", () => {
 
 test("renders snapshot without crashing", () => {
   const { asFragment } = render(
-                            <MemoryRouter>
-                              <UserContext.Provider value={{usrData}}>
-                                <CreateListForm
-                                  recipeId={12}
-                                  setState={setState} />
-                              </UserContext.Provider>
-                            </MemoryRouter>
-                          );
+    <MemoryRouter>
+      <UserContext.Provider value={{usrData}}>
+        <CreateListForm
+          recipeId={12}
+          setState={setState} />
+      </UserContext.Provider>
+    </MemoryRouter>
+  );
 
   expect(asFragment()).toMatchSnapshot();
 });

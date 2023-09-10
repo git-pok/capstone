@@ -4,27 +4,28 @@ import { MemoryRouter } from 'react-router-dom';
 
 test("renders Home without crashing", () => {
   render(
-  <MemoryRouter>
-    <Home />
-  </MemoryRouter>);
+    <MemoryRouter>
+      <Home />
+    </MemoryRouter>
+  );
 });
 
 test("renders snapshot without crashing", () => {
   const { asFragment } = render(
-                            <MemoryRouter>
-                              <Home />
-                            </MemoryRouter>
-                          );
+    <MemoryRouter>
+      <Home />
+    </MemoryRouter>
+  );
 
   expect(asFragment()).toMatchSnapshot();
 });
 
 test("home page elements", () => {
-  const { debug, getByText } = render(
-                                  <MemoryRouter intitialEntries={["/"]}>
-                                    <Home />
-                                  </MemoryRouter>
-                                );
+  const { getByText } = render(
+    <MemoryRouter intitialEntries={["/"]}>
+      <Home />
+    </MemoryRouter>
+  );
 
   const welcome = getByText("Welcome to Savour – The recipe app");
   expect(welcome).toBeInTheDocument();

@@ -22,12 +22,12 @@ test("renders RegisterForm without crashing", () => {
 
 test("renders snapshot without crashing", () => {
   const { asFragment } = render(
-                            <MemoryRouter>
-                            <UserContext.Provider value={{usrData}}>
-                              <RegisterForm />
-                            </UserContext.Provider>
-                            </MemoryRouter>
-                          );
+    <MemoryRouter>
+    <UserContext.Provider value={{usrData}}>
+      <RegisterForm />
+    </UserContext.Provider>
+    </MemoryRouter>
+  );
 
   expect(asFragment()).toMatchSnapshot();
 });

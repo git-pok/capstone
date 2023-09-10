@@ -22,12 +22,12 @@ test("renders Profile without crashing", () => {
 
 test("renders snapshot without crashing", () => {
   const { asFragment } = render(
-                            <MemoryRouter>
-                              <UserContext.Provider value={{usrData}}>
-                                <Profile />
-                              </UserContext.Provider>
-                            </MemoryRouter>
-                          );
+    <MemoryRouter>
+      <UserContext.Provider value={{usrData}}>
+        <Profile />
+      </UserContext.Provider>
+    </MemoryRouter>
+  );
 
   expect(asFragment()).toMatchSnapshot();
 });

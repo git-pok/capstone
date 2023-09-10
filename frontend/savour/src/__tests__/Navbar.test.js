@@ -29,15 +29,15 @@ test("renders Navbar without crashing", () => {
 
 test("renders snapshot without crashing", () => {
   const { asFragment } = render(
-                            <MemoryRouter>
-                              <UserContext.Provider value={{usrData}}>
-                                <Navbar linkNames={
-                                  [["HOME", "/test"]]
-                                }
-                                logOut={logOut} />
-                              </UserContext.Provider>
-                            </MemoryRouter>
-                          );
+    <MemoryRouter>
+      <UserContext.Provider value={{usrData}}>
+        <Navbar linkNames={
+          [["HOME", "/test"]]
+        }
+        logOut={logOut} />
+      </UserContext.Provider>
+    </MemoryRouter>
+  );
 
   expect(asFragment()).toMatchSnapshot();
 });

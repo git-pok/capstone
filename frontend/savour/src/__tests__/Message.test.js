@@ -4,7 +4,7 @@ import { MemoryRouter } from 'react-router-dom';
 
 test("renders Message without crashing", () => {
   render(
-  <MemoryRouter>
+    <MemoryRouter>
     <Message
       msgObj={
         {
@@ -12,21 +12,22 @@ test("renders Message without crashing", () => {
           class: "success"
         }
       } />
-  </MemoryRouter>);
+    </MemoryRouter>
+  );
 });
 
 test("renders snapshot without crashing", () => {
   const { asFragment } = render(
-                            <MemoryRouter>
-                              <Message
-                                msgObj={
-                                  {
-                                    msg: "Test!",
-                                    class: "success"
-                                  }
-                              } />
-                            </MemoryRouter>
-                          );
+    <MemoryRouter>
+      <Message
+        msgObj={
+          {
+            msg: "Test!",
+            class: "success"
+          }
+      } />
+    </MemoryRouter>
+  );
 
   expect(asFragment()).toMatchSnapshot();
 });

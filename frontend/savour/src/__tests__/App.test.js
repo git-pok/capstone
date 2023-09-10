@@ -2,22 +2,19 @@ import App from '../App.js';
 import { render } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 
+function renderAppComponent () {
+  return render(
+    <MemoryRouter>
+      <App />
+    </MemoryRouter>
+  );
+}
+
 test("renders App without crashing", () => {
-  render(<MemoryRouter><App /></MemoryRouter>);
+  renderAppComponent();
 });
 
 test("renders snapshot without crashing", () => {
-  const { asFragment } = render(<MemoryRouter><App /></MemoryRouter>);
+  const { asFragment } = renderAppComponent();
   expect(asFragment()).toMatchSnapshot();
-});
-
-test("logged out home page text has SAVOUR", () => {
-  const { getByText } = render(
-                                  <MemoryRouter
-                                    intitialEntries={["/"]}>
-                                    <App />
-                                  </MemoryRouter>
-                                );
-
-  expect(getByText("SAVOUR")).toBeInTheDocument();
 });

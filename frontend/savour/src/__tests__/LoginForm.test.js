@@ -21,24 +21,24 @@ test("renders LoginForm without crashing", () => {
 
 test("renders snapshot without crashing", () => {
   const { asFragment } = render(
-                            <MemoryRouter>
-                              <UserContext.Provider value={{setUsrData}}>
-                                <LoginForm />
-                              </UserContext.Provider>
-                            </MemoryRouter>
-                          );
+    <MemoryRouter>
+      <UserContext.Provider value={{setUsrData}}>
+        <LoginForm />
+      </UserContext.Provider>
+    </MemoryRouter>
+  );
 
   expect(asFragment()).toMatchSnapshot();
 });
 
-test("login form elements", () => {
+test("login form elements exist", () => {
   const { queryByLabelText } = render(
-                                  <MemoryRouter intitialEntries={["/login"]}>
-                                    <UserContext.Provider value={{setUsrData}}>
-                                      <LoginForm />
-                                    </UserContext.Provider>
-                                  </MemoryRouter>
-                                );
+    <MemoryRouter intitialEntries={["/login"]}>
+      <UserContext.Provider value={{setUsrData}}>
+        <LoginForm />
+      </UserContext.Provider>
+    </MemoryRouter>
+  );
 
   const signInUsrname = queryByLabelText("Username");
   const signInPassword = queryByLabelText("Password");

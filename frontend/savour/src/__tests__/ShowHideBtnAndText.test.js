@@ -18,17 +18,17 @@ test("renders ShowHideBtnAndText without crashing", () => {
 
 test("renders snapshot without crashing", () => {
   const { asFragment } = render(
-                            <MemoryRouter>
-                            <ShowHideBtnAndText
-                              paragraphArr={
-                                [
-                                  {
-                                    text: "Test"
-                                  }
-                                ]
-                            } />
-                            </MemoryRouter>
-                          );
+    <MemoryRouter>
+    <ShowHideBtnAndText
+      paragraphArr={
+        [
+          {
+            text: "Test"
+          }
+        ]
+    } />
+    </MemoryRouter>
+  );
 
   expect(asFragment()).toMatchSnapshot();
 });

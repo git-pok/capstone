@@ -23,13 +23,13 @@ test("renders ListNamesDiv without crashing", () => {
 
 test("renders snapshot without crashing", () => {
   const { asFragment } = render(
-                            <MemoryRouter>
-                              <UserContext.Provider value={{usrData}}>
-                                <ListNamesDiv
-                                  urlEndpt="/recipes" />
-                              </UserContext.Provider>
-                            </MemoryRouter>
-                          );
+    <MemoryRouter>
+      <UserContext.Provider value={{usrData}}>
+        <ListNamesDiv
+          urlEndpt="/recipes" />
+      </UserContext.Provider>
+    </MemoryRouter>
+  );
 
   expect(asFragment()).toMatchSnapshot();
 });

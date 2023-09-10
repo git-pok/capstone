@@ -2,6 +2,7 @@ import SavourApp from '../SavourApp.js';
 import { render, fireEvent } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 
+
 afterAll(() => {
   const { getByText } = render(
     <MemoryRouter intitialEntries={["/"]}>
@@ -12,16 +13,25 @@ afterAll(() => {
   fireEvent.click(logoutBtn);
 });
 
+
+function renderSavourApp () {
+  return render(
+  <MemoryRouter intitialEntries={["/"]}>
+    <SavourApp />
+  </MemoryRouter>
+  );
+}
+
 test("renders SavourApp without crashing", () => {
   render(<MemoryRouter><SavourApp /></MemoryRouter>);
 });
 
 test("renders snapshot without crashing", () => {
   const { asFragment } = render(
-                            <MemoryRouter>
-                              <SavourApp />
-                            </MemoryRouter>
-                          );
+    <MemoryRouter>
+      <SavourApp />
+    </MemoryRouter>
+  );
 
   expect(asFragment()).toMatchSnapshot();
 });
@@ -38,42 +48,34 @@ test("login form submission", async () => {
   const submitBtn = getByTestId("sbmtBtn");
   const signInUsrname = queryByLabelText("Username");
   const signInPassword = queryByLabelText("Password");
-  fireEvent.change(signInUsrname, { target: { value: "drisqol" } });
+  fireEvent.change(signInUsrname, { target: { value: "testUsr" } });
   fireEvent.change(signInPassword, { target: { value: "password" } });
   fireEvent.click(submitBtn);
-  // const homeBtn = await findByText("SAVOUR");
-  // fireEvent.click(homeBtn);
-  const welcome = await findByText("Welcome to Savour – The recipe app");
-  expect(welcome).toBeInTheDocument();
+  const welcomeHdr = await findByText("Welcome to Savour – The recipe app");
+  expect(welcomeHdr).toBeInTheDocument();
+  const welcomeUsrText = await findByText("WELCOME TESTUSR!");
+  expect(welcomeUsrText).toBeInTheDocument();
 });
 
 test("home page to shoppinglists page", async () => {
-  const { debug, findByText, getByText } = render(
-                                  <MemoryRouter intitialEntries={["/"]}>
-                                    <SavourApp />
-                                  </MemoryRouter>
-                                );
+  const { findByText, getByText } = renderSavourApp();
 
   const welcome = getByText("Welcome to Savour – The recipe app");
   expect(welcome).toBeInTheDocument();
   const shplistsBtn = getByText("SHOPLISTS");
   fireEvent.click(shplistsBtn);
-  const shplistsText = await findByText("drisqol's Shoppinglists");
+  const shplistsText = await findByText("testUsr's Shoppinglists");
   expect(shplistsText).toBeInTheDocument();
 });
 
 test("profile page to contact page", async () => {
-  const { debug, findByText, getByText } = render(
-                                  <MemoryRouter intitialEntries={["/"]}>
-                                    <SavourApp />
-                                  </MemoryRouter>
-                                );
+  const { findByText, getByText } = renderSavourApp();
 
   const welcome = getByText("Welcome to Savour – The recipe app");
   expect(welcome).toBeInTheDocument();
   const profileBtn = getByText("PROFILE");
   fireEvent.click(profileBtn);
-  const profileText = await findByText("drisqol Details");
+  const profileText = await findByText("testUsr Details");
   expect(profileText).toBeInTheDocument();
   const contactBtn = getByText("CONTACT");
   fireEvent.click(contactBtn);

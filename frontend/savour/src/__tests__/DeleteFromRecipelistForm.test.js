@@ -15,15 +15,6 @@ const setState = () => {
 
 
 test("renders DeleteFromRecipelistForm without crashing", () => {
-  const usrData = {
-    userUsername: "fvin",
-    userId: 12
-  };
-
-  const setState = () => {
-    console.log("Test!");
-  }
-
   render(
     <MemoryRouter>
       <UserContext.Provider value={{usrData}}>
@@ -44,21 +35,21 @@ test("renders DeleteFromRecipelistForm without crashing", () => {
 
 test("renders snapshot without crashing", () => {
   const { asFragment } = render(
-                              <MemoryRouter>
-                                <UserContext.Provider value={{usrData}}>
-                                  <DeleteFromRecipelistForm
-                                    recipelistId={12}
-                                    setState={setState}
-                                    list={
-                                      { recipes:
-                                        [
-                                          {id: 12, name: "Test"}
-                                        ]
-                                      }
-                                    } />
-                                </UserContext.Provider>
-                              </MemoryRouter>
-                          );
+      <MemoryRouter>
+        <UserContext.Provider value={{usrData}}>
+          <DeleteFromRecipelistForm
+            recipelistId={12}
+            setState={setState}
+            list={
+              { recipes:
+                [
+                  {id: 12, name: "Test"}
+                ]
+              }
+            } />
+        </UserContext.Provider>
+      </MemoryRouter>
+  );
 
   expect(asFragment()).toMatchSnapshot();
 });

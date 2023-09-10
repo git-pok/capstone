@@ -28,14 +28,14 @@ test("renders ReviewForm without crashing", () => {
 
 test("renders snapshot without crashing", () => {
   const { asFragment } = render(
-                            <MemoryRouter>
-                            <UserContext.Provider value={{usrData}}>
-                              <ReviewForm
-                                recipeId={12}
-                                setState={setState} />
-                            </UserContext.Provider>
-                            </MemoryRouter>
-                          );
+    <MemoryRouter>
+    <UserContext.Provider value={{usrData}}>
+      <ReviewForm
+        recipeId={12}
+        setState={setState} />
+    </UserContext.Provider>
+    </MemoryRouter>
+  );
 
   expect(asFragment()).toMatchSnapshot();
 });
