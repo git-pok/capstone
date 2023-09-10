@@ -4,16 +4,15 @@ import { MemoryRouter } from 'react-router-dom';
 import UserContext from '../context/UserContext.js';
 
 
-const usrData = {
-  userUsername: "fvin",
-  userId: 12
+const setUsrData = () => {
+  console.log("Test!");
 };
 
 
 test("renders LoginForm without crashing", () => {
   render(
     <MemoryRouter>
-      <UserContext.Provider value={{usrData}}>
+      <UserContext.Provider value={{setUsrData}}>
         <LoginForm />
       </UserContext.Provider>
     </MemoryRouter>
@@ -23,7 +22,7 @@ test("renders LoginForm without crashing", () => {
 test("renders snapshot without crashing", () => {
   const { asFragment } = render(
                             <MemoryRouter>
-                              <UserContext.Provider value={{usrData}}>
+                              <UserContext.Provider value={{setUsrData}}>
                                 <LoginForm />
                               </UserContext.Provider>
                             </MemoryRouter>
@@ -35,7 +34,7 @@ test("renders snapshot without crashing", () => {
 test("login form elements", () => {
   const { queryByLabelText } = render(
                                   <MemoryRouter intitialEntries={["/login"]}>
-                                    <UserContext.Provider value={{usrData}}>
+                                    <UserContext.Provider value={{setUsrData}}>
                                       <LoginForm />
                                     </UserContext.Provider>
                                   </MemoryRouter>

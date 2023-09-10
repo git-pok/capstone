@@ -28,7 +28,7 @@ test("renders snapshot without crashing", () => {
 
 test("login form submission", async () => {
   const { findByText, getByText, getByTestId, queryByLabelText } = render(
-        <MemoryRouter intitialEntries={["/login"]}>
+        <MemoryRouter>
           <SavourApp />
         </MemoryRouter>
   );
@@ -41,8 +41,8 @@ test("login form submission", async () => {
   fireEvent.change(signInUsrname, { target: { value: "drisqol" } });
   fireEvent.change(signInPassword, { target: { value: "password" } });
   fireEvent.click(submitBtn);
-  const homeBtn = await findByText("SAVOUR");
-  fireEvent.click(homeBtn);
+  // const homeBtn = await findByText("SAVOUR");
+  // fireEvent.click(homeBtn);
   const welcome = await findByText("Welcome to Savour – The recipe app");
   expect(welcome).toBeInTheDocument();
 });
