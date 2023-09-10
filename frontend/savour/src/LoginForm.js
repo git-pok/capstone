@@ -10,10 +10,12 @@ import './LoginForm.css';
 
 /**
  * LoginForm
- * Props: none
+ * Props: formValsCheck
+ *    formValsCheck: function to check if
+ *     form props are missing.
  * Renders login form.
 */
-const LoginForm = () => {
+const LoginForm = ({ formValsCheck }) => {
   const initialState = {
       username: "", password: ""
   };
@@ -74,14 +76,8 @@ const LoginForm = () => {
 
   const handleSubmit = async (evt) => {
     evt.preventDefault();
-    // Create array of props formData requires.
-    const reqProps = [
-      "username", "password"
-    ];
-    // Check if props are missing.
-    const isValMsn = reqProps.some(val => (
-      formData[val] === ""
-    ));
+    // Checks if form props are missing.
+    const isValMsn = formValsCheck(["username", "password"], formData);
     // If props are missing set invalidForm.
     if (isValMsn) {
       setFormErrMsg(() => "All fields must be complete!");

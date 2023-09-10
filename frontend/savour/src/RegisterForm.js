@@ -11,10 +11,12 @@ import './RegisterForm.css';
 
 /**
  * RegisterForm
- * Props: none
+ * Props: formValsCheck
+ *    formValsCheck: function to check if
+ *    form props are missing.
  * Renders register form.
 */
-const RegisterForm = () => {
+const RegisterForm = ({ formValsCheck }) => {
   const initialState = {
       username: "", first_name: "", last_name: "",
       email: "", phone: "", password: ""
@@ -87,15 +89,12 @@ const RegisterForm = () => {
 
   const handleSubmit = async (evt) => {
     evt.preventDefault();
-    // Create array of props formData requires.
     const reqProps = [
       "username", "first_name", "last_name",
       "email", "phone", "password"
     ];
-    // Checks if props are missing.
-    const isValMsn = reqProps.some(val => (
-      formData[val] === ""
-    ));
+    // Checks if form props are missing.
+    const isValMsn = formValsCheck(reqProps, formData);
     // If props are missing set invalidForm.
     if (isValMsn) {
       setFormErrMsg(() => "All fields must be complete!");

@@ -22,6 +22,24 @@ import UserContext from './context/UserContext.js';
 const Routes = () => {
   const { usrData, setUsrData } = useContext(UserContext);
   const userToken = usrData ? usrData.token : null;
+  
+  /**
+   * formValsCheck
+   * Args: formProps, formData
+   *    formProps: array of props to check for =>
+   *    ["name", "email"]
+   *    formData: form state.
+   * Definition: checks if props are missing from
+   * form data.
+  */
+  const formValsCheck = (formPropsArr, formData) => {
+    // Check if props are missing.
+    const isValMissing = formPropsArr.some(val => (
+      formData[val] === ""
+    ));
+
+    return isValMissing;
+  }
 
   return (
     <Switch>
@@ -32,12 +50,12 @@ const Routes = () => {
       }
       { !userToken &&
         <Route exact path="/signup">
-          <RegisterForm />
+          <RegisterForm formValsCheck={formValsCheck} />
         </Route>
       }
       { !userToken &&
         <Route exact path="/login">
-          <LoginForm />
+          <LoginForm formValsCheck={formValsCheck} />
         </Route>
       }
       { userToken &&
@@ -95,7 +113,6 @@ const Routes = () => {
       }
       { userToken &&
         <Route exact path="/contact">
-          {/* <h1>CONTACT PAGE</h1> */}
           <ContactPage />
         </Route>
       }
