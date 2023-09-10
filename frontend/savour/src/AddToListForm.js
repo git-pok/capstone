@@ -4,13 +4,11 @@ import UserContext from './context/UserContext.js';
 import SavourApi from './models/SavourApi.js';
 import useToggleState from './hooks/useToggleState.js';
 import Message from './Message.js';
-// import image from './img/ambient-kitchen.jpg';
 import './AddToListForm.css';
 /**
  * AddToListForm
- * ListForm Component
- * Props: recipelist, setState
- * Renders: renders form to create shop or recipe list.
+ * Props: recipelist, setState, setToggleState, recipelistSelectRecipe
+ * Renders: renders form to add to recipe or shoppinglist.
 */
 const AddToListForm = ({recipelist=false, setState=false, setToggleState=false, recipelistSelectRecipe=false}) => {
   // Destructure context.
