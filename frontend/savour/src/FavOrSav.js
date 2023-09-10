@@ -3,13 +3,12 @@ import { Link } from 'react-router-dom';
 import RecipeContainer from './RecipeContainer.js';
 import UserContext from './context/UserContext.js';
 import SavourApi from './models/SavourApi.js';
-// import image from './img/ambient-kitchen.jpg';
 import './FavOrSav.css';
 
 /**
  * FavOrSav
  * Props: fav
- * Renders: html to display favorite or saved recipes.
+ * Renders html to display favorite or saved recipes.
 */
 const FavOrSav = ({fav=true}) => {
   const { usrData, setUsrData } = useContext(UserContext);

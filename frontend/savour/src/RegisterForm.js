@@ -12,7 +12,7 @@ import './RegisterForm.css';
 /**
  * RegisterForm
  * Props: none
- * Renders: register form.
+ * Renders register form.
 */
 const RegisterForm = () => {
   const initialState = {
@@ -92,7 +92,7 @@ const RegisterForm = () => {
       "username", "first_name", "last_name",
       "email", "phone", "password"
     ];
-    // Check if props are missing.
+    // Checks if props are missing.
     const isValMsn = reqProps.some(val => (
       formData[val] === ""
     ));

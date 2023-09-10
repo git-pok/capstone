@@ -68,3 +68,13 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/d
 ### `npm run build` fails to minify
 
 This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+
+## Frontend Color Palette
+- Expresso
+    - rgb(78, 42, 42)
+- Olive Oil
+    - rgb(223, 216, 85)
+- White
+    - rgb(255, 255, 255)
+- Black
+    - rgb(0, 0, 0)

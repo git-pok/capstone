@@ -4,12 +4,11 @@ import UserContext from './context/UserContext.js';
 import SavourApi from './models/SavourApi.js';
 import useToggleState from './hooks/useToggleState.js';
 import Message from './Message.js';
-// import image from './img/ambient-kitchen.jpg';
 import './CreateListForm.css';
 /**
  * CreateListForm
  * Props: recipeId, setState, recipelist
- * Renders: renders form to create shop or recipe list.
+ * Renders form to create shop or recipe list.
 */
 const CreateListForm = ({recipeId, setState, recipelist=false}) => {
   const { usrData, setUsrData } = useContext(UserContext);

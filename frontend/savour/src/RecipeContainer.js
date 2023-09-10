@@ -7,7 +7,7 @@ import './RecipeContainer.css';
 /**
  * RecipeContainer
  * Props: showHide, recipeArray
- * Render: div with recipe content.
+ * Renders div with recipe content.
 */
 const RecipeContainer = ({ showHide=false, recipeArray=[] }) => {
   const { usrData, setUsrData } = useContext(UserContext);

@@ -8,7 +8,7 @@ import './DeleteFromRecipelistForm.css';
 /**
  * DeleteFromRecipelistForm
  * Props: recipelistId, setState, list
- * Renders: renders form to delete recipe from recipelist.
+ * Renders form to delete recipe from recipelist.
 */
 const DeleteFromRecipelistForm = memo(({ recipelistId, setState, list }) => {
   const { usrData, setUsrData } = useContext(UserContext);

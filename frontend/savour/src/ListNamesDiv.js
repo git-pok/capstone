@@ -11,7 +11,7 @@ import './ListNamesDiv.css';
 /**
  * ListNamesDiv
  * Props: urlEndpt, listTypeForH1, recipelist
- * Renders: shopping or recipe lists.
+ * Renders shopping or recipe lists.
 */
 const ListNamesDiv = ({urlEndpt, listTypeForH1="Shoppinglists's", recipelist=false}) => {
   const { usrData, setUsrData } = useContext(UserContext);

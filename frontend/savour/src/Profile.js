@@ -12,13 +12,12 @@ import useToggleState from './hooks/useToggleState.js';
 import useAxios from './hooks/useAxios.js';
 import UserContext from './context/UserContext.js';
 import RecipeContainer from './RecipeContainer.js';
-import image from './img/ambient-kitchen.jpg';
 import './Profile.css';
 
 /**
  * Profile
  * Props: none.
- * Renders: user profile page.
+ * Renders user profile page.
 */
 const Profile = () => {
   const { usrData, setUsrData, logOut } = useContext(UserContext);
@@ -74,7 +73,7 @@ const Profile = () => {
         setIsSubmitted();
         setFormData(() => initialState);
       } catch (err) {
-        console.log("ERROR", err);
+        // console.log("ERROR", err);
         // Define variable for API error.
         const error = err.response.data.error.message;
         setFormErrMsg(() => error || "Error");
@@ -99,7 +98,7 @@ const Profile = () => {
         setIsDelete();
 
       } catch (err) {
-        console.log("ERROR", err);
+        // console.log("ERROR", err);
         // Define variable for API error.
         const error = err.response.data.error.message;
         setFormErrMsg(() => error || "Error");

@@ -1,13 +1,11 @@
 import CenterText from './CenterText.js';
 import Button from './Button.js';
-import useLocalStorage from './hooks/useLocalStorage.js';
-import UserContext from './context/UserContext.js';
 import './Home.css';
 
 /**
  * Home
  * Props: none
- * Renders: home page
+ * Renders home page
 */
 const Home = () => {
 
@@ -25,13 +23,6 @@ const Home = () => {
     bread, cakes, quick bakes, biscuits,
     high protein, free from baking, breakfast, dinner, smoothies,
     fitness & lifestyle, lunch.`;
-
-  // image styles.
-  // const styles = {
-  //   backgroundImage: `url(${image})`,
-  //   backgroundSize: "cover",
-  //   backgroundRepeat: "no-repeat"
-  // }
 
   return (
     <>
@@ -51,7 +42,6 @@ const Home = () => {
     </>
   );
 }
-
 
 
 export default Home;

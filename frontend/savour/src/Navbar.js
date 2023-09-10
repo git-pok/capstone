@@ -8,6 +8,11 @@ import './Navbar.css';
  * Navbar
  * Creates Navbar
  * Props: linkNames, logOut
+ *    linkNames: nested arrays where idx0 is name that shows
+ *        on nav button and idx1 is the button's url =>
+ *        [["recipes", "/recipes"], ["shoplists", "/shoppinglists"]]
+ *    logOut: log out function.
+ * Renders navbar
 */
 const Navbar = ({ linkNames, logOut }) => {
   const { usrData, setUsrData } = useContext(UserContext);

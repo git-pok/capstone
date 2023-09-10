@@ -8,7 +8,7 @@ import './Recipes.css';
 /**
  * Recipes
  * Props: none
- * Renders: recipes page.
+ * Renders recipes page.
 */
 const Recipes = () => {
   const { usrData, setUsrData } = useContext(UserContext);
@@ -30,7 +30,6 @@ const Recipes = () => {
   const [ dessertData ] = useAxios(dessertOptions);
   // Request all recipes.
   const [ recipesData, setRecipesData ] = useAxios({method: "get", url: "/recipes", data: {}, params: {}, headers});
-  // const [ recipesData, setRecipesData ] = useState(null);
   const topFourChickArr = chickenData !== null ? [{...chickenData[0]}, {...chickenData[1]}, {...chickenData[2]}, {...chickenData[3]}] : null;
   const topFourPastaArr = pastaData !== null ? [{...pastaData[0]}, {...pastaData[1]}, {...pastaData[2]}, {...pastaData[3]}] : null;
   const topFourDessertArr = dessertData !== null ? [{...dessertData[0]}, {...dessertData[1]}, {...dessertData[2]}, {...dessertData[3]}] : null;

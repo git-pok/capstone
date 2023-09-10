@@ -11,22 +11,21 @@ import {
           faSquarePlus, faSquareMinus, faRectangleXmark
         } from '@fortawesome/free-solid-svg-icons';
 import useToggleState from './hooks/useToggleState.js';
-import image from './img/food.jpg';
 import './ListDetails.css';
 
 /**
  * ListDetails
  * Props: urlEndpt, recipelist
- * Renders: html for shopping or recipe list details.
+ * Renders html for shopping or recipe list details.
 */
 const ListDetails = ({urlEndpt, recipelist=false}) => {
   const { usrData, setUsrData } = useContext(UserContext);
   const headers = { _token: `Bearer ${usrData.token}`};
-  // Destructure list id params.
+  // Destructure list id params from route.
   const { id: listId } = useParams();
-
   const history = useHistory();
   const listUrl = `/users/${usrData.userId}/${urlEndpt}/${listId}`;
+
   const [ activateGetLists, setActivateGetLists ] = useToggleState(false);
   const [ listData, setListData ] = useState(null);
   const [ isIngrAddBtn, setIsIngrAddBtn ] = useToggleState(false);
@@ -65,7 +64,7 @@ const ListDetails = ({urlEndpt, recipelist=false}) => {
       }
     }
 
-    const addToList = async () => {
+    const editList = async () => {
       try {
         const url = `${listUrl}/items`;
         const method = isIngrRmvBtn ? "delete" : "post";
@@ -113,7 +112,7 @@ const ListDetails = ({urlEndpt, recipelist=false}) => {
     }
 
     if (listUrl) getLists();
-    if (isIngrAddBtn || isIngrRmvBtn) addToList();
+    if (isIngrAddBtn || isIngrRmvBtn) editList();
     if (isListDltBtn) deleteList();
   }, [listUrl, activateGetLists, isIngrAddBtn, isIngrRmvBtn, isListDltBtn])
 

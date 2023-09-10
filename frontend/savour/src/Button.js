@@ -5,6 +5,7 @@ import './Button.css';
  * Button
  * Creates a link button.
  * Props: buttonText, link
+ * Renders a button that is a link.
 */
 const Button = ({ buttonText, link }) => {
   return (

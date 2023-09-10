@@ -17,7 +17,7 @@ import UserContext from './context/UserContext.js';
 /**
  * Routes
  * Props: none
- * Renders: urls and their components.
+ * Renders urls and their components.
 */
 const Routes = () => {
   const { usrData, setUsrData } = useContext(UserContext);

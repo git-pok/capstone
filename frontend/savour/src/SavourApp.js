@@ -11,7 +11,7 @@ import SavourApi from './models/SavourApi.js';
 /**
  * SavourApp
  * Props: none
- * Renders: savour app with navbar, routes, and context.
+ * Renders savour app with navbar, routes, and context.
 */
 const SavourApp = () => {
   const [ isLoggedOut, setIsLoggedOut ] = useToggleState(false);

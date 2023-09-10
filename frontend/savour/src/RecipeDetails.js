@@ -20,7 +20,7 @@ import './RecipeDetails.css';
 /**
  * RecipeDetails
  * Props: none
- * Render: recipe details.
+ * Renders recipe details.
 */
 const RecipeDetails = () => {
   const { id } = useParams();
@@ -53,14 +53,14 @@ const RecipeDetails = () => {
   const [ occasionData ] = useAxios(OccOpts);
 
   /**
-   * WEB SPEECH API
+   * MDN WEB SPEECH API VARIABLES AND STATE
   */
   const synth = window.speechSynthesis;
   const speech = recipeData ? new SpeechSynthesisUtterance(recipeData[0].steps) : null;
   const [ isPause, setIsPause ] = useToggleState(false);
   const [ isPlay, setIsPlay ] = useToggleState(false);
   /**
-   * WEB SPEECH API END
+   * WEB SPEECH API VARIABLES AND STATE END
   */
 
   /**
@@ -68,10 +68,23 @@ const RecipeDetails = () => {
   */
   /**
  * makeParagraphArr
- * Defines array for every 4 sentences.
+ * Defines array for first 6 sentences, the every 5 sentences.
  * Arguments: str
- * Returns new nested array.
- * makeParagraphArr();
+ * Returns: new nested array.
+ * makeParagraphArr(
+ *  "Hello. Hi. How are you?
+ *   I. Me. Him. Timber. Hello. Hi.
+ *   How are you? I. Me. Him. Timber.
+ *   Hi. How are you? I. Me. Him. Timber.
+ *   Hello. Hi. How are you? I. Me. Him. Timber. Hi"
+ * ) =>
+ * [
+ *  ['Hello. ', 'Hi. ', 'How are you? I. ', 'Me. ', 'Him. ', 'Timber.'],
+ *  ['Hello. ', 'Hi. ', 'How are you? I. ', 'Me. ', 'Him.'],
+ *  ['Timber. ', 'Hi. ', 'How are you? I. ', 'Me. ', 'Him.'],
+ *  ['Timber. ', 'Hello. ', 'Hi. ', 'How are you? I. ', 'Me.'],
+ *  ['Him. ', 'Timber. ', 'Hi']
+ * ]
  */
   function makeParagraphArr (str) {
     const sentenceArr = str.split(". ");
@@ -171,7 +184,7 @@ const RecipeDetails = () => {
   }, [isSubmitted, recipeData]);
 
   /**
-   * WEB SPEECH
+   * WEB SPEECH FUNCTIONS
   */
   const speak = () => {
     if (isPause) {
@@ -195,7 +208,7 @@ const RecipeDetails = () => {
     setIsPlay(() => false);
   }
   /**
-   * WEB SPEECH END
+   * WEB SPEECH FUNCTIONS END
   */
 
   return (
@@ -269,8 +282,7 @@ const RecipeDetails = () => {
                 <p className="RecipeDetails-p">{arr}</p>
               ))
             }
-            {/* <p className="RecipeDetails-p">{recipeData[0].steps}</p> */}
-            {/* WEB SPEECH */}
+            {/* WEB SPEECH ICONS */}
             <FontAwesomeIcon
                 onClick={reset}
                 className="RecipeDetails-icons"
@@ -283,7 +295,7 @@ const RecipeDetails = () => {
                 onClick={speak}
                 className="RecipeDetails-icons"
                 icon={faCirclePlay} />
-            {/* WEB SPEECH END */}
+            {/* WEB SPEECH ICONS END */}
           </div>
         </div>
 

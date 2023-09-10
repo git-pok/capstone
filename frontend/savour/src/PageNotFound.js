@@ -5,7 +5,7 @@ import './PageNotFound.css';
 /**
  * PageNotFound
  * Props: none
- * Renders: page not found.
+ * Renders page not found.
 */
 const PageNotFound = () => {
   return (

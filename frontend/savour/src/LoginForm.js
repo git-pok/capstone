@@ -5,14 +5,13 @@ import SavourApi from './models/SavourApi.js';
 import useLocalStorage from './hooks/useLocalStorage.js';
 import useToggleState from './hooks/useToggleState.js';
 import jwt_decode from 'jwt-decode';
-import image from './img/cut-board.jpg';
 import UserContext from './context/UserContext.js';
 import './LoginForm.css';
 
 /**
  * LoginForm
  * Props: none
- * Renders: login form.
+ * Renders login form.
 */
 const LoginForm = () => {
   const initialState = {

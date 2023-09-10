@@ -44,6 +44,12 @@ const AddToListForm = ({recipelist=false, setState=false, setToggleState=false, 
   const [ succMsg, setSuccMsg ] = useState(null);
   const [ isFormReqSucc, setIsFormReqSucc ] = useToggleState(false);
 
+  /**
+   * setReqUrl
+   * args: shop
+   * sets state with submitted form data,
+   * which gets used in useEffect.
+  */
   const setReqUrl = (shop=true) => {
     const userId = usrData.userId;
     // Check for occasion id from recipelist form data.

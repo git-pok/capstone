@@ -2,14 +2,14 @@ import './CenterText.css';
 
 /**
  * CenterText
- * Creates paragraphs
  * Props: text, color, fontSize
+ * Renders a paragraph element.
 */
 const CenterText = ({ text, color, fontSize }) => {
   const styles = {
     color,
     fontSize
-  }
+  };
   return (
     <p style={styles}>{text}</p>
   );

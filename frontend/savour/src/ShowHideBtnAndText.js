@@ -4,8 +4,11 @@ import './ShowHideBtnAndText.css';
 /**
  * ShowHideBtnAndText
  * Props: paragraphArr
- * Renders: div with button and paragraphs
- *    that shows/hides on click.
+ *    paragraphArr: array of nested objects. Objects
+ *    have text prop =>
+ *    [{ text: "Prep Time: 20mins" }]
+ * Renders: div with paragraphs, and button
+ *    that shows/hides them on click.
 */
 const ShowHideBtnAndText = ({paragraphArr}) => {
   const [ isClicked, setIsClicked ] = useToggleState(false);

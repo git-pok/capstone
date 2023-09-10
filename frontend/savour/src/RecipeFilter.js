@@ -10,7 +10,7 @@ import './RecipeFilter.css';
 /**
  * RecipeFilter
  * Props: setState
- * Renders: a search icon and form.
+ * Renders a filter icon and form.
 */
 const RecipeFilter = ({ setState }) => {
   const { usrData, setUsrData } = useContext(UserContext);

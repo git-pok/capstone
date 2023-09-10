@@ -8,7 +8,7 @@ import './ReviewForm.css';
 /**
  * ReviewForm
  * Props: recipeId, setState
- * Renders: form to create review.
+ * Renders form to create recipe review.
 */
 const ReviewForm = memo(({ recipeId, setState }) => {
   const { usrData, setUsrData } = useContext(UserContext);

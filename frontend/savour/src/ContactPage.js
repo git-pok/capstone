@@ -3,7 +3,7 @@ import './ContactPage.css';
 /**
  * ContactPage
  * Props: none.
- * Renders: contact page.
+ * Renders the contact page.
 */
 const ContactPage = () => {
 
