@@ -176,7 +176,7 @@ function genWhereSqlArr (columnValObj, parametizer, exactMatch = false, returnAr
             // Define value for sql command => "chicken".
             const cmndValue = isStrict ? `${valNormlzd}` : `%${valNormlzd}%`;
             // Checks if column val is number;
-            const isValNum = isNumbers.has(valNormlzd);
+            // const isValNum = isNumbers.has(valNormlzd);
             // checks if column's value should be number.
             const value = !isNumbers.has(keyNormlzd) ? cmndValue : +valNormlzd;
             if (!sqlObj.whereSql.length) sqlObj.whereSql.push("WHERE", sql.join(" "));
@@ -299,7 +299,7 @@ function genUpdateSqlObj (tableName, clmnsValsObj, returnArray = []) {
  * genInsertSqlObj("users", clmnsValsObj, returnArray) =>
  * {
  *  sql: "INSERT INTO users (first_name, last_name) VALUES ($1, $2)
- *  RETURNING first_name, last_name"
+ *  RETURNING first_name, last_name",
  *  values: ["fvin2", "I2"]
  * }
  */
@@ -356,7 +356,7 @@ async function rowExists (searchFor, columnSelStr, tableName, clmnsNvalsArr) {
         const arrLgth = clmnsNvalsArr.length
         clmnsNvalsArr.forEach((val, idx) => {
             if (arrLgth === 1) {
-                // Push sql where commands to array.
+                // Push parametized sql where commands to array.
                 whereSql.push(val[0], "=", `$${idx + 1}`);
                 // Push sql values to array.
                 values.push(val[1]);

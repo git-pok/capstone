@@ -7,7 +7,7 @@ const {
 /**
  * defineProps
  * Defines properties in an object.
- * Arguments: props array and object
+ * Arguments: props array, object, pure
  * Returns new object.
  * const obj = { two: 2 }
  * definePropsPure([["one", 1]], obj) => { one: 1, two: 2 };
