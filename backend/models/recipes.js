@@ -160,35 +160,28 @@ class Recipe {
         const rvwRecipesReq = await db.query(
             `${rvwQry}`, pgValues
         );
-        // Debug query.
-        // const rvwRecipesReq = await db.query(
-        //     `SELECT rv.stars, rv.review, rv.user_id FROM reviews rv JOIN recipes r ON rv.recipe_id = r.id WHERE r.id = $1`, pgValues
-        // );
         return rvwRecipesReq.rows;
     }
 
     /**
      * defineFavsSavs
-     * Old Name: defineLiksDis
-     * Requests user likes and dislikes for a recipe and
+     * Requests user fav and sav for a recipe and
      * defines props for them on obj.
      * Arguments: array of objects
      * const obj = [{ id: 1, name: "berry smoothie"}]
      * defineFavsSavs(id) =>
-     * [{id: 1, name: "berry smoothie", liked_user_ids: [1], ...}]
+     * [{id: 1, name: "berry smoothie", fav_user_id: [1], ...}]
      */
     static async defineFavsSavs(arrayOfObjs, pure = false) {
         const isPure = pure === true;
         const pureArr = [];
         for (let obj of arrayOfObjs) {
-            // Retrieves recipe likes user ids.
+            // Retrieves recipe fav user ids.
             const usrsRecipeFavs = await Recipe.getFavsOrSavs(obj.id);
-            // const usrsRecipeLiks = await Recipe.getRecipeLikes(obj.id);
-            // Retireves recipe dislikes user ids.
+            // Retireves recipe sav user ids.
             const usrsRecipeSavs = await Recipe.getFavsOrSavs(obj.id, false);
-            // const usrsRecipeDislikes = await Recipe.getRecipeDisLikes(obj.id);
             if (!isPure) {
-                // Defines new liked/disliked recipe user ids and reviews props.
+                // Defines new fav/sav recipe user ids props.
                 obj["fav_user_ids"] = usrsRecipeFavs;
                 obj["sav_user_ids"] = usrsRecipeSavs;
             } else {

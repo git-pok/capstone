@@ -1,4 +1,3 @@
-// const bcrypt = require("bcrypt");
 const Recipe = require("./recipes.js");
 const {
     db, userSqlReturnNoAbrv,
@@ -30,14 +29,14 @@ const ExpressError = require("./error.js");
 
 /**
  * User
- * Smart Class
+ * Simple Class
  * Logics for user routes.
  */
 class User {
     /**
      * register
      * Registers a user.
-     * Returns the object of submitted data and a token.
+     * Returns the object of inserted data and a token.
      * const data = {
 		"username": "fin",
 		"first_name": "Vin",
@@ -46,7 +45,7 @@ class User {
 		"phone": "813 507 4490",
 		"header_img": "testHeaderImage",
 		"profile_img": "testProfileImage",
-        password: "password"
+        "password": "password"
 	* }
      * register(data) =>
      * user: {
@@ -89,7 +88,7 @@ class User {
 
     /**
      * login
-     * Returns a token.
+     * Returns a user id, username, and token.
      * const data = {
 		username: "fin",
         password: "password"
@@ -215,20 +214,14 @@ class User {
         const favRecipeRows = JSON.parse(JSON.stringify(favRecipes.rows))
 
         if (recipeId !== false && favRecipeRows.length) {
-            // Retrieves recipe likes user ids.
-            // const usrsRecipeLiks = await Recipe.getLikesOrDis(recipeId);
-            // Retireves recipe dislikes user ids.
-            // const usrsRecipeDislikes = await Recipe.getLikesOrDis(recipeId, false);
             // Retrieves recipe's ingredients.
             const recipeIngredts = await Recipe.getRecipeIngrdts(recipeId);
             // Retrieves recipe's reviews.
             const recipeRvws = await Recipe.getRecipeReviews(recipeId);
             const recipeProps = [
-                // ["liked_user_ids", usrsRecipeLiks],
-                // ["disliked_user_ids", usrsRecipeDislikes],
                 ["reviews", recipeRvws], ["ingredients", recipeIngredts]
             ]
-            // Defines new liked/disliked recipe user ids and reviews props.
+            // Defines fav recipe user ids props.
             defineProps(recipeProps, favRecipeRows[0], false);
         }
         return favRecipeRows;
@@ -258,22 +251,14 @@ class User {
         const savedRecipeRows = JSON.parse(JSON.stringify(savedRecipes.rows));
 
         if (recipeId !== false && savedRecipeRows.length) {
-            // Retrieves recipe likes user ids.
-            // const usrsRecipeLiks = await Recipe.getLikesOrDis(recipeId);
-            // const usrsRecipeLiks = await Recipe.getRecipeLikes(recipeId);
-            // Retireves recipe dislikes user ids.
-            // const usrsRecipeDislikes = await Recipe.getLikesOrDis(recipeId, false);
-            // const usrsRecipeDislikes = await Recipe.getRecipeDisLikes(recipeId);
             // Retrieves recipe's ingredients.
             const recipeIngredts = await Recipe.getRecipeIngrdts(recipeId);
             // Retrieves recipe's reviews.
             const recipeRvws = await Recipe.getRecipeReviews(recipeId);
             const recipeProps = [
-                // ["liked_user_ids", usrsRecipeLiks],
-                // ["disliked_user_ids", usrsRecipeDislikes],
                 ["reviews", recipeRvws], ["ingredients", recipeIngredts]
             ]
-            // Defines new liked/disliked recipe user ids and reviews props.
+            // Defines new sav recipe user ids and reviews props.
             defineProps(recipeProps, savedRecipeRows[0], false);
         }
         return savedRecipeRows;
@@ -335,11 +320,11 @@ class User {
         // Define abreviation table for whereSqlObj.
         const abrevTable = recipeId === false ? { list_id: "rlr.", user_id: "rl." } : { list_id: "rlr.", user_id: "rl.", recipe_id: "rlr." };
         // const listNameClmnVals = { user_id: userId, list_id: listId };
-        const ClmnVals = recipeId === false ? { user_id: userId, list_id: listId } : { user_id: userId, list_id: listId, recipe_id: recipeId };
+        const clmnVals = recipeId === false ? { user_id: userId, list_id: listId } : { user_id: userId, list_id: listId, recipe_id: recipeId };
         // Define list name where sql.
         const listNameWhereSqlObj = genWhereSqlArr({id: listId}, 1, true, false, true, {id: "rl."});
         // Define where sql.
-        const whereSqlObj = genWhereSqlArr(ClmnVals, 1, true, false, true, abrevTable);
+        const whereSqlObj = genWhereSqlArr(clmnVals, 1, true, false, true, abrevTable);
         const reqSqlArr = [recipeListSelStr, joinSql, whereSqlObj.whereSql];
         const reqSql = reqSqlArr.join(" ");
         const listNameSql = arrayConcat([listNameSelStr, listNameWhereSqlObj.whereSql]);
@@ -448,7 +433,7 @@ class User {
             `${recipeSql}`,
             recipeWhereSqlObj.values
         );
-        // NEWLY ADDED LINE FOR RECIPE INGREDIENTS.
+
         const recipes_ingredients = await Recipe.getRecipeIngrdts(+recipe_id);
 
         const { name: recipe_name, author: recipe_author } = recipeReq.rows[0];
@@ -557,9 +542,11 @@ class User {
 
     /**
      * deleteRow
+     * Arguments: tableName, clmnNameValObj, msg
      * Deletes a row.
      * Returns deleted message.
-     * deleteUser(username) => { message: deleted username! }
+     * deleteUser("recipes", {name: "acai"}, "deleted recipe!") =>
+     * { message: deleted recipe! }
      */
     static async deleteRow(tableName, clmnNameValObj, msg) {
         const whereSqlObj = genWhereSqlArr(clmnNameValObj, 1, true, false);
@@ -572,13 +559,8 @@ class User {
 
     /**
      * insertRow
-     * Insert a row to database.
-     * Returns message object, return values, or undefined.
-     * const data = {
-		"recipeId": 1
-	* }
-    * insertRow(1, data) =>
-    * insertRow(1, data, false) =>
+     * Inserts a row to database.
+     * Returns return values or msg.
     */
     static async insertRow (tableName, data, schema, returnArray = false, msg = false) {
         if (schema) {
