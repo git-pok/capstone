@@ -12,21 +12,17 @@ const usrData = {
 
 test("renders RecipeContainer without crashing", () => {
   render(
-    <MemoryRouter>
       <UserContext.Provider value={{usrData}}>
         <RecipeContainer />
       </UserContext.Provider>
-    </MemoryRouter>
-  );
+  )
 });
 
 test("renders snapshot without crashing", () => {
   const { asFragment } = render(
-    <MemoryRouter>
       <UserContext.Provider value={{usrData}}>
         <RecipeContainer />
       </UserContext.Provider>
-    </MemoryRouter>
   );
 
   expect(asFragment()).toMatchSnapshot();

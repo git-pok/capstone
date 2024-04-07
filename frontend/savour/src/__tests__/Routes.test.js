@@ -17,15 +17,15 @@ test("renders Routes without crashing", () => {
         <Routes />
       </UserContext.Provider>
     </MemoryRouter>
-  );
+  )
 });
 
 test("renders snapshot without crashing", () => {
   const { asFragment } = render(
     <MemoryRouter>
-    <UserContext.Provider value={{usrData}}>
-      <Routes />
-    </UserContext.Provider>
+      <UserContext.Provider value={{usrData}}>
+        <Routes />
+      </UserContext.Provider>
     </MemoryRouter>
   );
 

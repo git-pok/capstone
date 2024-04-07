@@ -11,7 +11,7 @@ const usrData = {
 
 const setState = () => {
   console.log("Test!");
-}
+};
 
 test("renders CreateListForm without crashing", () => {
   render(
@@ -22,7 +22,7 @@ test("renders CreateListForm without crashing", () => {
           setState={setState} />
       </UserContext.Provider>
     </MemoryRouter>
-  );
+  )
 });
 
 test("renders snapshot without crashing", () => {

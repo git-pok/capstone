@@ -7,7 +7,7 @@ test("renders Home without crashing", () => {
     <MemoryRouter>
       <Home />
     </MemoryRouter>
-  );
+  )
 });
 
 test("renders snapshot without crashing", () => {

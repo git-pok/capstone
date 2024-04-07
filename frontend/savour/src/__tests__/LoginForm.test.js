@@ -11,21 +11,17 @@ const setUsrData = () => {
 
 test("renders LoginForm without crashing", () => {
   render(
-    <MemoryRouter>
       <UserContext.Provider value={{setUsrData}}>
         <LoginForm />
       </UserContext.Provider>
-    </MemoryRouter>
-  );
+  )
 });
 
 test("renders snapshot without crashing", () => {
   const { asFragment } = render(
-    <MemoryRouter>
       <UserContext.Provider value={{setUsrData}}>
         <LoginForm />
       </UserContext.Provider>
-    </MemoryRouter>
   );
 
   expect(asFragment()).toMatchSnapshot();

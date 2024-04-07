@@ -8,21 +8,19 @@ const usrData = {
   userId: 12
 };
 
-function renderAddToListForm () {
-  return render(
-    <MemoryRouter>
-      <UserContext.Provider value={{usrData}}>
-        <AddToListForm />
-      </UserContext.Provider>
-    </MemoryRouter>
-  );
-}
-
 test("renders AddToListForm without crashing", () => {
-  renderAddToListForm();
+    render(
+        <UserContext.Provider value={{usrData}}>
+            <AddToListForm />
+        </UserContext.Provider>
+    )
 });
 
 test("renders snapshot without crashing", () => {
-  const { asFragment } = renderAddToListForm();
-  expect(asFragment()).toMatchSnapshot();
+    const { asFragment } = render(
+        <UserContext.Provider value={{usrData}}>
+            <AddToListForm />
+        </UserContext.Provider>
+    )
+    expect(asFragment()).toMatchSnapshot();
 });

@@ -4,7 +4,6 @@ import { MemoryRouter } from 'react-router-dom';
 
 test("renders ShowHideBtnAndText without crashing", () => {
   render(
-  <MemoryRouter>
     <ShowHideBtnAndText
       paragraphArr={
         [
@@ -13,12 +12,11 @@ test("renders ShowHideBtnAndText without crashing", () => {
           }
         ]
     } />
-  </MemoryRouter>);
+  )
 });
 
 test("renders snapshot without crashing", () => {
   const { asFragment } = render(
-    <MemoryRouter>
     <ShowHideBtnAndText
       paragraphArr={
         [
@@ -27,8 +25,7 @@ test("renders snapshot without crashing", () => {
           }
         ]
     } />
-    </MemoryRouter>
-  );
+  )
 
   expect(asFragment()).toMatchSnapshot();
 });

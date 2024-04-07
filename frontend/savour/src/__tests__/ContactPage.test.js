@@ -4,17 +4,13 @@ import { MemoryRouter } from 'react-router-dom';
 
 test("renders ContactPage without crashing", () => {
   render(
-    <MemoryRouter>
-      <ContactPage />
-    </MemoryRouter>
-  );
+    <ContactPage />
+  )
 });
 
 test("renders snapshot without crashing", () => {
   const { asFragment } = render(
-    <MemoryRouter>
-      <ContactPage />
-    </MemoryRouter>
+    <ContactPage />
   );
 
   expect(asFragment()).toMatchSnapshot();

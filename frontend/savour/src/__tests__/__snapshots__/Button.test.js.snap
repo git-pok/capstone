@@ -18,3 +18,22 @@ exports[`renders snapshot without crashing 1`] = `
   </div>
 </DocumentFragment>
 `;
+
+exports[`renders snapshot without crashing 2`] = `
+<DocumentFragment>
+  <div
+    class="Button"
+  >
+    <a
+      exact="true"
+      href="/about"
+    >
+      <button
+        class="Button-button"
+      >
+        ABOUT
+      </button>
+    </a>
+  </div>
+</DocumentFragment>
+`;

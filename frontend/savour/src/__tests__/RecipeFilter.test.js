@@ -11,26 +11,22 @@ const usrData = {
 
 const setState = () => {
   console.log("Test!");
-}
+};
 
 
 test("renders RecipeFilter without crashing", () => {
   render(
-    <MemoryRouter>
-      <UserContext.Provider value={{usrData}}>
-        <RecipeFilter setState={setState} />
-      </UserContext.Provider>
-    </MemoryRouter>
-  );
+    <UserContext.Provider value={{usrData}}>
+      <RecipeFilter setState={setState} />
+    </UserContext.Provider>
+  )
 });
 
 test("renders snapshot without crashing", () => {
   const { asFragment } = render(
-    <MemoryRouter>
     <UserContext.Provider value={{usrData}}>
       <RecipeFilter setState={setState} />
     </UserContext.Provider>
-    </MemoryRouter>
   );
 
   expect(asFragment()).toMatchSnapshot();

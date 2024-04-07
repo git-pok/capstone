@@ -11,7 +11,7 @@ const usrData = {
 
 const logOut = () => {
   console.log("Test!");
-}
+};
 
 
 test("renders Navbar without crashing", () => {
