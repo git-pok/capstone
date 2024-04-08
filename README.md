@@ -15,9 +15,15 @@ You may try the app at the link above. A user may register, log in, and try all 
 ## Running Tests
 All tests work and run correctly. Please read README.md files
 in frontend and backend directories for instructions.
-As of now, for frontend tests, please not SavourApp.test.js.
-Within the tests within this file there is a username and password for the username: testUsr. This data exists in my
-database but not yours if you clone the repository.
-To fix this, create test data that will exist in the database
-and will replace this. To do this one must sign up a user. I
-ran out of time to do this!
+
+For frontend tests, please note
+```
+/src/__tests__/SavourApp.test.js.
+```
+Within this file there is a username and password for the username: testUsr. This data exists in the
+database I have but might not in yours. You may
+create this exact test data or replace it with
+new data. Sign up a user or insert a user
+into the database. And unless a test database
+is configured, this test user data will remain in the database; so remeber it's in the database
+unless one deletes!
